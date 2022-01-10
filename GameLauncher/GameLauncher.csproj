@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon></ApplicationIcon>
+    <Platforms>AnyCPU;x64</Platforms>
+    <Win32Resource />
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Icon.ico" />
+    <None Remove="LauncherBackground.png" />
+    <None Remove="PioneerRedwood.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CefSharp.Wpf" Version="96.0.180" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Icon.ico" />
+    <Resource Include="images\001-viral.png" />
+    <Resource Include="images\003-add-friend.png" />
+    <Resource Include="images\Icon.ico" />
+    <Resource Include="images\LauncherBackground.png" />
+    <Resource Include="images\PioneerRedwood.png" />
+    <Resource Include="LauncherBackground.png" />
+    <Resource Include="PioneerRedwood.png" />
+  </ItemGroup>
+
+</Project>
