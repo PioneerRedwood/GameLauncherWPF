@@ -46,7 +46,7 @@ namespace GroguLauncher
 
 		// client config
 		private const string clientID = "58613277-67o5b6avkmnk7t3sa2qob64serpt9p7n.apps.googleusercontent.com";
-		private const string clientSecret = "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";
+		private const string clientSecret = "";
 		private const string authorizationEndpoint = "https://accounts.google.com/o/oauth2/v2/auth";
 		private const string tokenEndpoint = "https://www.googleapis.com/oauth2/v4/token";
 		private const string userInfoEndpoint = "https://www.googleapis.com/oauth2/v3/userinfo";
@@ -176,7 +176,15 @@ namespace GroguLauncher
 			// builds the request
 			string tokenRequestURI = "https://www.googleapis.com/oauth2/v4/token";
 			string tokenRequestBody =
-				string.Format("code={0}&redirect_uri={1}client_id={2}&code_verifier={3}&client_secret={4}&scope=&grant_type=authorization_code",
+				string.Format(
+					"code={0}" +
+					"&redirect_uri={1}" +
+					"&client_id={2}" +
+					"&code_verifier={3}" +
+					"&client_secret={4}" +
+					"&scope=" +
+					"&grant_type=authorization_code",
+
 				code,
 				Uri.EscapeDataString(redirectURI),
 				clientID,
