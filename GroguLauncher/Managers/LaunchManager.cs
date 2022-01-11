@@ -6,7 +6,7 @@ using System.IO.Compression;
 using System.Net;
 using System.Windows;
 
-namespace GroguLauncher
+namespace GroguLauncher.Managers
 {
 	struct Version
 	{

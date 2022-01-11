@@ -1,0 +1,45 @@
+﻿<Window x:Class="GroguLauncher.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GroguLauncher"
+        mc:Ignorable="d"
+        Height="621" Width="400" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen">
+    <Grid Background="#15171e">
+        <Image x:Name="LogoImage" Source="GroguPortrait.bmp" HorizontalAlignment="Left" Height="100" Margin="150,28,0,0" VerticalAlignment="Top" Width="100"/>
+
+        <TextBlock HorizontalAlignment="Center" Margin="150,128,144,0" TextWrapping="Wrap" VerticalAlignment="Top" Padding="0" 
+                   Width="100" Height="40" FontSize="28" Foreground="White" TextAlignment="Center" Text="Grogu" >
+
+        </TextBlock>
+
+        <TextBox x:Name="IDTextBox" HorizontalAlignment="Center" Height="30" Margin="38,214,37,0" TextWrapping="Wrap" VerticalAlignment="Top" 
+                 Padding="5,5,1,1" Width="319" MaxLength="30" MaxLines="1" BorderBrush="#14327f"/>
+
+        <TextBox x:Name="PasswordTextBox" HorizontalAlignment="Center" Height="30" Margin="38,260,37,0" TextWrapping="Wrap" VerticalAlignment="Top"
+                 Padding="5,5,1,1" Width="319" MaxLength="30" MaxLines="1" BorderBrush="#14327f"/>
+
+        <CheckBox x:Name="RememberMeCheckBox" Content="Remember me" HorizontalAlignment="Left" Margin="38,304,0,0" VerticalAlignment="Top"
+                  FontSize="16" Padding="0, 0,0, 0" Foreground="White"/>
+
+        <Button x:Name="LoginButton" Content="Login" HorizontalAlignment="Center" Margin="38,346,37,0" VerticalAlignment="Top" Width="319" Height="35"
+                FontSize="20" Foreground="White" Padding="0,0,0,5" Background="#14327f" Click="LoginButton_Click"/>
+
+        <Button x:Name="BattlenetAuthButton" HorizontalAlignment="Center" Margin="38,481,282,0" VerticalAlignment="Top" Width="74" Height="54"
+                FontSize="16" Foreground="White" Padding="0,0,0,5" Background="#14327f" Click="BattlenetAuthButton_Click">
+            <TextBlock Text="Battle.Net"></TextBlock>
+        </Button>
+
+        <Button x:Name="GoogleAuthButton" HorizontalAlignment="Center" Margin="159,481,161,0" VerticalAlignment="Top" Width="74" Height="54"
+                FontSize="16" Foreground="White" Padding="0,0,0,5" Background="#14327f" Click="GoogleAuthButton_Click">
+            <TextBlock Text="Google"></TextBlock>
+        </Button>
+        
+        <Button x:Name="KakaoAuthButton" HorizontalAlignment="Center" Margin="283,481,37,0" VerticalAlignment="Top" Width="74" Height="54"
+                FontSize="16" Foreground="White" Padding="0,0,0,5" Background="#14327f" Click="KakaoAuthButton_Click">
+            <TextBlock Text="Kakao"></TextBlock>
+        </Button>
+
+    </Grid>
+</Window>

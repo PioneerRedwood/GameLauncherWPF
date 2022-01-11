@@ -15,7 +15,7 @@
             <Grid DockPanel.Dock="Top" VerticalAlignment="Top" Height="75" Margin="0,0,0,5">
                 <Image
                     Name="ProfileImage"
-                    Source="/PioneerRedwood.png" HorizontalAlignment="Left" Width="75"
+                    HorizontalAlignment="Left" Width="75"
                     MouseEnter="ProfileImage_MouseEnter"
                     MouseLeave="ProfileImage_MouseLeave"/>
                 <Border
@@ -57,7 +57,7 @@
 
         <!--Game patch panel-->
         <Grid Background="#14327f" DockPanel.Dock="Left" Margin="10,5,5,10" Width="331" MinWidth="330" MinHeight="720">
-            <Image VerticalAlignment="Top" HorizontalAlignment="Center" Source="/LauncherBackground.png" MinWidth="300" MinHeight="300" Margin="10"/>
+            <Image VerticalAlignment="Top" HorizontalAlignment="Center" Source="" MinWidth="300" MinHeight="300" Margin="10"/>
             <TextBlock Name="CurrentGameText" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" Foreground="White" Margin="0,200,0,0" Text="BrawlMasters_01"/>
             <TextBlock Name="VersionText" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="20" Foreground="White" Margin="5,600,5,0"/>
 
@@ -69,7 +69,7 @@
         <!--New feed panel // CefSharp-->
         <DockPanel Background="#14327f" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,5,5,10">
             <Grid>
-                <cefsharp:ChromiumWebBrowser Address="https://user-images.githubusercontent.com/45554623/142860757-fb4b3ae6-0344-4ada-b008-ca9351fe8e76.png">
+                <cefsharp:ChromiumWebBrowser Address="github.com/PioneerRedwood">
                     
                 </cefsharp:ChromiumWebBrowser>
             </Grid>

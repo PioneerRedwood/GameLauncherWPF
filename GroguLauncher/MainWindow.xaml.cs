@@ -15,13 +15,13 @@ namespace GroguLauncher
 
 	public partial class MainWindow : Window
 	{
-		private LaunchManager launchManager;
+		private Managers.LaunchManager launchManager;
 
 		public MainWindow()
 		{
 			InitializeComponent();
 
-			launchManager = new LaunchManager(this);
+			launchManager = new Managers.LaunchManager(this);
 		}
 
 		private void Window_ContentRendered(object sender, EventArgs e)
