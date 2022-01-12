@@ -27,13 +27,14 @@ using System.Windows.Controls;
 
 namespace GroguLauncher.Handlers
 {
-	class GoogleAuthHandler : OAuthHandler
+	public class GoogleAuthHandler : OAuthHandler
 	{
 		private LoginWindow window;
 
 		// access_token, expires_in, refresh_token, scope, token_type, id_token
 		public Dictionary<string, string> authToken { get; private set; }
 		// sub, name, given_name, family_name, picture_uri, locale
+		// 
 		public Dictionary<string, string> userInfo { get; private set; }
 
 		public GoogleAuthHandler(LoginWindow _window)

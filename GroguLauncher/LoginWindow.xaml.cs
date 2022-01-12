@@ -21,15 +21,16 @@ namespace GroguLauncher
 {
 	public partial class LoginWindow : Window
 	{
-		private AccountHandler accountHandler;
-		private GoogleAuthHandler googleAuthHandler;
+		public AccountHandler accountHandler { get; private set; }
+		public GoogleAuthHandler googleAuthHandler { get; private set; }
 		public object prevContent { get; private set; }
-
+		public bool isOAuthSucceed { get; private set; }
+		
 		public LoginWindow()
 		{
 			InitializeComponent();
 
-			MailTextBox.Text = "test@mail.com";
+			MailText.Text = "test@mail.com";
 			PwdTextBox.Text = "1234";
 
 			accountHandler = new AccountHandler();
@@ -39,6 +40,9 @@ namespace GroguLauncher
 
 		public void NotifyAuthDone()
 		{
+			StoreCurrentContent();
+			isOAuthSucceed = true;
+
 			CreateAccountPage page = new CreateAccountPage(this);
 			Content = page;
 		}
@@ -51,14 +55,18 @@ namespace GroguLauncher
 		public void LoadPreviousContent()
 		{
 			Content = prevContent;
+			if (isOAuthSucceed)
+			{
+				MailText.Text = googleAuthHandler.userInfo["email"];
+			}
 		}
 
 		public async void LoginButton_Click(object sender, RoutedEventArgs e)
 		{
-			if (MailTextBox.Text.Length > 0 && PwdTextBox.Text.Length > 0)
+			if (MailText.Text.Length > 0 && PwdTextBox.Text.Length > 0)
 			{
 				// TODO: 동기 함수 실행 성공하면, MainWindow로
-				Task<bool> loginTask = accountHandler.SyncLogin(MailTextBox.Text, PwdTextBox.Text);
+				Task<bool> loginTask = accountHandler.LoginSync(MailText.Text, PwdTextBox.Text);
 				bool result = await loginTask;
 				if(result)
 				{
@@ -68,17 +76,16 @@ namespace GroguLauncher
 					// TODO: Go or Show to MainWindow
 					//MainWindow window = new MainWindow();
 					//window.Show();
-
 					//Close();
 				}
 				else
 				{
-					MessageBox.Show("Login failed");
+					ResultText.Text = "Failed to login";
 				}
 			}
 			else
 			{
-				MessageBox.Show("Please fill out ID and Password");
+				ResultText.Text = "Fill out ID, Password";
 			}
 		}
 
@@ -102,7 +109,13 @@ namespace GroguLauncher
 			// TODO: Kakao 로그인
 
 		}
-		
-		
+
+		private void SignupText_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+		{
+			StoreCurrentContent();
+
+			CreateAccountPage page = new CreateAccountPage(this);
+			Content = page;
+		}
 	}
 }

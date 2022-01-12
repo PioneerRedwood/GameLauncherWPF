@@ -14,6 +14,7 @@ namespace GroguLauncher.Managers
 		private static MySqlConnection connection;
 
 		private static bool initialized = false;
+
 		public static void Initialize()
 		{
 			if(!initialized)
@@ -35,7 +36,15 @@ namespace GroguLauncher.Managers
 		{
 			try
 			{
-				connection.Open();
+				if(connection.State == ConnectionState.Open)
+				{
+					return true;
+				}
+				else
+				{
+					connection.Open();
+				}
+
 				return true;
 			}
 			catch (MySqlException e)
@@ -52,8 +61,9 @@ namespace GroguLauncher.Managers
 						Debug.WriteLine(e.Message);
 						break;
 				}
-				return false;
 			}
+
+			return false;
 		}
 
 		public static bool CloseConnection()
@@ -62,6 +72,7 @@ namespace GroguLauncher.Managers
 			{
 				connection.Close();
 				return true;
+
 			}
 			catch (MySqlException e)
 			{
@@ -88,7 +99,8 @@ namespace GroguLauncher.Managers
 			}
 		}
 
-		public static int ExecuteSql(string query)
+		// Use when Update, Insert, Delete
+		public static int ExecuteNonQuery(string query)
 		{
 			int affected = -1;
 			try
@@ -110,6 +122,38 @@ namespace GroguLauncher.Managers
 			}
 
 			return affected;
+		}
+
+		// see https://stackoverflow.com/questions/35928312/c-sharp-mysqlcommand-executenonquery-return-1
+		// see docs of MySqlCommand
+		// Use when Select 
+		public static int ExecuteSql(string query)
+		{
+			int result = 0;
+			try
+			{
+				if (OpenConnection())
+				{
+					using(MySqlCommand cmd = new MySqlCommand(query, connection))
+					{
+						object temp = cmd.ExecuteScalar();
+						if(temp != null)
+						{
+							return -1;
+						}
+
+						CloseConnection();
+					}
+					return result;
+				}
+			}
+			catch(MySqlException e)
+			{
+				Debug.WriteLine(e.Message);
+				return -1;
+			}
+
+			return result;
 		}
 	}
 }
