@@ -27,8 +27,8 @@
                     MinWidth="160">
                     <Grid>
 
-                        <TextBlock Text="Kasger" FontSize="28" HorizontalAlignment="Left"  Foreground="#14327f"/>
-                        <TextBlock Text="온라인" FontSize="20" HorizontalAlignment="Left" Margin="0,40,0,0" Foreground="White"/>
+                        <TextBlock Name="UserNameText" Text="Kasger" FontSize="28" HorizontalAlignment="Left"  Foreground="#14327f"/>
+                        <TextBlock Name="UserStatus" Text="온라인" FontSize="20" HorizontalAlignment="Left" Margin="0,40,0,0" Foreground="White"/>
                     </Grid>
 
                 </Border>

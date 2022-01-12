@@ -40,6 +40,12 @@ namespace GroguLauncher
 
 		public void NotifyAuthDone()
 		{
+			// TODO: OAuth done.. what you gonna do?
+
+			// 1. check is there account of email
+			// 2. if it isn't? make a new account
+			// 3. it is? then login
+
 			StoreCurrentContent();
 			isOAuthSucceed = true;
 
@@ -65,18 +71,17 @@ namespace GroguLauncher
 		{
 			if (MailText.Text.Length > 0 && PwdTextBox.Text.Length > 0)
 			{
-				// TODO: 동기 함수 실행 성공하면, MainWindow로
-				Task<bool> loginTask = accountHandler.LoginSync(MailText.Text, PwdTextBox.Text);
-				bool result = await loginTask;
-				if(result)
+				Task<Dictionary<string, string>> loginTask = accountHandler.LoginSync(MailText.Text, PwdTextBox.Text);
+				App.userInfo = await loginTask;
+				if(App.userInfo.Count > 0)
 				{
-					MessageBox.Show("Successfully logged in");
+					//MessageBox.Show("Successfully logged in");
 					// TODO: Update user data
 
-					// TODO: Go or Show to MainWindow
-					//MainWindow window = new MainWindow();
-					//window.Show();
-					//Close();
+					MainWindow window = new MainWindow();
+
+					window.Show();
+					Close();
 				}
 				else
 				{

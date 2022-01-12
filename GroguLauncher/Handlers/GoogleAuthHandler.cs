@@ -44,7 +44,7 @@ namespace GroguLauncher.Handlers
 
 		// client config
 		private const string clientID = "58613277-67o5b6avkmnk7t3sa2qob64serpt9p7n.apps.googleusercontent.com";
-		private const string clientSecret = "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";
+		private string clientSecret = Environment.GetEnvironmentVariable("GROGU_LAUNCHER_GOOGLE_OAUTH2_SECRET");
 		private const string authorizationEndpoint = "https://accounts.google.com/o/oauth2/v2/auth";
 
 		// execution auth

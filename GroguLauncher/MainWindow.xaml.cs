@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -15,6 +16,8 @@ namespace GroguLauncher
 
 	public partial class MainWindow : Window
 	{
+		public Dictionary<string, string> userInfo { get; private set; }
+
 		private Managers.LaunchManager launchManager;
 
 		public MainWindow()
@@ -22,11 +25,15 @@ namespace GroguLauncher
 			InitializeComponent();
 
 			launchManager = new Managers.LaunchManager(this);
+
+			UserNameText.Text = App.userInfo["USER_NAME"];
 		}
+
 
 		private void Window_ContentRendered(object sender, EventArgs e)
 		{
 			launchManager.CheckForUpdates();
+
 		}
 
 		private void PlayButton_Click(object sender, RoutedEventArgs e)
