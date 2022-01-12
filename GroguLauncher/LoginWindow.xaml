@@ -14,10 +14,10 @@
 
         </TextBlock>
 
-        <TextBox x:Name="IDTextBox" HorizontalAlignment="Center" Height="30" Margin="38,214,37,0" TextWrapping="Wrap" VerticalAlignment="Top" 
+        <TextBox x:Name="MailTextBox" HorizontalAlignment="Center" Height="30" Margin="38,214,37,0" TextWrapping="Wrap" VerticalAlignment="Top" 
                  Padding="5,5,1,1" Width="319" MaxLength="30" MaxLines="1" BorderBrush="#14327f"/>
 
-        <TextBox x:Name="PasswordTextBox" HorizontalAlignment="Center" Height="30" Margin="38,260,37,0" TextWrapping="Wrap" VerticalAlignment="Top"
+        <TextBox x:Name="PwdTextBox" HorizontalAlignment="Center" Height="30" Margin="38,260,37,0" TextWrapping="Wrap" VerticalAlignment="Top"
                  Padding="5,5,1,1" Width="319" MaxLength="30" MaxLines="1" BorderBrush="#14327f"/>
 
         <CheckBox x:Name="RememberMeCheckBox" Content="Remember me" HorizontalAlignment="Left" Margin="38,304,0,0" VerticalAlignment="Top"

@@ -19,7 +19,7 @@ namespace GroguLauncher.Handlers
 			MySQLManager.Initialize();
 		}
 
-		public Task<bool> SyncLogin(string id, string pwd)
+		public Task<bool> SyncLogin(string mail, string pwd)
 		{
 			bool succeed = false;
 			Debug.WriteLine("TryLogin");
@@ -27,7 +27,7 @@ namespace GroguLauncher.Handlers
 			{
 				string query =
 					"SELECT * FROM " + tbName +
-					" WHERE ACCOUNT_ID = '" + id + "'" +
+					" WHERE ACCOUNT_MAIL = '" + mail + "'" +
 					" AND ACCOUNT_PWD = '" + pwd + "'";
 
 				int result = 0;
@@ -44,7 +44,7 @@ namespace GroguLauncher.Handlers
 						{
 							foreach(DataRow row in ds.Tables[0].Rows)
 							{
-								if(id == row["ACCOUNT_ID"].ToString() && pwd == row["ACCOUNT_PWD"].ToString())
+								if(mail == row["ACCOUNT_MAIL"].ToString() && pwd == row["ACCOUNT_PWD"].ToString())
 								{
 									succeed = true;
 									break;

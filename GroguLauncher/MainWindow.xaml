@@ -44,7 +44,7 @@
             <!--friend list-->
             <Grid Margin="0,5,0,5">
                 <ListView Background="#15171e">
-                    <TextBlock Text="친구 리스트" FontSize="20" Foreground="#14327f"></TextBlock>
+                    <TextBlock Text="Friends" FontSize="20" Foreground="#14327f"></TextBlock>
                 </ListView>
             </Grid>
         </DockPanel>

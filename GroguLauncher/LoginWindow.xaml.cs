@@ -22,22 +22,43 @@ namespace GroguLauncher
 	public partial class LoginWindow : Window
 	{
 		private AccountHandler accountHandler;
+		private GoogleAuthHandler googleAuthHandler;
+		public object prevContent { get; private set; }
+
 		public LoginWindow()
 		{
 			InitializeComponent();
 
-			IDTextBox.Text = "test01";
-			PasswordTextBox.Text = "1234";
+			MailTextBox.Text = "test@mail.com";
+			PwdTextBox.Text = "1234";
 
 			accountHandler = new AccountHandler();
+
+			prevContent = Content;
+		}
+
+		public void NotifyAuthDone()
+		{
+			CreateAccountPage page = new CreateAccountPage(this);
+			Content = page;
+		}
+
+		public void StoreCurrentContent()
+		{
+			prevContent = Content;
+		}
+
+		public void LoadPreviousContent()
+		{
+			Content = prevContent;
 		}
 
 		public async void LoginButton_Click(object sender, RoutedEventArgs e)
 		{
-			if (IDTextBox.Text.Length > 0 && PasswordTextBox.Text.Length > 0)
+			if (MailTextBox.Text.Length > 0 && PwdTextBox.Text.Length > 0)
 			{
 				// TODO: 동기 함수 실행 성공하면, MainWindow로
-				Task<bool> loginTask = accountHandler.SyncLogin(IDTextBox.Text, PasswordTextBox.Text);
+				Task<bool> loginTask = accountHandler.SyncLogin(MailTextBox.Text, PwdTextBox.Text);
 				bool result = await loginTask;
 				if(result)
 				{
@@ -45,10 +66,10 @@ namespace GroguLauncher
 					// TODO: Update user data
 
 					// TODO: Go or Show to MainWindow
-					MainWindow window = new MainWindow();
-					window.Show();
+					//MainWindow window = new MainWindow();
+					//window.Show();
 
-					Close();
+					//Close();
 				}
 				else
 				{
@@ -72,8 +93,8 @@ namespace GroguLauncher
 			// TODO: 구글 로그인
 			// https://github.com/googlesamples/oauth-apps-for-windows/blob/master/OAuthDesktopApp/
 
-			GoogleAuthPage page = new GoogleAuthPage();
-			Content = page;
+			googleAuthHandler = new GoogleAuthHandler(this);
+			googleAuthHandler.Authenticate();
 		}
 
 		public void KakaoAuthButton_Click(object sender, RoutedEventArgs e)
@@ -81,5 +102,7 @@ namespace GroguLauncher
 			// TODO: Kakao 로그인
 
 		}
+		
+		
 	}
 }

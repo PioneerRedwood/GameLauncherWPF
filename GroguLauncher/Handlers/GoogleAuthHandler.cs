@@ -25,41 +25,26 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace GroguLauncher
+namespace GroguLauncher.Handlers
 {
-	/// <summary>
-	/// GoogleAuthPage.xaml에 대한 상호 작용 논리
-	/// </summary>
-	public partial class GoogleAuthPage : Page
+	class GoogleAuthHandler : OAuthHandler
 	{
-		public GoogleAuthPage()
+		private LoginWindow window;
+
+		// access_token, expires_in, refresh_token, scope, token_type, id_token
+		public Dictionary<string, string> authToken { get; private set; }
+		// sub, name, given_name, family_name, picture_uri, locale
+		public Dictionary<string, string> userInfo { get; private set; }
+
+		public GoogleAuthHandler(LoginWindow _window)
 		{
-			InitializeComponent();
-
-
-		}
-
-		public void AuthButton_Click(object sender, RoutedEventArgs e)
-		{
-			Authenticate();
+			window = _window;
 		}
 
 		// client config
 		private const string clientID = "58613277-67o5b6avkmnk7t3sa2qob64serpt9p7n.apps.googleusercontent.com";
-		private const string clientSecret = "";
+		private const string clientSecret = "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";
 		private const string authorizationEndpoint = "https://accounts.google.com/o/oauth2/v2/auth";
-		private const string tokenEndpoint = "https://www.googleapis.com/oauth2/v4/token";
-		private const string userInfoEndpoint = "https://www.googleapis.com/oauth2/v3/userinfo";
-
-		// for find unused tcp port http://stackoverflow.com/a/3978040
-		public static int FindUnusedTcpPort()
-		{
-			TcpListener listener = new TcpListener(IPAddress.Loopback, 0);
-			listener.Start();
-			int port = ((IPEndPoint)listener.LocalEndpoint).Port;
-			listener.Stop();
-			return port;
-		}
 
 		// execution auth
 		public async void Authenticate()
@@ -69,7 +54,7 @@ namespace GroguLauncher
 			// Generates state the PKCE values
 			string state = RandomDataBase64Url(32);
 			string code_verifier = RandomDataBase64Url(32);
-			string code_challenge = Base64UrlEncodeNoPadding(sha256(code_verifier));
+			string code_challenge = Base64UrlEncodeNoPadding(Sha256(code_verifier));
 			const string code_challenge_method = "S256";
 
 			// Creates a redirect URI using an available port on the loopback address
@@ -97,7 +82,7 @@ namespace GroguLauncher
 			string request =
 				string.Format(
 					"{0}?response_type=code" +
-					"&scope=openid%20profile" +
+					"&scope=openid%20email" +
 					"&redirect_uri={1}" +
 					"&client_id={2}" +
 					"&state={3}" +
@@ -198,6 +183,7 @@ namespace GroguLauncher
 			tokenRequest.ContentType = "application/x-www-form-urlencoded";
 			tokenRequest.Accept =
 				"Accept=text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
+
 			byte[] byteVersion = Encoding.ASCII.GetBytes(tokenRequestBody);
 			tokenRequest.ContentLength = byteVersion.Length;
 			Stream stream = tokenRequest.GetRequestStream();
@@ -215,10 +201,10 @@ namespace GroguLauncher
 					PrintOutput(responseText);
 
 					// converts to dictionary
-					Dictionary<string, string> tokenEndpointDecoded =
+					authToken =
 						JsonConvert.DeserializeObject<Dictionary<string, string>>(responseText);
 
-					string access_token = tokenEndpointDecoded["access_token"];
+					string access_token = authToken["access_token"];
 					RequestUserInfo(access_token);
 				}
 			}
@@ -238,7 +224,6 @@ namespace GroguLauncher
 					}
 				}
 			}
-
 		}
 
 		// request user info
@@ -263,6 +248,11 @@ namespace GroguLauncher
 			{
 				// reads response body
 				string responseText = await reader.ReadToEndAsync();
+				userInfo =
+					JsonConvert.DeserializeObject<Dictionary<string, string>>(responseText);
+
+				window.NotifyAuthDone();
+
 				PrintOutput(responseText);
 			}
 		}
@@ -271,38 +261,9 @@ namespace GroguLauncher
 		public void PrintOutput(string content)
 		{
 			// fill TextBox with the give content
-			textBoxOutput.Text = textBoxOutput.Text + content + Environment.NewLine;
+			//textBoxOutput.Text = textBoxOutput.Text + content + Environment.NewLine;
 			Console.WriteLine(content);
 		}
 
-		// Returns URI-safe data with a given input length.
-		public static string RandomDataBase64Url(uint length)
-		{
-			RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
-			byte[] bytes = new byte[length];
-			rng.GetBytes(bytes);
-			return Base64UrlEncodeNoPadding(bytes);
-		}
-
-		// Returns the SHA256 hash of the input string.
-		public static byte[] sha256(string input)
-		{
-			byte[] bytes = Encoding.ASCII.GetBytes(input);
-			SHA256Managed sha256 = new SHA256Managed();
-			return sha256.ComputeHash(bytes);
-		}
-
-		// Base64url no-padding encodes the given input buffer.
-		public static string Base64UrlEncodeNoPadding(byte[] buffer)
-		{
-			string base64 = Convert.ToBase64String(buffer);
-
-			base64 = base64.Replace("+", "-");
-			base64 = base64.Replace("/", "_");
-
-			base64 = base64.Replace("=", "");
-
-			return base64;
-		}
 	}
 }

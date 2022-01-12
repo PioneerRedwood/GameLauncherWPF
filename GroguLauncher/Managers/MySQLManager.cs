@@ -24,7 +24,6 @@ namespace GroguLauncher.Managers
 				string path = "Server=127.0.0.1;port=3306;Database=red_db;Uid=admin;pwd=5303aa!@;";
 
 				connection = new MySqlConnection(path);
-
 			}
 			else
 			{
