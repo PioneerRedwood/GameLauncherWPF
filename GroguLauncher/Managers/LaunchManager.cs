@@ -1,4 +1,6 @@
-﻿using System;
+﻿// https://github.com/tom-weiland/csharp-game-launcher
+
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -8,6 +10,13 @@ using System.Windows;
 
 namespace GroguLauncher.Managers
 {
+	enum LauncherStatus
+	{
+		Ready,
+		Failed,
+		DownloadingGame,
+		DownloadingUpdate
+	}
 	struct Version
 	{
 		internal static Version zero = new Version(0, 0, 0);
@@ -69,13 +78,14 @@ namespace GroguLauncher.Managers
 		}
 	}
 
-	internal class LaunchManager
+	public class LaunchManager
 	{
-		private MainWindow mainWindow;
-		private string rootPath;
-		private string versionFile;
-		private string gameZip;
-		private string gameExe;
+		private readonly MainWindow mainWindow;
+		private readonly string rootPath;
+		private readonly string versionFile;
+		private readonly string gameZip;
+		private readonly string gameExe;
+
 		private const string versionCheckLink = "https://drive.google.com/uc?export=download&id=1jAf3-xhgDoIajv0n5PnUXUyIjgb4GtiD";
 		private const string gameZipUri = "https://drive.google.com/uc?export=download&id=128Cpdx-SQ2Dj9b9T-ZhOSEKXP4U1w3oX";
 
@@ -89,17 +99,17 @@ namespace GroguLauncher.Managers
 				
 				switch (_status)
 				{
-					case LauncherStatus.ready:
-						mainWindow.PlayButton.Content = "Play";
+					case LauncherStatus.Ready:
+						mainWindow.GamePatchButton.Content = "Play";
 						break;
-					case LauncherStatus.failed:
-						mainWindow.PlayButton.Content = "Update Failed - Retry";
+					case LauncherStatus.Failed:
+						mainWindow.GamePatchButton.Content = "Update Failed - Retry";
 						break;
-					case LauncherStatus.downloadingGame:
-						mainWindow.PlayButton.Content = "Downloading Game";
+					case LauncherStatus.DownloadingGame:
+						mainWindow.GamePatchButton.Content = "Downloading Game";
 						break;
-					case LauncherStatus.downloadingUpdate:
-						mainWindow.PlayButton.Content = "Downloding Update";
+					case LauncherStatus.DownloadingUpdate:
+						mainWindow.GamePatchButton.Content = "Downloding Update";
 						break;
 					default:
 						break;
@@ -117,6 +127,7 @@ namespace GroguLauncher.Managers
 			gameExe = Path.Combine(rootPath, "Build", "BrawlMasters_01.exe");
 		}
 
+		// TODO: !OPTIMIZATION!
 		public void CheckForUpdates()
 		{
 			if (File.Exists(versionFile))
@@ -135,12 +146,12 @@ namespace GroguLauncher.Managers
 					}
 					else
 					{
-						Status = LauncherStatus.ready;
+						Status = LauncherStatus.Ready;
 					}
 				}
 				catch (Exception ex)
 				{
-					Status = LauncherStatus.failed;
+					Status = LauncherStatus.Failed;
 					MessageBox.Show($"Error checking for game updates {ex.Message}");
 				}
 			}
@@ -150,9 +161,10 @@ namespace GroguLauncher.Managers
 			}
 		}
 
+		// TODO: !OPTIMIZATION!
 		public void ExecuteGame()
 		{
-			if (File.Exists(gameExe) && Status == LauncherStatus.ready)
+			if (File.Exists(gameExe) && Status == LauncherStatus.Ready)
 			{
 				ProcessStartInfo startInfo = new ProcessStartInfo(gameExe);
 				startInfo.WorkingDirectory = Path.Combine(rootPath, "Build");
@@ -160,7 +172,7 @@ namespace GroguLauncher.Managers
 
 				//Close();
 			}
-			else if (Status == LauncherStatus.failed)
+			else if (Status == LauncherStatus.Failed)
 			{
 				CheckForUpdates();
 			}
@@ -177,15 +189,16 @@ namespace GroguLauncher.Managers
 				File.WriteAllText(versionFile, onlineVersion);
 
 				mainWindow.VersionText.Text = onlineVersion;
-				Status = LauncherStatus.ready;
+				Status = LauncherStatus.Ready;
 			}
 			catch (Exception ex)
 			{
-				Status = LauncherStatus.failed;
+				Status = LauncherStatus.Failed;
 				MessageBox.Show($"Error finishing download: {ex}");
 			}
 		}
 
+		// TODO: !OPTIMIZATION!
 		private void InstallGameFiles(bool _isUpdate, Version _onlineVersion)
 		{
 			try
@@ -193,11 +206,11 @@ namespace GroguLauncher.Managers
 				WebClient webClient = new WebClient();
 				if (_isUpdate)
 				{
-					Status = LauncherStatus.downloadingUpdate;
+					Status = LauncherStatus.DownloadingUpdate;
 				}
 				else
 				{
-					Status = LauncherStatus.downloadingGame;
+					Status = LauncherStatus.DownloadingGame;
 					_onlineVersion = new Version(webClient.DownloadString(versionCheckLink));
 				}
 
@@ -206,7 +219,7 @@ namespace GroguLauncher.Managers
 			}
 			catch (Exception ex)
 			{
-				Status = LauncherStatus.failed;
+				Status = LauncherStatus.Failed;
 				MessageBox.Show($"Error installing game files: {ex}");
 			}
 		}

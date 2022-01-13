@@ -65,19 +65,20 @@ namespace GroguLauncher
 			{
 				MailText.Text = googleAuthHandler.userInfo["email"];
 			}
+			else
+			{
+				MailText.Text = "";
+			}
 		}
 
 		public async void LoginButton_Click(object sender, RoutedEventArgs e)
 		{
 			if (MailText.Text.Length > 0 && PwdTextBox.Text.Length > 0)
 			{
-				Task<Dictionary<string, string>> loginTask = accountHandler.LoginSync(MailText.Text, PwdTextBox.Text);
-				App.userInfo = await loginTask;
-				if(App.userInfo.Count > 0)
-				{
-					//MessageBox.Show("Successfully logged in");
-					// TODO: Update user data
+				App.UserInfo = await accountHandler.LoginAsync(MailText.Text, PwdTextBox.Text);
 
+				if(App.UserInfo.Count > 0)
+				{
 					MainWindow window = new MainWindow();
 
 					window.Show();

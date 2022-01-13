@@ -19,11 +19,10 @@ namespace GroguLauncher.Handlers
 			MySQLManager.Initialize();
 		}
 
-		public Task<Dictionary<string, string>> LoginSync(string mail, string pwd)
+		public Task<Dictionary<string, string>> LoginAsync(string mail, string pwd)
 		{
 			Dictionary<string, string> userInfo = new Dictionary<string, string>();
-			//bool succeed = false;
-			Debug.WriteLine("TryLogin");
+
 			if (MySQLManager.OpenConnection())
 			{
 				string query =
@@ -36,9 +35,6 @@ namespace GroguLauncher.Handlers
 
 				switch (result)
 				{
-					case 0:
-						//succeed = false;
-						break;
 					case 1:
 						if (ds.Tables[0].Rows.Count > 0)
 						{
@@ -48,21 +44,17 @@ namespace GroguLauncher.Handlers
 								{
 									userInfo.Add("USER_NAME", row["USER_NAME"].ToString());
 									userInfo.Add("USER_ID", row["USER_ID"].ToString());
-									//succeed = true;
 									break;
 								}
 							}
 						}
 						break;
 					default:
-						// TODO
-						//succeed = false;
 						break;
 				}
 				MySQLManager.CloseConnection();
 			}
 
-			//return Task.FromResult(succeed);
 			return Task.FromResult(userInfo);
 		}
 
@@ -93,7 +85,7 @@ namespace GroguLauncher.Handlers
 			return Task.FromResult(succeed);
 		}
 
-		public Task<bool> CreateAccountSync(string mail, string name, string pwd)
+		public Task<bool> CreateAccountAsync(string mail, string name, string pwd)
 		{
 			bool succeed = false;
 			if (MySQLManager.OpenConnection())
@@ -105,7 +97,6 @@ namespace GroguLauncher.Handlers
 
 				switch (result)
 				{
-					// affected row
 					case 1:
 						succeed = true;
 						break;

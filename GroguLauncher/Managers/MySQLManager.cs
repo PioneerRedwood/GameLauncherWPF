@@ -66,22 +66,12 @@ namespace GroguLauncher.Managers
 			return false;
 		}
 
-		public static bool CloseConnection()
+		public static void CloseConnection()
 		{
-			try
-			{
-				connection.Close();
-				return true;
-
-			}
-			catch (MySqlException e)
-			{
-				Debug.WriteLine(e.Message);
-				return false;
-			}
+			connection.Close();
 		}
 
-		// 데이터셋에 쿼리 실행후 담기
+		// Use `Select` getting one or more data
 		public static DataSet ExecuteDataSet(string dsName, string query, ref int result)
 		{
 			try
@@ -124,9 +114,8 @@ namespace GroguLauncher.Managers
 			return affected;
 		}
 
+		// just for test
 		// see https://stackoverflow.com/questions/35928312/c-sharp-mysqlcommand-executenonquery-return-1
-		// see docs of MySqlCommand
-		// Use when Select 
 		public static int ExecuteSql(string query)
 		{
 			int result = 0;

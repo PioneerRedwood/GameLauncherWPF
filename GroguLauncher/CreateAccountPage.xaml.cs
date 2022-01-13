@@ -86,7 +86,7 @@ namespace GroguLauncher
 				if (MessageBox.Show("You can create account with this.\nDo you want to create?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
 				{
 					// TODO: Insert user data
-					checkTask = window.accountHandler.CreateAccountSync(MailText.Text, NameText.Text, PwdText.Text);
+					checkTask = window.accountHandler.CreateAccountAsync(MailText.Text, NameText.Text, PwdText.Text);
 					result = await checkTask;
 
 					// TODO: Go to the LoginWindow
@@ -126,7 +126,7 @@ namespace GroguLauncher
 
 				return (address.Address == target);
 			}
-			catch (FormatException e)
+			catch (FormatException)
 			{
 				// TODO: handle the exception
 				return false;

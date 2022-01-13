@@ -1,44 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 
 namespace GroguLauncher
 {
-	enum LauncherStatus
-	{
-		ready,
-		failed,
-		downloadingGame,
-		downloadingUpdate
-	}
-
 	public partial class MainWindow : Window
 	{
-		public Dictionary<string, string> userInfo { get; private set; }
+		public Dictionary<string, string> UserInfo { get; private set; }
 
-		private Managers.LaunchManager launchManager;
+		public Managers.LaunchManager LaunchManager { get; private set; }
+		public Handlers.SocialHandler SocialHandler { get; private set; }
+
+		public ObservableCollection<Social.Friend> FriendList { get; private set; }
 
 		public MainWindow()
 		{
 			InitializeComponent();
+			DataContext = this;
 
-			launchManager = new Managers.LaunchManager(this);
+			LaunchManager = new Managers.LaunchManager(this);
+			SocialHandler = new Handlers.SocialHandler();
 
-			UserNameText.Text = App.userInfo["USER_NAME"];
+			UserNameText.Text = App.UserInfo["USER_NAME"];
+
+			Loaded += Window_Loaded;
 		}
 
-
-		private void Window_ContentRendered(object sender, EventArgs e)
+		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
-			launchManager.CheckForUpdates();
+			GetFriendList();
+
+			// TODO: GetRequestFromOthers
 
 		}
 
-		private void PlayButton_Click(object sender, RoutedEventArgs e)
+		// ref https://stackoverflow.com/questions/17237034/wpf-chat-list-box-with-user-image-display
+		private async void GetFriendList()
 		{
-			launchManager.ExecuteGame();
+			FriendListBox.ItemsSource = await SocialHandler.GetMyFriendList();
+		}
+
+		private void GamePatchButton_Click(object sender, RoutedEventArgs e)
+		{
+
+			LaunchManager.CheckForUpdates();
+			LaunchManager.ExecuteGame();
 		}
 
 		private void ProfileImage_MouseEnter(object sender, MouseEventArgs e)
@@ -62,6 +72,11 @@ namespace GroguLauncher
 			ProfileGrid.Background = null;
 		}
 
-
+		// TODO: Search friend
+		private void OpenSearchFriendWindowButton_Click(object sender, RoutedEventArgs e)
+		{
+			SearchFriendWindow window = new SearchFriendWindow(SocialHandler);
+			window.ShowDialog();
+		}
 	}
 }

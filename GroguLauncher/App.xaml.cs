@@ -12,7 +12,7 @@ namespace GroguLauncher
 {
 	public partial class App : Application
 	{
-		public static Dictionary<string, string> userInfo = new Dictionary<string, string>();
+		public static Dictionary<string, string> UserInfo = new Dictionary<string, string>();
 
 		protected override void OnStartup(StartupEventArgs e)
 		{
