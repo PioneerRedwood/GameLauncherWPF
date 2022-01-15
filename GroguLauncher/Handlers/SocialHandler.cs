@@ -10,9 +10,22 @@ using System.Threading.Tasks;
 
 namespace GroguLauncher.Handlers
 {
+	/// <summary>
+	/// SocialHandler
+	/// DB: red_db, tb: friendship, my_status, friend_relation
+	/// - Post & Get
+	/// !OPTIMIZATION!
+	/// - make the queries reuseable, control table's properties by enum 
+	/// </summary>
 	public class SocialHandler
 	{
-		public enum StatusCode
+		/** Tables 
+		* FRIENDSHIP - requester_id, addressee_id, created_time
+		* MY_STATUS - request status table: 'R': "Requested", 'A': "Accepted", 'D': "Denied", 'B': "Blocked"
+		* FRIEND_RELATION - requester_id, addresssee_id, status_code, specifier_id, specified_datetime
+		*/
+
+		public enum FriendshipStatusCode
 		{
 			Requested = 'R',
 			Accepted = 'A',
@@ -20,12 +33,7 @@ namespace GroguLauncher.Handlers
 			Blocked = 'B',
 		};
 
-		/** Tables 
-		 * FRIENDSHIP - requester_id, addressee_id, created_time
-		 * MY_STATUS - request status table: 'R': "Requested", 'A': "Accepted", 'D': "Denied", 'B': "Blocked"
-		 * FRIEND_RELATION - requester_id, addresssee_id, status_code, specifier_id, specified_datetime
-		 */
-
+		private const string userTable = "RED_USER";
 		private const string friendshipTable = "FRIENDSHIP";
 		private const string friendRelationTable = "FRIEND_RELATION";
 
@@ -34,11 +42,227 @@ namespace GroguLauncher.Handlers
 			MySQLManager.Initialize();
 		}
 
-		// TODO: select all friends
-		// select friend
+		#region private - used from only inside of this class
 
-		// TODO: Request friend relation table
-		public async Task<bool> RequestFriendRelation(int self, int friend, StatusCode code)
+		private async Task<bool> PostAcceptFriendship(int self, int friend)
+		{
+			bool result = false;
+			if (MySQLManager.OpenConnection())
+			{
+				bool isFriend = await IsFriend(self, friend);
+				if (isFriend)
+				{
+					return result;
+				}
+
+				string query =
+					"INSERT INTO " + friendshipTable +
+					" (REQUESTER_ID, ADDRESSEE_ID, CREATED_TIME)" +
+					$" VALUES({friend}, {self}, NOW())";
+
+				if (MySQLManager.ExecuteNonQuery(query) == 1)
+				{
+					result = true;
+				}
+
+				MySQLManager.CloseConnection();
+			}
+
+			return result;
+		}
+
+		private Task<Social.Friend> GetUserByID(int id)
+		{
+			Social.Friend friend = new Social.Friend();
+
+			if (MySQLManager.OpenConnection())
+			{
+				string query =
+					"SELECT USER_NAME, IS_LOGGED_IN FROM " + userTable +
+					$" WHERE USER_ID = {id}";
+
+				int result = 0;
+				DataSet ds = MySQLManager.ExecuteDataSet("friends", query, ref result);
+
+				if (result == 1)
+				{
+					// TODO: !OPTIMIZATION!
+					if (ds.Tables[0].Rows.Count > 0)
+					{
+						foreach (DataRow row in ds.Tables[0].Rows)
+						{
+							friend.Name = row["USER_NAME"].ToString();
+							friend.IsLoggedIn = bool.Parse(row["IS_LOGGED_IN"].ToString());
+						}
+					}
+				}
+			}
+
+			return Task.FromResult(friend);
+		}
+
+		private Task<Social.Friend> GetUserByName(string name)
+		{
+			Social.Friend friend = new Social.Friend();
+
+			if (MySQLManager.OpenConnection())
+			{
+				string query =
+					"SELECT USER_ID, IS_LOGGED_IN FROM " + userTable +
+					$" WHERE USER_NAME = '{name}'";
+				int result = 0;
+				DataSet ds = MySQLManager.ExecuteDataSet("friend info", query, ref result);
+
+				// TODO: !OPTIMIZATION!
+				if (ds.Tables[0].Rows.Count > 0)
+				{
+					foreach (DataRow row in ds.Tables[0].Rows)
+					{
+						friend.Id = int.Parse(row["USER_ID"].ToString());
+						friend.Name = name;
+						friend.IsLoggedIn = bool.Parse(row["IS_LOGGED_IN"].ToString());
+					}
+				}
+
+				MySQLManager.CloseConnection();
+			}
+
+			return Task.FromResult(friend);
+		}
+
+		private Task<bool> IsFriend(int self, int other)
+		{
+			bool isFriend = false;
+
+			if (MySQLManager.OpenConnection())
+			{
+				string query =
+					"SELECT REQUESTER_ID FROM " + friendshipTable +
+					$" WHERE (REQUESTER_ID = {self} AND ADDRESSEE_ID = {other}) OR (REQUESTER_ID = {other} AND ADDRESSEE_ID = {self})";
+
+				int result = 0;
+				DataSet _ = MySQLManager.ExecuteDataSet("results", query, ref result);
+				if (result != 0)
+				{
+					isFriend = true;
+				}
+
+				MySQLManager.CloseConnection();
+			}
+
+			return Task.FromResult(isFriend);
+		}
+
+		#endregion
+
+		#region public - can be used from outside
+
+		public async Task<ObservableCollection<Social.Friend>> GetFriendList()
+		{
+			ObservableCollection<Social.Friend> friends = new ObservableCollection<Social.Friend>();
+
+			if (MySQLManager.OpenConnection())
+			{
+				// TODO: 
+				string query =
+					"SELECT REQUESTER_ID, ADDRESSEE_ID FROM " + friendshipTable +
+					$" WHERE REQUESTER_ID = {int.Parse(App.UserInfo["USER_ID"])} OR ADDRESSEE_ID = {int.Parse(App.UserInfo["USER_ID"])}";
+
+				int result = 0;
+				DataSet ds = MySQLManager.ExecuteDataSet("friends", query, ref result);
+
+				if (result > 0 && ds.Tables[0].Rows.Count > 0)
+				{
+					// TODO: !OPTIMIZATION!
+					foreach (DataRow row in ds.Tables[0].Rows)
+					{
+						Social.Friend friend;
+						// Get a friend id
+						if (int.Parse(row["ADDRESSEE_ID"].ToString()) != int.Parse(App.UserInfo["USER_ID"]))
+						{
+							int target = int.Parse(row["ADDRESSEE_ID"].ToString());
+							friend = await GetUserByID(target);
+							friend.Id = target;
+						}
+						else
+						{
+							int target = int.Parse(row["REQUESTER_ID"].ToString());
+							friend = await GetUserByID(target);
+							friend.Id = target;
+						}
+						//friend.Date = DateTime.Parse(row["CREATED_TIME"].ToString());
+
+						friends.Add(friend);
+					}
+				}
+
+				MySQLManager.CloseConnection();
+			}
+
+			return friends;
+		}
+
+		public async Task<bool> AddFriendWithName(int self, string friendName, FriendshipStatusCode code)
+		{
+			bool result = false;
+
+			if (MySQLManager.OpenConnection())
+			{
+				Social.Friend friend = await GetUserByName(friendName);
+
+				if (friend.Id != -1)
+				{
+					result = await PostRequestFriendRelation(self, friend.Id, code);
+				}
+
+				MySQLManager.CloseConnection();
+			}
+
+			return result;
+		}
+
+		public async Task<ObservableCollection<Social.Friend>> GetFriendRequestList()
+		{
+			ObservableCollection<Social.Friend> requests = new ObservableCollection<Social.Friend>();
+
+			if (MySQLManager.OpenConnection())
+			{
+				// 2022-01-14 This query has a problem !
+				// TODO: Get friend request list, which still not made friendship with me
+				string query =
+					"SELECT REQUESTER_ID FROM " + friendRelationTable +
+					$" WHERE ADDRESSEE_ID = {int.Parse(App.UserInfo["USER_ID"])}" +
+					$" AND STATUS_CODE = 'R'";
+
+				int result = 0;
+				DataSet ds = MySQLManager.ExecuteDataSet("requests", query, ref result);
+
+				if (result > 0)
+				{
+					// TODO: !OPTIMIZATION!
+					if (ds.Tables[0].Rows.Count > 0)
+					{
+						foreach (DataRow row in ds.Tables[0].Rows)
+						{
+							// user name, is logged in
+							Social.Friend friend = await GetUserByID(int.Parse(row["REQUESTER_ID"].ToString()));
+							friend.Id = int.Parse(row["REQUESTER_ID"].ToString());
+
+							if (!await IsFriend(int.Parse(App.UserInfo["USER_ID"]), friend.Id))
+							{
+								requests.Add(friend);
+							}
+						}
+					}
+				}
+
+				MySQLManager.CloseConnection();
+			}
+
+			return requests;
+		}
+
+		public async Task<bool> PostRequestFriendRelation(int self, int friend, FriendshipStatusCode code)
 		{
 			bool result = false;
 
@@ -54,15 +278,15 @@ namespace GroguLauncher.Handlers
 					result = true;
 					switch (code)
 					{
-						case StatusCode.Requested:
+						case FriendshipStatusCode.Requested:
 							break;
-						case StatusCode.Accepted:
-							bool addResult = await AddFriendship(self, friend);
+						case FriendshipStatusCode.Accepted:
+							bool addResult = await PostAcceptFriendship(self, friend);
 							result &= addResult;
 							break;
-						case StatusCode.Blocked:
+						case FriendshipStatusCode.Blocked:
 							break;
-						case StatusCode.Denied:
+						case FriendshipStatusCode.Denied:
 							break;
 						default:
 							break;
@@ -74,187 +298,6 @@ namespace GroguLauncher.Handlers
 
 			return result;
 		}
-
-		// TODO: Add friendship in FRIENDSHIP table
-		public Task<bool> AddFriendship(int self, int friend)
-		{
-			bool result = false;
-			if (MySQLManager.OpenConnection())
-			{
-				string query =
-					"INSERT INTO " + friendshipTable +
-					" (REQUESTER_ID, ADDRESSEE_ID, CREATED_TIME)" +
-					$" VALUES({self}, {friend}, NOW())";
-
-				int affected = MySQLManager.ExecuteNonQuery(query);
-
-				switch (affected)
-				{
-					case 1:
-						result = true;
-						break;
-					default:
-						break;
-				}
-
-				MySQLManager.CloseConnection();
-			}
-
-			return Task.FromResult(result);
-		}
-
-		// TODO: Get my friend list // Need to edit
-		public async Task<ObservableCollection<Social.Friend>> GetMyFriendList()
-		{
-			ObservableCollection<Social.Friend> friends = new ObservableCollection<Social.Friend>();
-
-			if (MySQLManager.OpenConnection())
-			{
-				string query =
-					"SELECT ADDRESSEE_ID, CREATED_TIME FROM " + friendshipTable +
-					$" WHERE REQUESTER_ID = {int.Parse(App.UserInfo["USER_ID"])}";
-
-				int result = 0;
-				DataSet ds = MySQLManager.ExecuteDataSet("friends", query, ref result);
-
-				if (result > 0)
-				{
-					// TODO: !OPTIMIZATION!
-					if (ds.Tables[0].Rows.Count > 0)
-					{
-						foreach (DataRow row in ds.Tables[0].Rows)
-						{
-							Social.Friend friend = await GetFriendByID(int.Parse(row["ADDRESSEE_ID"].ToString()));
-
-							friend.id = int.Parse(row["ADDRESSEE_ID"].ToString());
-							friend.date = DateTime.Parse(row["CREATED_TIME"].ToString());
-							friends.Add(friend);
-						}
-					}
-				}
-
-				MySQLManager.CloseConnection();
-			}
-
-			return friends;
-		}
-
-		// TODO: Get the friend info
-		public Task<Social.Friend> GetFriendByID(int id)
-		{
-			Social.Friend friend = new Social.Friend();
-
-			if (MySQLManager.OpenConnection())
-			{
-				string query =
-					"SELECT USER_NAME, IS_LOGGED_IN" +
-					" FROM RED_USER " +
-					$" WHERE USER_ID = {id}";
-
-				int result = 0;
-				DataSet ds = MySQLManager.ExecuteDataSet("friends", query, ref result);
-
-				if (result == 1)
-				{
-					// TODO: !OPTIMIZATION!
-					if (ds.Tables[0].Rows.Count > 0)
-					{
-						foreach (DataRow row in ds.Tables[0].Rows)
-						{
-							friend.name = row["USER_NAME"].ToString();
-							friend.isLoggedIn = bool.Parse(row["IS_LOGGED_IN"].ToString());
-						}
-					}
-				}
-			}
-
-			return Task.FromResult(friend);
-		}
-
-		public async Task<bool> AddFriendWithName(int self, string friendName, StatusCode code)
-		{
-			bool result = false;
-
-			if (MySQLManager.OpenConnection())
-			{
-				// TODO: select and get user_id of friend
-				Social.Friend friend = await GetUserByName(friendName);
-
-				if (friend.id != -1)
-				{
-					result = await RequestFriendRelation(self, friend.id, code);
-				}
-
-				MySQLManager.CloseConnection();
-			}
-
-			return result;
-		}
-
-		// TODO: Get user info searching by name
-		public Task<Social.Friend> GetUserByName(string name)
-		{
-			Social.Friend friend = new Social.Friend();
-
-			if (MySQLManager.OpenConnection())
-			{
-				string query =
-					$"SELECT USER_ID, IS_LOGGED_IN FROM RED_USER WHERE USER_NAME = '{name}'";
-				int result = 0;
-				DataSet ds = MySQLManager.ExecuteDataSet("friend info", query, ref result);
-
-				// TODO: !OPTIMIZATION!
-				if (ds.Tables[0].Rows.Count > 0)
-				{
-					foreach (DataRow row in ds.Tables[0].Rows)
-					{
-						friend.id = int.Parse(row["USER_ID"].ToString());
-						friend.name = name;
-						friend.isLoggedIn = bool.Parse(row["IS_LOGGED_IN"].ToString());
-					}
-				}
-
-				MySQLManager.CloseConnection();
-			}
-
-			return Task.FromResult(friend);
-		}
-
-		// TODO: Requested to me
-		public async Task<ObservableCollection<Social.Friend>> GetFriendshipRequestList() 
-		{
-			ObservableCollection<Social.Friend> requests = new ObservableCollection<Social.Friend>();
-
-			if (MySQLManager.OpenConnection())
-			{
-				string query =
-					"SELECT REQUESTER_ID FROM " + friendRelationTable +
-					$" WHERE ADDRESSEE_ID = {int.Parse(App.UserInfo["USER_ID"])} AND STATUS_CODE = 'R'";
-
-				int result = 0;
-				DataSet ds = MySQLManager.ExecuteDataSet("friends", query, ref result);
-
-				if (result > 0)
-				{
-					// TODO: !OPTIMIZATION!
-					if (ds.Tables[0].Rows.Count > 0)
-					{
-						foreach (DataRow row in ds.Tables[0].Rows)
-						{
-							//Social.Friend friend = await GetUserByName();
-
-							//friend.id = int.Parse(row["ADDRESSEE_ID"].ToString());
-							//friend.date = DateTime.Parse(row["CREATED_TIME"].ToString());
-							//friends.Add(friend);
-
-						}
-					}
-				}
-
-				MySQLManager.CloseConnection();
-			}
-
-			return requests;
-		}
+		#endregion
 	}
 }

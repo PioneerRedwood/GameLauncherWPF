@@ -34,16 +34,28 @@ namespace GroguLauncher
 
 		private async void SearchButton_Click(object sender, RoutedEventArgs e)
 		{
-			if (SearchText.Text.Length > 0)
+			if ((SearchText.Text.Length > 0) && (SearchText.Text != App.UserInfo["USER_NAME"]))
 			{
-				if (await handler.AddFriendWithName(int.Parse(App.UserInfo["USER_ID"]), SearchText.Text, Handlers.SocialHandler.StatusCode.Requested))
+				if (await handler.AddFriendWithName(int.Parse(App.UserInfo["USER_ID"]), SearchText.Text, Handlers.SocialHandler.FriendshipStatusCode.Requested))
 				{
 					Social.Friend friend = new Social.Friend();
-					friend.name = SearchText.Text;
+					friend.Name = SearchText.Text;
 
 					FriendshipRequestList.Add(friend);
 				}
+
+				SearchText.Text = "";
 			}
+			else
+			{
+				MessageBox.Show("You can't send the message to yourself!");
+				return;
+			}
+		}
+
+		private void CompleteButton_Click(object sender, RoutedEventArgs e)
+		{
+			Close();
 		}
 	}
 }

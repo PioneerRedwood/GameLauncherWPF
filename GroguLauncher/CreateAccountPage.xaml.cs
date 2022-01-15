@@ -86,7 +86,7 @@ namespace GroguLauncher
 				if (MessageBox.Show("You can create account with this.\nDo you want to create?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
 				{
 					// TODO: Insert user data
-					checkTask = window.accountHandler.CreateAccountAsync(MailText.Text, NameText.Text, PwdText.Text);
+					checkTask = window.accountHandler.CreateAccount(MailText.Text, NameText.Text, PwdText.Text);
 					result = await checkTask;
 
 					// TODO: Go to the LoginWindow

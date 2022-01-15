@@ -10,12 +10,11 @@ namespace GroguLauncher
 {
 	public partial class MainWindow : Window
 	{
-		public Dictionary<string, string> UserInfo { get; private set; }
-
 		public Managers.LaunchManager LaunchManager { get; private set; }
 		public Handlers.SocialHandler SocialHandler { get; private set; }
 
 		public ObservableCollection<Social.Friend> FriendList { get; private set; }
+		public ObservableCollection<Social.Friend> FriendRequestList { get; private set; }
 
 		public MainWindow()
 		{
@@ -32,16 +31,36 @@ namespace GroguLauncher
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
+			SocialSectorUpdate();
+		}
+
+		private void SocialSectorUpdate()
+		{
 			GetFriendList();
-
-			// TODO: GetRequestFromOthers
-
+			GetFriendRequestList();
 		}
 
 		// ref https://stackoverflow.com/questions/17237034/wpf-chat-list-box-with-user-image-display
 		private async void GetFriendList()
 		{
-			FriendListBox.ItemsSource = await SocialHandler.GetMyFriendList();
+			FriendListBox.ItemsSource = await SocialHandler.GetFriendList();
+		}
+
+		private async void GetFriendRequestList()
+		{
+			FriendRequestList = await SocialHandler.GetFriendRequestList();
+			if(FriendRequestList.Count > 0)
+			{
+				// TODO: dynamically create component named FriendRequestListGrid
+				
+				FriendRequestListGrid.IsEnabled = true;
+				FriendRequestCountText.Content = FriendRequestList.Count;
+			}
+			else
+			{
+				FriendRequestListGrid.IsEnabled = false;
+				FriendRequestCountText.Content = 0;
+			}
 		}
 
 		private void GamePatchButton_Click(object sender, RoutedEventArgs e)
@@ -77,6 +96,24 @@ namespace GroguLauncher
 		{
 			SearchFriendWindow window = new SearchFriendWindow(SocialHandler);
 			window.ShowDialog();
+		}
+
+		private void FriendRequestListGrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+		{
+			FriendRequestListWindow window = new FriendRequestListWindow(FriendRequestList);
+			window.ShowDialog();
+
+			SocialSectorUpdate();
+		}
+
+		private void LogoutButton_Click(object sender, RoutedEventArgs e)
+		{
+			App.UserInfo.Clear();
+			
+			LoginWindow window = new LoginWindow();
+			window.Show();
+
+			Close();
 		}
 	}
 }

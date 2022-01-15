@@ -9,6 +9,10 @@ using System.Data;
 
 namespace GroguLauncher.Handlers
 {
+	/// <summary>
+	/// DB: red_db, tb: red_user, user
+	/// Create
+	/// </summary>
 	public class AccountHandler
 	{
 		private readonly string tbName = "red_user";
@@ -19,7 +23,7 @@ namespace GroguLauncher.Handlers
 			MySQLManager.Initialize();
 		}
 
-		public Task<Dictionary<string, string>> LoginAsync(string mail, string pwd)
+		public Task<Dictionary<string, string>> Login(string mail, string pwd)
 		{
 			Dictionary<string, string> userInfo = new Dictionary<string, string>();
 
@@ -85,7 +89,7 @@ namespace GroguLauncher.Handlers
 			return Task.FromResult(succeed);
 		}
 
-		public Task<bool> CreateAccountAsync(string mail, string name, string pwd)
+		public Task<bool> CreateAccount(string mail, string name, string pwd)
 		{
 			bool succeed = false;
 			if (MySQLManager.OpenConnection())

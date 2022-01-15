@@ -10,7 +10,7 @@
         Title="Grogu" Height="900" Width="1600" ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen">
     <Window.Resources>
-        
+
     </Window.Resources>
     <DockPanel Background="#15171e">
         <!--Social panel // my profile, friends-->
@@ -32,50 +32,54 @@
                     MinWidth="160">
                     <Grid>
 
-                        <TextBlock Name="UserNameText" Text="Grogu" FontSize="28" HorizontalAlignment="Left"  Foreground="#14327f"/>
+                        <TextBlock Name="UserNameText" Text="Grogu" FontSize="28" HorizontalAlignment="Left" Foreground="#14327f" FontWeight="Bold"/>
                         <TextBlock Name="UserStatus" Text="Online" FontSize="20" HorizontalAlignment="Left" Margin="0,40,0,0" Foreground="White"/>
                     </Grid>
 
                 </Border>
+                <Button x:Name="LogoutButton" Content="Log out" HorizontalAlignment="Right" Margin="0,5,0,0" VerticalAlignment="Top" Width="55"
+                        Click="LogoutButton_Click" Background="Red" Foreground="White" FontWeight="Bold"/>
+
             </Grid>
 
-            <!--add, search friend-->
+            <!-- add, search, request friend-->
             <Grid DockPanel.Dock="Top" Height="50" >
-                <Button Name="OpenSearchFriendWindowButton" Background="#7a7a78" HorizontalAlignment="Left" TextBlock.FontSize="20" Foreground="#14327f" 
-                        Margin="5" Height="30" Click="OpenSearchFriendWindowButton_Click">
+                <Grid Name="FriendRequestListGrid" HorizontalAlignment="Right" PreviewMouseDown="FriendRequestListGrid_PreviewMouseDown" 
+                      Height="30" Background="#7a7a78">
+                    <TextBlock HorizontalAlignment="Left" FontSize="20" Foreground="#14327f" 
+                               Text="Request" FontWeight="Bold" Width="110"/>
+
+                    <Button Name="FriendRequestCountText" HorizontalAlignment="Right" Content="5" Width="30" Height="30" FontSize="20" FontWeight="Bold" />
+                </Grid>
+                
+                <Button Name="OpenSearchFriendWindowButton" Background="#7a7a78" HorizontalAlignment="Left" TextBlock.FontSize="20" 
+                        FontWeight="Bold" Foreground="#14327f" Margin="5" Height="30" Click="OpenSearchFriendWindowButton_Click">
                     Search
                 </Button>
-                
-                <!--<Image Source="/003-add-friend.png" HorizontalAlignment="Left" Margin="5,5,5,5"/>
-                <Image Source="/001-viral.png" HorizontalAlignment="Left" Margin="85,5,0,5" />-->
             </Grid>
-            
+
             <!--friend list-->
             <Grid Margin="0,5,0,5">
-                <TextBlock VerticalAlignment="Top" HorizontalAlignment="Center" 
-                           FontSize="20" Foreground="White" Text="FriendList">
-                    
-                </TextBlock>
+                
+
                 <ListBox Name="FriendListBox" 
                          Background="#14327f" 
                          ItemsSource="{Binding FriendList}"
-                         Margin="0,30,0,0">
+                         Margin="0">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type social:Friend}">
                             <DockPanel Background="#15171e">
                                 <TextBlock DockPanel.Dock="Left"
                                            VerticalAlignment="Center"
-                                           Text="{Binding name}"
+                                           Text="{Binding Name}"
                                            Foreground="White"
-                                           FontSize="16">
-                                    
-                                </TextBlock>
+                                           FontSize="16"/>
+
                                 <TextBlock DockPanel.Dock="Right"
-                                           Text="{Binding state}"
+                                           Text="{Binding State}"
                                            Foreground="White"
-                                           FontSize="16">
-                                    
-                                </TextBlock>
+                                           FontSize="16"/>
+
                             </DockPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
@@ -91,7 +95,7 @@
 
         <!--Game patch panel-->
         <Grid Background="#14327f" DockPanel.Dock="Left" Margin="10,5,5,10" Width="331" MinWidth="330" MinHeight="720">
-            <Image VerticalAlignment="Top" HorizontalAlignment="Center" Source="" MinWidth="300" MinHeight="300" Margin="10"/>
+            <!--<Image VerticalAlignment="Top" HorizontalAlignment="Center" MinWidth="300" MinHeight="300" Margin="10"/>-->
             <TextBlock Name="CurrentGameText" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" Foreground="White" Margin="0,200,0,0" Text="BrawlMasters_01"/>
             <TextBlock Name="VersionText" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="20" Foreground="White" Margin="5,600,5,0"/>
 
@@ -103,7 +107,7 @@
         <DockPanel Background="#14327f" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,5,5,10">
             <Grid>
                 <cefsharp:ChromiumWebBrowser Address="github.com/PioneerRedwood">
-                    
+
                 </cefsharp:ChromiumWebBrowser>
             </Grid>
         </DockPanel>

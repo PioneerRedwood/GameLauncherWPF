@@ -30,8 +30,8 @@ namespace GroguLauncher
 		{
 			InitializeComponent();
 
-			MailText.Text = "test@mail.com";
-			PwdTextBox.Text = "1234";
+			MailText.Text = "A@mail.com";
+			PwdTextBox.Text = "123";
 
 			accountHandler = new AccountHandler();
 
@@ -75,7 +75,7 @@ namespace GroguLauncher
 		{
 			if (MailText.Text.Length > 0 && PwdTextBox.Text.Length > 0)
 			{
-				App.UserInfo = await accountHandler.LoginAsync(MailText.Text, PwdTextBox.Text);
+				App.UserInfo = await accountHandler.Login(MailText.Text, PwdTextBox.Text);
 
 				if(App.UserInfo.Count > 0)
 				{

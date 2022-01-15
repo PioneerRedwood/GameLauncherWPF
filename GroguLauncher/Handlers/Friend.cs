@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GroguLauncher.Social
 {
-	public enum FriendState
+	public enum ConnectionState
 	{
 		Online = 0,
 		Offline = 1,
@@ -19,77 +19,77 @@ namespace GroguLauncher.Social
 	// ref https://docs.microsoft.com/ko-kr/dotnet/api/system.collections.specialized.inotifycollectionchanged?redirectedfrom=MSDN&view=net-6.0
 	public class Friend : INotifyPropertyChanged
 	{
-		private string name_;
-		private int id_;
-		private DateTime date_;
-		private bool isLoggedIn_;
-		private FriendState state_;
+		private string name;
+		private int id;
+		private DateTime date;
+		private bool isLoggedIn;
+		private ConnectionState state;
 
-		public string name
+		public string Name
 		{
-			get => name_;
+			get => name;
 			set
 			{
-				if (name_ == value)
+				if (name == value)
 				{
 					return;
 				}
-				name_ = value;
+				name = value;
 				NotifyChanged("name");
 			}
 		}
-		public int id
+		public int Id
 		{
-			get => id_;
+			get => id;
 			set
 			{
-				if (id_ == value)
+				if (id == value)
 				{
 					return;
 				}
-				id_ = value;
+				id = value;
 				NotifyChanged("id");
 			}
 		}
 
-		public DateTime date
+		public DateTime Date
 		{
-			get => date_;
+			get => date;
 			set
 			{
-				if (date_ == value)
+				if (date == value)
 				{
 					return;
 				}
-				date_ = value;
+				date = value;
 				NotifyChanged("date");
 			}
 		}
 
-		public bool isLoggedIn
+		public bool IsLoggedIn
 		{
-			get => isLoggedIn_;
+			get => isLoggedIn;
 			set
 			{
-				if (isLoggedIn_ == value)
+				if (isLoggedIn == value)
 				{
 					return;
 				}
-				isLoggedIn_ = value;
+				isLoggedIn = value;
 				NotifyChanged("isLoggedIn");
 			}
 		}
 
-		public FriendState state
+		public ConnectionState State
 		{
-			get => state_;
+			get => state;
 			set
 			{
-				if (state_ == value)
+				if (state == value)
 				{
 					return;
 				}
-				state_ = value;
+				state = value;
 				NotifyChanged("state");
 			}
 		}
