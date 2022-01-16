@@ -80,6 +80,7 @@
     <Compile Include="FriendRequestListWindow.xaml.cs">
       <DependentUpon>FriendRequestListWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Components\GameComponent.cs" />
     <Compile Include="SearchFriendWindow.xaml.cs">
       <DependentUpon>SearchFriendWindow.xaml</DependentUpon>
     </Compile>
@@ -88,7 +89,6 @@
     </Compile>
     <Compile Include="Handlers\Friend.cs" />
     <Compile Include="Handlers\SocialHandler.cs" />
-    <Compile Include="Utils\Observer.cs" />
     <Page Include="FriendRequestListWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -119,7 +119,7 @@
     <Compile Include="LoginWindow.xaml.cs">
       <DependentUpon>LoginWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Managers\LaunchManager.cs" />
+    <Compile Include="Managers\GameLaunchManager.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -161,6 +161,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\btn_google_sign-in.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="PioneerRedwood.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

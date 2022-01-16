@@ -6,25 +6,45 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 
+using GroguLauncher.Managers;
+using GroguLauncher.Handlers;
+using GroguLauncher.Components;
+using GroguLauncher.Social;
+
+
 namespace GroguLauncher
 {
 	public partial class MainWindow : Window
 	{
-		public Managers.LaunchManager LaunchManager { get; private set; }
-		public Handlers.SocialHandler SocialHandler { get; private set; }
+		public GameLaunchManager LaunchManager { get; private set; }
+		public SocialHandler SocialHandler { get; private set; }
 
-		public ObservableCollection<Social.Friend> FriendList { get; private set; }
-		public ObservableCollection<Social.Friend> FriendRequestList { get; private set; }
+		public ObservableCollection<Friend> FriendList { get; private set; }
+		public ObservableCollection<Friend> FriendRequestList { get; private set; }
+
+		public ObservableCollection<GameComponent> GameList { get; private set; }
+
+		// TODO: set for test
+		private readonly List<string> gameList;
 
 		public MainWindow()
 		{
 			InitializeComponent();
 			DataContext = this;
 
-			LaunchManager = new Managers.LaunchManager(this);
-			SocialHandler = new Handlers.SocialHandler();
+			LaunchManager = new GameLaunchManager(this);
+			SocialHandler = new SocialHandler();
+			GameList = new ObservableCollection<GameComponent>();
+			gameList = new List<string> { "BrawlMasters", "TowerDefenseGame" };
 
 			UserNameText.Text = App.UserInfo["USER_NAME"];
+
+			foreach (string gameName in gameList)
+			{
+				GameList.Add(GameLaunchManager.AvailableGameList[gameName]);
+			}
+
+			GameListBox.ItemsSource = GameList;
 
 			Loaded += Window_Loaded;
 		}
@@ -32,27 +52,28 @@ namespace GroguLauncher
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
 			SocialSectorUpdate();
+
+			// TODO: first selected item
+			GameListBox.SelectedIndex = 0;
+			GameSectorUpdate();
 		}
 
-		private void SocialSectorUpdate()
+		private void GameSectorUpdate()
 		{
-			GetFriendList();
-			GetFriendRequestList();
+			LaunchManager.NotifySelectedGameChanged(gameList[GameListBox.SelectedIndex]);
+			LaunchManager.CheckForUpdates();
 		}
 
-		// ref https://stackoverflow.com/questions/17237034/wpf-chat-list-box-with-user-image-display
-		private async void GetFriendList()
+		private async void SocialSectorUpdate()
 		{
+			// ref https://stackoverflow.com/questions/17237034/wpf-chat-list-box-with-user-image-display
 			FriendListBox.ItemsSource = await SocialHandler.GetFriendList();
-		}
 
-		private async void GetFriendRequestList()
-		{
 			FriendRequestList = await SocialHandler.GetFriendRequestList();
-			if(FriendRequestList.Count > 0)
+			if (FriendRequestList.Count > 0)
 			{
 				// TODO: dynamically create component named FriendRequestListGrid
-				
+
 				FriendRequestListGrid.IsEnabled = true;
 				FriendRequestCountText.Content = FriendRequestList.Count;
 			}
@@ -65,19 +86,10 @@ namespace GroguLauncher
 
 		private void GamePatchButton_Click(object sender, RoutedEventArgs e)
 		{
-
-			LaunchManager.CheckForUpdates();
-			LaunchManager.ExecuteGame();
-		}
-
-		private void ProfileImage_MouseEnter(object sender, MouseEventArgs e)
-		{
-			ProfileImage.ToolTip = "ProfileImage";
-		}
-
-		private void ProfileImage_MouseLeave(object sender, MouseEventArgs e)
-		{
-
+			if (((GameComponent)GameListBox.SelectedItem).Status == GamePatchStatus.Ready)
+			{
+				LaunchManager.ExecuteGame();
+			}
 		}
 
 		private void ProfileGrid_MouseEnter(object sender, MouseEventArgs e)
@@ -91,7 +103,6 @@ namespace GroguLauncher
 			ProfileGrid.Background = null;
 		}
 
-		// TODO: Search friend
 		private void OpenSearchFriendWindowButton_Click(object sender, RoutedEventArgs e)
 		{
 			SearchFriendWindow window = new SearchFriendWindow(SocialHandler);
@@ -109,11 +120,16 @@ namespace GroguLauncher
 		private void LogoutButton_Click(object sender, RoutedEventArgs e)
 		{
 			App.UserInfo.Clear();
-			
+
 			LoginWindow window = new LoginWindow();
 			window.Show();
 
 			Close();
+		}
+
+		private void GameListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+		{
+			GameSectorUpdate();
 		}
 	}
 }

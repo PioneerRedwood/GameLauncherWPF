@@ -41,11 +41,6 @@ namespace GroguLauncher
 		public void NotifyAuthDone()
 		{
 			// TODO: OAuth done.. what you gonna do?
-
-			// 1. check is there account of email
-			// 2. if it isn't? make a new account
-			// 3. it is? then login
-
 			StoreCurrentContent();
 			isOAuthSucceed = true;
 
@@ -71,13 +66,18 @@ namespace GroguLauncher
 			}
 		}
 
-		public async void LoginButton_Click(object sender, RoutedEventArgs e)
+		private void LoginButton_Click(object sender, RoutedEventArgs e)
+		{
+			Login();
+		}
+
+		private async void Login()
 		{
 			if (MailText.Text.Length > 0 && PwdTextBox.Text.Length > 0)
 			{
 				App.UserInfo = await accountHandler.Login(MailText.Text, PwdTextBox.Text);
 
-				if(App.UserInfo.Count > 0)
+				if (App.UserInfo.Count > 0)
 				{
 					MainWindow window = new MainWindow();
 
@@ -122,6 +122,18 @@ namespace GroguLauncher
 
 			CreateAccountPage page = new CreateAccountPage(this);
 			Content = page;
+		}
+
+		private void Window_KeyDown(object sender, KeyEventArgs e)
+		{
+			switch (e.Key)
+			{
+				case Key.Enter:
+					Login();
+					break;
+				default:
+					break;
+			}
 		}
 	}
 }
