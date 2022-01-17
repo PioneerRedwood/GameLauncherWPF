@@ -11,7 +11,6 @@ using GroguLauncher.Handlers;
 using GroguLauncher.Components;
 using GroguLauncher.Social;
 
-
 namespace GroguLauncher
 {
 	public partial class MainWindow : Window
@@ -25,21 +24,22 @@ namespace GroguLauncher
 		public ObservableCollection<GameComponent> GameList { get; private set; }
 
 		// TODO: set for test
-		private readonly List<string> gameList;
+		public List<string> GameNameList { get; private set; }
 
 		public MainWindow()
 		{
 			InitializeComponent();
 			DataContext = this;
 
+			// WARNING! Set non-UI elements first
+			GameNameList = new List<string> { "BrawlMasters", "TowerDefenseGame" };
+			UserNameText.Text = App.UserInfo["USER_NAME"];
+
 			LaunchManager = new GameLaunchManager(this);
 			SocialHandler = new SocialHandler();
 			GameList = new ObservableCollection<GameComponent>();
-			gameList = new List<string> { "BrawlMasters", "TowerDefenseGame" };
 
-			UserNameText.Text = App.UserInfo["USER_NAME"];
-
-			foreach (string gameName in gameList)
+			foreach (string gameName in GameNameList)
 			{
 				GameList.Add(GameLaunchManager.AvailableGameList[gameName]);
 			}
@@ -60,8 +60,7 @@ namespace GroguLauncher
 
 		private void GameSectorUpdate()
 		{
-			LaunchManager.NotifySelectedGameChanged(gameList[GameListBox.SelectedIndex]);
-			LaunchManager.CheckForUpdates();
+			LaunchManager.NotifySelectedGameChanged(GameList[GameListBox.SelectedIndex]);
 		}
 
 		private async void SocialSectorUpdate()
@@ -86,9 +85,20 @@ namespace GroguLauncher
 
 		private void GamePatchButton_Click(object sender, RoutedEventArgs e)
 		{
-			if (((GameComponent)GameListBox.SelectedItem).Status == GamePatchStatus.Ready)
+			GamePatchStatus status = ((GameComponent)GameListBox.SelectedItem).Status;
+			switch (status)
 			{
-				LaunchManager.ExecuteGame();
+				case GamePatchStatus.Play:
+					LaunchManager.ExecuteGame();
+					break;
+				case GamePatchStatus.Update:
+					LaunchManager.InstallGame();
+					break;
+				case GamePatchStatus.Uninitialized:
+					LaunchManager.InitializeGame((GameComponent)GameListBox.SelectedItem);
+					break;
+				default:
+					break;
 			}
 		}
 

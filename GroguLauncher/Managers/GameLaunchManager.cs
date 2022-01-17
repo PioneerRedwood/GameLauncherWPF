@@ -10,21 +10,24 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace GroguLauncher.Managers
+namespace GroguLauncher
 {
 	public enum GamePatchStatus
 	{
-		Ready,
+		Play,
 		Failed,
 		Updating,
+		Uninitialized,
+		Update,
+		Initializing,
 	}
-	internal struct GameVersion
+	public struct GameVersion
 	{
-		internal static GameVersion zero = new GameVersion(0, 0, 0);
+		public static GameVersion zero = new GameVersion(0, 0, 0);
 
-		private short major;
-		private short minor;
-		private short subMinor;
+		private readonly short major;
+		private readonly short minor;
+		private readonly short subMinor;
 
 		public GameVersion(short major, short minor, short subMinor)
 		{
@@ -33,7 +36,7 @@ namespace GroguLauncher.Managers
 			this.subMinor = subMinor;
 		}
 
-		internal GameVersion(string version)
+		public GameVersion(string version)
 		{
 			string[] versionStrings = version.Split('.');
 			if (versionStrings.Length != 3)
@@ -49,7 +52,7 @@ namespace GroguLauncher.Managers
 			subMinor = short.Parse(versionStrings[2]);
 		}
 
-		internal bool Equals(GameVersion otherVersion)
+		public bool Equals(GameVersion otherVersion)
 		{
 			return (major == otherVersion.major)
 				& (minor == otherVersion.minor)
@@ -61,13 +64,15 @@ namespace GroguLauncher.Managers
 			return $"{major}.{minor}.{subMinor}";
 		}
 	}
+}
 
+namespace GroguLauncher.Managers
+{
 	public class GameLaunchManager
 	{
 		private readonly MainWindow window;
 		public static Dictionary<string, Components.GameComponent> AvailableGameList;
 		private Components.GameComponent selectedGame;
-		
 
 		public GameLaunchManager(MainWindow _mainWindow)
 		{
@@ -88,63 +93,88 @@ namespace GroguLauncher.Managers
 				"https://github.com/PioneerRedwood/Unity_2D_DefenseGame")
 				},
 			};
+
+			// TODO: async check for all avable game list
+			InitializeGames();
 		}
 
-		public void NotifySelectedGameChanged(string name)
+		public void InitializeGames()
 		{
-			selectedGame = AvailableGameList[name];
-
-			// TODO: change view
-			window.CurrentGameText.Text = name;
-			window.GamePatchButton.Content = selectedGame.Status.ToString();
-			window.MainBrowser.Address = selectedGame.PageUrl;
-			
+			foreach (string name in window.GameNameList)
+			{
+				InitializeGame(AvailableGameList[name]);
+			}
 		}
 
-		// TODO: !OPTIMIZATION!
-		public void CheckForUpdates()
+		public void InitializeGame(Components.GameComponent game)
 		{
-			if (selectedGame.Status == GamePatchStatus.Ready)
+			if (game.IsInitialized)
 			{
 				return;
 			}
 
-			if (File.Exists(selectedGame.VersionFile))
+			// Check the version
+			if (File.Exists(game.VersionFile))
 			{
-				GameVersion localVersion = new GameVersion(File.ReadAllText(selectedGame.VersionFile));
-				window.VersionText.Text = localVersion.ToString();
+				GameVersion version = new GameVersion(File.ReadAllText(game.VersionFile));
 
-				try
+				if (!version.Equals(game.Version))
 				{
-					WebClient client = new WebClient();
-
-					GameVersion newVersion =
-						new GameVersion(client.DownloadString(selectedGame.VersionUri));
-
-					if (newVersion.Equals(localVersion))
-					{
-						OnGamePatchStatusChanged(GamePatchStatus.Ready, null);
-					}
-					else
-					{
-						// need to update
-						InstallGameFiles(true, newVersion);
-					}
-				}
-				catch (Exception ex)
-				{
-					OnGamePatchStatusChanged(GamePatchStatus.Failed, ex);
+					DownloadVersionFile(game);
 				}
 			}
 			else
 			{
-				InstallGameFiles(false, GameVersion.zero);
+				DownloadVersionFile(game);
+			}
+		}
+
+		private void DownloadVersionFile(Components.GameComponent game)
+		{
+			try
+			{
+				WebClient client = new WebClient();
+
+				client.DownloadStringCompleted +=
+					new DownloadStringCompletedEventHandler(
+						(object sender, DownloadStringCompletedEventArgs token) =>
+						{
+							Components.GameComponent temp = (Components.GameComponent)token.UserState;
+							GameVersion newVersion = new GameVersion(token.Result);
+
+							temp.IsInitialized = true;
+							temp.Version = newVersion;
+							temp.Status = GamePatchStatus.Update;
+
+							File.WriteAllText(temp.VersionFile, token.Result);
+						});
+
+				client.DownloadStringAsync(new Uri(game.VersionUri), game);
+			}
+			catch (Exception ex)
+			{
+				OnGamePatchStatusChanged(GamePatchStatus.Failed, ex);
+			}
+		}
+
+		public void NotifySelectedGameChanged(Components.GameComponent game)
+		{
+			if (selectedGame != game)
+			{
+				selectedGame = game;
+
+				// TODO: change view
+				window.CurrentGameText.Text = selectedGame.Name;
+				window.GamePatchButton.Content = selectedGame.Status.ToString();
+
+				window.MainBrowser.Address = selectedGame.PageUrl;
+				window.VersionText.Text = selectedGame.Version.ToString();
 			}
 		}
 
 		public void ExecuteGame()
 		{
-			if (File.Exists(selectedGame.ExeFile) && selectedGame.Status == GamePatchStatus.Ready)
+			if (File.Exists(selectedGame.ExeFile) && selectedGame.Status == GamePatchStatus.Play)
 			{
 				ProcessStartInfo startInfo = new ProcessStartInfo(selectedGame.ExeFile);
 				startInfo.WorkingDirectory = Path.Combine(selectedGame.RootPath, selectedGame.Name);
@@ -155,45 +185,31 @@ namespace GroguLauncher.Managers
 
 				window.Show();
 			}
-			else if (selectedGame.Status == GamePatchStatus.Failed)
-			{
-				CheckForUpdates();
-			}
 		}
 
-		private void DownloadGameCompletedCallback(object sender, AsyncCompletedEventArgs token)
-		{
-			try
-			{
-				string newVersion = ((GameVersion)token.UserState).ToString();
-				ZipFile.ExtractToDirectory(selectedGame.ZipFile, selectedGame.RootPath);
-				File.Delete(selectedGame.ZipFile);
-
-				File.WriteAllText(selectedGame.VersionFile, newVersion);
-				OnGamePatchStatusChanged(GamePatchStatus.Ready, null);
-
-				window.VersionText.Text = newVersion;
-			}
-			catch (Exception ex)
-			{
-				OnGamePatchStatusChanged(GamePatchStatus.Failed, ex);
-			}
-		}
-
-		private void InstallGameFiles(bool isUpdate, GameVersion version)
+		public void InstallGame()
 		{
 			try
 			{
 				WebClient webClient = new WebClient();
 				OnGamePatchStatusChanged(GamePatchStatus.Updating, null);
 
-				if (!isUpdate)
-				{
-					version = new GameVersion(webClient.DownloadString(selectedGame.VersionUri));
-				}
+				webClient.DownloadFileCompleted +=
+					new AsyncCompletedEventHandler((object sender, AsyncCompletedEventArgs token) =>
+					{
+						try
+						{
+							ZipFile.ExtractToDirectory(selectedGame.ZipFile, selectedGame.RootPath);
+							File.Delete(selectedGame.ZipFile);
 
-				webClient.DownloadFileCompleted += new AsyncCompletedEventHandler(DownloadGameCompletedCallback);
-				webClient.DownloadFileAsync(new Uri(selectedGame.ZipUri), selectedGame.ZipFile, version);
+							OnGamePatchStatusChanged(GamePatchStatus.Play, null);
+						}
+						catch (Exception ex)
+						{
+							OnGamePatchStatusChanged(GamePatchStatus.Failed, ex);
+						}
+					});
+				webClient.DownloadFileAsync(new Uri(selectedGame.ZipUri), selectedGame.ZipFile);
 			}
 			catch (Exception ex)
 			{
@@ -204,21 +220,28 @@ namespace GroguLauncher.Managers
 		private void OnGamePatchStatusChanged(GamePatchStatus status, Exception ex)
 		{
 			selectedGame.Status = status;
+			window.GamePatchButton.Content = status.ToString();
+
 			switch (status)
 			{
-				case GamePatchStatus.Ready:
-					selectedGame.Status = GamePatchStatus.Ready;
-					window.GamePatchButton.Content = "Play";
+				case GamePatchStatus.Play:
 					break;
 				case GamePatchStatus.Failed:
-					window.GamePatchButton.Content = "Update Failed - Retry";
 					MessageBox.Show($"Error installing game files: {ex}");
 					break;
 				case GamePatchStatus.Updating:
-					selectedGame.Status = GamePatchStatus.Updating;
-					window.GamePatchButton.Content = "Updating";
+					break;
+				case GamePatchStatus.Update:
+					break;
+				case GamePatchStatus.Initializing:
+					break;
+				case GamePatchStatus.Uninitialized:
+					break;
+				default:
 					break;
 			}
 		}
+
+
 	}
 }

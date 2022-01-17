@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace GroguLauncher.Components
 {
@@ -12,8 +14,10 @@ namespace GroguLauncher.Components
 	{
 		private string name;
 		private int id;
-		public Managers.GamePatchStatus Status;
 
+		public bool IsInitialized = false;
+		public GamePatchStatus Status = GamePatchStatus.Uninitialized;
+		public GameVersion Version;
 		public string RootPath { get; private set; }
 		public string VersionFile { get; private set; }
 		public string ZipFile { get; private set; }
@@ -79,5 +83,6 @@ namespace GroguLauncher.Components
 				handler(this, new PropertyChangedEventArgs(name));
 			}
 		}
+
 	}
 }

@@ -123,6 +123,7 @@
 
             <Button Name="GamePatchButton" Content="" Click="GamePatchButton_Click" Height="60" FontSize="24" FontWeight="Bold" 
                     Foreground="#DDFFFF" Margin="0,0,0,60" VerticalAlignment="Bottom" HorizontalAlignment="Center" MinWidth="200" 
+                    
                     Background="#FFA50D0D" />
         </Grid>
 
