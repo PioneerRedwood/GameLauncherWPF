@@ -29,7 +29,6 @@
                     Margin="80,5,5,5"
                     MinWidth="160">
                     <Grid>
-
                         <TextBlock Name="UserNameText" Text="Grogu" FontSize="28" HorizontalAlignment="Left" Foreground="#14327f" FontWeight="Bold"/>
                         <TextBlock Name="UserStatus" Text="Online" FontSize="20" HorizontalAlignment="Left" Margin="0,40,0,0" Foreground="White"/>
                     </Grid>
@@ -37,7 +36,7 @@
                 </Border>
                 <Button x:Name="LogoutButton" Content="Log out" HorizontalAlignment="Right" Margin="0,5,0,0" VerticalAlignment="Top" Width="55"
                         Click="LogoutButton_Click" Background="Red" Foreground="White" FontWeight="Bold"/>
-
+                
             </Grid>
 
             <!-- add, search, request friend-->

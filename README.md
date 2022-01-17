@@ -13,5 +13,3 @@
 - Based on the above `GameLaucher`
 - .Net Framework 4.5.2, `CefSharp` applied
 - Used IDE: VS 2019
-
-<img width="500" src="https://user-images.githubusercontent.com/45554623/148736736-2d431ce7-9ba2-4e51-83fb-366746f2bc51.png"/>
