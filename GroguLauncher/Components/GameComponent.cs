@@ -14,9 +14,10 @@ namespace GroguLauncher.Components
 	{
 		private string name;
 		private int id;
+		private GamePatchStatus status = GamePatchStatus.Uninitialized;
 
 		public bool IsInitialized = false;
-		public GamePatchStatus Status = GamePatchStatus.Uninitialized;
+		//public GamePatchStatus Status = GamePatchStatus.Uninitialized;
 		public GameVersion Version;
 		public string RootPath { get; private set; }
 		public string VersionFile { get; private set; }
@@ -70,6 +71,20 @@ namespace GroguLauncher.Components
 				}
 				id = value;
 				NotifyChanged("id");
+			}
+		}
+
+		public GamePatchStatus Status
+		{
+			get => status;
+			set 
+			{
+				if(status == value)
+				{
+					return;
+				}
+				status = value;
+				NotifyChanged("status");
 			}
 		}
 

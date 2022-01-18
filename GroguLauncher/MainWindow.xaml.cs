@@ -23,25 +23,21 @@ namespace GroguLauncher
 
 		public ObservableCollection<GameComponent> GameList { get; private set; }
 
-		// TODO: set for test
-		public List<string> GameNameList { get; private set; }
-
 		public MainWindow()
 		{
 			InitializeComponent();
 			DataContext = this;
 
 			// WARNING! Set non-UI elements first
-			GameNameList = new List<string> { "BrawlMasters", "TowerDefenseGame" };
 			UserNameText.Text = App.UserInfo["USER_NAME"];
 
 			LaunchManager = new GameLaunchManager(this);
 			SocialHandler = new SocialHandler();
 			GameList = new ObservableCollection<GameComponent>();
 
-			foreach (string gameName in GameNameList)
+			for (int index = 0; index < LaunchManager.AvailableGames.Count; ++index)
 			{
-				GameList.Add(GameLaunchManager.AvailableGameList[gameName]);
+				GameList.Add(LaunchManager.AvailableGames[index]);
 			}
 
 			GameListBox.ItemsSource = GameList;
@@ -53,14 +49,13 @@ namespace GroguLauncher
 		{
 			SocialSectorUpdate();
 
-			// TODO: first selected item
 			GameListBox.SelectedIndex = 0;
 			GameSectorUpdate();
 		}
 
 		private void GameSectorUpdate()
 		{
-			LaunchManager.NotifySelectedGameChanged(GameList[GameListBox.SelectedIndex]);
+			LaunchManager.NotifySelectedGameChanged(GameListBox.SelectedIndex);
 		}
 
 		private async void SocialSectorUpdate()
