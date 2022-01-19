@@ -1,0 +1,99 @@
+﻿<Window x:Class="GroguLauncher.TestWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GroguLauncher"
+        mc:Ignorable="d"
+        Title="TestWindow" Height="900" Width="1600"
+        AllowsTransparency="True"
+        Background="#15171e"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="75"/>
+            <RowDefinition Height="75"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="300" />
+        </Grid.ColumnDefinitions>
+
+        <!--Title-->
+        <Border Grid.ColumnSpan="3">
+
+            <Grid HorizontalAlignment="Stretch">
+                <Label Content="Hello world"
+                       Foreground="Gray"/>
+                <StackPanel HorizontalAlignment="Right"
+                            Orientation="Horizontal">
+                    <Button Width="20" Height="20"
+                            Content="🗕" Padding="0,-3,0,3"
+                            FontSize="17"
+                            Foreground="White"
+                            Background="Transparent"
+                            BorderThickness="0"/>
+                    <Button Width="20" Height="20"
+                            Content="🗖" Padding="0,-3,0,3"
+                            FontSize="17"
+                            Foreground="White"
+                            Background="Transparent"
+                            BorderThickness="0"/>
+                    <Button Width="20" Height="20"
+                            Content="🗙" Padding="0,-3,0,3"
+                            FontSize="17"
+                            Foreground="White"
+                            Background="Transparent"
+                            BorderThickness="0"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+        
+        <!--Setting-->
+        <StackPanel Grid.Row="1" Grid.Column="0" Background="Red">
+            
+        </StackPanel>
+        
+        <!--Game selection-->
+        <ListView Grid.Row="2" Grid.ColumnSpan="2">
+
+        </ListView>
+
+        <!--Game panel-->
+        <Grid Grid.Row="3" Background="Black">
+            
+        </Grid>
+        
+        <!--Profile-->
+        <StackPanel Grid.Row="1" Grid.Column="2"
+                    Orientation="Horizontal">
+            <Image Width="75"/>
+            <Grid Background="AliceBlue"
+                  Width="150">
+                
+            </Grid>
+            <Button Width="75"/>
+        </StackPanel>
+        
+        <!--Community-->
+        <StackPanel Grid.Row="2" Grid.Column="2">
+            
+        </StackPanel>
+        
+        <!--Contects-->
+        <StackPanel Grid.Row="3" Grid.Column="2">
+
+        </StackPanel>
+
+        <!--News feeds-->
+        <Grid Grid.Row="3" Grid.Column="1">
+
+        </Grid>
+    </Grid>
+</Window>
