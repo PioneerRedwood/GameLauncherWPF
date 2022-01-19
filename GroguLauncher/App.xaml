@@ -3,9 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:GroguLauncher"
              StartupUri="LoginWindow.xaml">
-             <!--StartupUri="TestWindow.xaml">-->
              <!--StartupUri="MainWindow.xaml">-->
-             
-             
+             <!--StartupUri="TestWindow.xaml">-->
              
 </Application>

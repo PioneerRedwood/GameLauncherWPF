@@ -29,7 +29,7 @@ namespace GroguLauncher
 			DataContext = this;
 
 			// WARNING! Set non-UI elements first
-			UserNameText.Text = App.UserInfo["USER_NAME"];
+			UserNameLabel.Content = App.UserInfo["USER_NAME"];
 
 			LaunchManager = new GameLaunchManager(this);
 			SocialHandler = new SocialHandler();
@@ -128,6 +128,24 @@ namespace GroguLauncher
 		private void GameListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
 		{
 			LaunchManager.NotifySelectedGameChanged(GameListBox.SelectedIndex);
+		}
+
+		private void Border_MouseDown(object sender, MouseButtonEventArgs e)
+		{
+			if (e.LeftButton == MouseButtonState.Pressed)
+			{
+				DragMove();
+			}
+		}
+
+		private void MiniMizeButton_Click(object sender, RoutedEventArgs e)
+		{
+			WindowState = WindowState.Minimized;
+		}
+
+		private void CloseButton_Click(object sender, RoutedEventArgs e)
+		{
+			Application.Current.Shutdown();
 		}
 	}
 }

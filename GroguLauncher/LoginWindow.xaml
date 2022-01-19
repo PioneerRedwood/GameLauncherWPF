@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GroguLauncher" 
         mc:Ignorable="d" Icon="GroguPortrait.bmp"
-        Height="621" Width="400" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen" KeyDown="Window_KeyDown">
+        Height="621" Width="400" ResizeMode="CanMinimize" 
+        WindowStartupLocation="CenterScreen" KeyDown="Window_KeyDown">
     <Grid Background="#15171e">
         <Image x:Name="LogoImage" Source="GroguPortrait.bmp" HorizontalAlignment="Left" Height="100" Margin="150,28,0,0" VerticalAlignment="Top" Width="100"/>
 

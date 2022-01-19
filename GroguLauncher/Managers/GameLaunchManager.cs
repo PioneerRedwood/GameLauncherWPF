@@ -175,11 +175,11 @@ namespace GroguLauncher.Managers
 
 			selectedGame = AvailableGames[index];
 
-			window.CurrentGameText.Text = selectedGame.Name;
+			window.CurrentGameLabel.Content = selectedGame.Name;
 			window.GamePatchButton.Content = selectedGame.Status.ToString();
 
 			window.MainBrowser.Address = selectedGame.PageUrl;
-			window.VersionText.Text = selectedGame.Version.ToString();
+			window.VersionLabel.Content = selectedGame.Version.ToString();
 		}
 
 		public void ExecuteGame()

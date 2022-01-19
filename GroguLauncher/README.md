@@ -8,4 +8,4 @@ updated: 2022-01-17
 
 ### Main
 
-<img width="500" src="https://user-images.githubusercontent.com/45554623/149742070-d0e9a0fe-22ca-4594-b2b4-2ba3ba623e83.png"/>
+<img width="500" src="https://user-images.githubusercontent.com/45554623/150108146-37d5ed61-8949-4d97-9415-a8f5a68edac9.png"/>
