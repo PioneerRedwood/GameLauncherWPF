@@ -71,12 +71,16 @@ namespace GroguLauncher.Managers
 	public class GameLaunchManager
 	{
 		private readonly MainWindow window;
+		public List<string> GameList { get; private set; }
 		public Dictionary<int, Components.GameComponent> AvailableGames { get; private set; }
-		private Components.GameComponent selectedGame;
+
+		private Components.GameComponent selectedGame = null;
 
 		public GameLaunchManager(MainWindow _mainWindow)
 		{
 			window = _mainWindow;
+
+			GameList = new List<string> { "BrawlMasters", "TowerDefenseGame" };
 
 			AvailableGames = new Dictionary<int, Components.GameComponent>
 			{
@@ -148,7 +152,11 @@ namespace GroguLauncher.Managers
 
 							File.WriteAllText(temp.VersionFile, token.Result);
 
-							// TODO: change current selected game state here
+							int index = GameList.IndexOf(temp.Name);
+							if(index == window.GameListBox.SelectedIndex)
+							{
+								NotifySelectedGameChanged(index);
+							}
 
 						});
 
@@ -162,17 +170,16 @@ namespace GroguLauncher.Managers
 
 		public void NotifySelectedGameChanged(int index)
 		{
-			if (selectedGame != AvailableGames[index])
-			{
-				selectedGame = AvailableGames[index];
+			// TODO: should be conducted after GameComponent initiailzed end
+			Console.WriteLine("NotifySelectedGameChanged " + index);
 
-				// TODO: change view
-				window.CurrentGameText.Text = selectedGame.Name;
-				window.GamePatchButton.Content = selectedGame.Status.ToString();
+			selectedGame = AvailableGames[index];
 
-				window.MainBrowser.Address = selectedGame.PageUrl;
-				window.VersionText.Text = selectedGame.Version.ToString();
-			}
+			window.CurrentGameText.Text = selectedGame.Name;
+			window.GamePatchButton.Content = selectedGame.Status.ToString();
+
+			window.MainBrowser.Address = selectedGame.PageUrl;
+			window.VersionText.Text = selectedGame.Version.ToString();
 		}
 
 		public void ExecuteGame()
@@ -197,7 +204,7 @@ namespace GroguLauncher.Managers
 				WebClient webClient = new WebClient();
 				OnGamePatchStatusChanged(GamePatchStatus.Updating, null);
 
-				// TODO: delete all the game files exsist
+				// TODO: delete all the game files exist
 				if (File.Exists(selectedGame.ExeFile))
 				{
 					ClearOldGameFiles();

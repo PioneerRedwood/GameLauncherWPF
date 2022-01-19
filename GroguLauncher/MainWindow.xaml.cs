@@ -40,6 +40,7 @@ namespace GroguLauncher
 				GameList.Add(LaunchManager.AvailableGames[index]);
 			}
 
+			GameListBox.SelectedIndex = 0;
 			GameListBox.ItemsSource = GameList;
 
 			Loaded += Window_Loaded;
@@ -48,14 +49,6 @@ namespace GroguLauncher
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
 			SocialSectorUpdate();
-
-			GameListBox.SelectedIndex = 0;
-			GameSectorUpdate();
-		}
-
-		private void GameSectorUpdate()
-		{
-			LaunchManager.NotifySelectedGameChanged(GameListBox.SelectedIndex);
 		}
 
 		private async void SocialSectorUpdate()
@@ -134,7 +127,7 @@ namespace GroguLauncher
 
 		private void GameListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
 		{
-			GameSectorUpdate();
+			LaunchManager.NotifySelectedGameChanged(GameListBox.SelectedIndex);
 		}
 	}
 }
