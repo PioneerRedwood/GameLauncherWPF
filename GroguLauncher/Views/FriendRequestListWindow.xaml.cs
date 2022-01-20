@@ -17,10 +17,10 @@ namespace GroguLauncher
 {
 	public partial class FriendRequestListWindow : Window
 	{
-		private readonly ObservableCollection<Social.Friend> FriendRequestList;
+		private readonly ObservableCollection<ContactModel> FriendRequestList;
 		private Handlers.SocialHandler socialHandler;
 
-		public FriendRequestListWindow(ObservableCollection<Social.Friend> requestList)
+		public FriendRequestListWindow(ObservableCollection<ContactModel> requestList)
 		{
 			InitializeComponent();
 
@@ -35,7 +35,7 @@ namespace GroguLauncher
 		{
 			// TODO: PostRequest Accepted
 
-			Social.Friend friend = (sender as Button).DataContext as Social.Friend;
+			ContactModel friend = (sender as Button).DataContext as ContactModel;
 			if (await socialHandler.PostRequestFriendRelation(int.Parse(App.UserInfo["USER_ID"]), friend.Id, Handlers.SocialHandler.FriendshipStatusCode.Accepted))
 			{
 				FriendRequestList.Remove(friend);
@@ -45,10 +45,23 @@ namespace GroguLauncher
 		private void DenyButton_Click(object sender, RoutedEventArgs e)
 		{
 			// TODO: PostRequest Denied
-			Social.Friend friend = (sender as Button).DataContext as Social.Friend;
+			ContactModel friend = (sender as Button).DataContext as ContactModel;
 		}
 
 		private void CompleteButton_Click(object sender, RoutedEventArgs e)
+		{
+			Close();
+		}
+
+		private void Border_MouseDown(object sender, MouseButtonEventArgs e)
+		{
+			if (e.LeftButton == MouseButtonState.Pressed)
+			{
+				DragMove();
+			}
+		}
+
+		private void CloseButton_Click(object sender, RoutedEventArgs e)
 		{
 			Close();
 		}

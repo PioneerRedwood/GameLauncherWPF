@@ -3,10 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:components="clr-namespace:GroguLauncher.Components"
-        xmlns:social="clr-namespace:GroguLauncher.Social"
+        xmlns:local="clr-namespace:GroguLauncher"
         xmlns:cefsharp="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
-        mc:Ignorable="d" Height="900" Width="1600" Icon="Icon.ico"
+        mc:Ignorable="d" Height="900" Width="1600" Icon="../Images/Icon.ico"
         Background="#15171E"
         ResizeMode="CanResizeWithGrip"
         WindowStartupLocation="CenterScreen"
@@ -57,7 +56,6 @@
                             BorderThickness="0"
                             Click="CloseButton_Click"/>
                 </StackPanel>
-
             </Grid>
         </Border>
 
@@ -84,7 +82,7 @@
 
             <ListBox.ItemTemplate>
 
-                <DataTemplate DataType="{x:Type components:GameComponent}">
+                <DataTemplate DataType="{x:Type local:GameModel}">
                     <StackPanel Name="GamePanelItem" Background="#15171e">
                         <TextBlock DockPanel.Dock="Top" Text="{Binding Name}" 
                                            Foreground="White" FontSize="20"/>
@@ -98,7 +96,7 @@
         <Grid Grid.Row="4" Background="#19DDDDDD" Margin="5" >
             <Image VerticalAlignment="Top" HorizontalAlignment="Center" 
                    MinWidth="150" MinHeight="150" Margin="10,10,10,0" 
-                   Source="Icon.ico" Height="150" Width="150"/>
+                   Source="../Images/Icon.ico" Height="150" Width="150"/>
 
             <Label Name="CurrentGameLabel" HorizontalAlignment="Center" 
                    VerticalAlignment="Top" FontSize="20" Foreground="White" 
@@ -191,7 +189,7 @@
             <ListBox Name="FriendListBox" Background="#FF15171E" ItemsSource="{Binding FriendList}"
                          Margin="0" BorderThickness="0">
                 <ListBox.ItemTemplate>
-                    <DataTemplate DataType="{x:Type social:Friend}">
+                    <DataTemplate DataType="{x:Type local:ContactModel}">
                         <DockPanel Background="#15171e">
                             <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Left"
                                            Text="{Binding Name}" Foreground="White" FontSize="16"/>

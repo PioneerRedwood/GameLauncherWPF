@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace GroguLauncher.Social
+namespace GroguLauncher
 {
-	public enum ConnectionState
+	public enum CurrentConnectionState
 	{
 		Online = 0,
 		Offline = 1,
@@ -17,13 +12,13 @@ namespace GroguLauncher.Social
 	}
 
 	// ref https://docs.microsoft.com/ko-kr/dotnet/api/system.collections.specialized.inotifycollectionchanged?redirectedfrom=MSDN&view=net-6.0
-	public class Friend : INotifyPropertyChanged
+	public class ContactModel : INotifyPropertyChanged
 	{
 		private string name;
 		private int id;
 		private DateTime date;
 		private bool isLoggedIn;
-		private ConnectionState state;
+		private CurrentConnectionState state;
 
 		public string Name
 		{
@@ -80,7 +75,7 @@ namespace GroguLauncher.Social
 			}
 		}
 
-		public ConnectionState State
+		public CurrentConnectionState State
 		{
 			get => state;
 			set

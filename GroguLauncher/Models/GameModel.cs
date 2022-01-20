@@ -8,9 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace GroguLauncher.Components
+namespace GroguLauncher
 {
-	public class GameComponent : INotifyPropertyChanged
+	public class GameModel : INotifyPropertyChanged
 	{
 		private string name;
 		private int id;
@@ -27,7 +27,7 @@ namespace GroguLauncher.Components
 		public string ZipUri { get; private set; }
 		public string PageUrl { get; private set; }
 
-		public GameComponent(string _name, int _id, string _versionUri, string _zipUri, string _pageUrl)
+		public GameModel(string _name, int _id, string _versionUri, string _zipUri, string _pageUrl)
 		{
 			name = _name;
 			id = _id;

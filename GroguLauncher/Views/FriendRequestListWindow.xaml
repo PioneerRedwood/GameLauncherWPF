@@ -1,0 +1,108 @@
+﻿<Window x:Class="GroguLauncher.FriendRequestListWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GroguLauncher"
+        mc:Ignorable="d"
+        WindowStartupLocation="Manual"
+        ResizeMode="NoResize"
+        WindowStyle="None"
+        Title="FriendRequestListWindow" Height="600" Width="400"
+        Background="#15171e">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition/>
+            <RowDefinition Height="25"/>
+        </Grid.RowDefinitions>
+        
+        <!--Title Bar-->
+        <Border Grid.ColumnSpan="3"
+                MouseDown="Border_MouseDown"
+                Background="Transparent">
+
+            <Grid HorizontalAlignment="Stretch">
+
+                <StackPanel HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+
+                    <Button Name="CloseButton" 
+                            Width="20" Height="20"
+                            Content="🗙" Padding="0,-3,0,3"
+                            FontSize="17"
+                            Foreground="White"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Click="CloseButton_Click"/>
+                </StackPanel>
+
+            </Grid>
+        </Border>
+        
+        <!--Title-->
+        <!--Title-->
+        <Grid Grid.Row="1">
+            <Label HorizontalAlignment="Center" Content="Friend Requested" 
+                   Foreground="#14327f" HorizontalContentAlignment="Center" 
+                   FontSize="30" FontWeight="Bold"/>
+        </Grid>
+
+        <Grid Grid.Row="2">
+            <!--Friend Request List-->
+            <ListBox x:Name="FriendshipRequestListBox" HorizontalAlignment="Stretch"
+                     Margin="10,10,10,10" ItemsSource="{Binding FriendRequestList}"
+                     Background="Transparent" BorderThickness="0">
+
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Vertical"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+
+                <ListBox.ItemTemplate>
+
+                    <DataTemplate DataType="{x:Type local:ContactModel}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="../Images/GroguPortrait.bmp" MinHeight="40" MinWidth="40"/>
+                            
+                            <Grid MinWidth="140">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+
+                                <Label Content="{Binding Name}" Foreground="White" FontSize="20"/>
+
+                                <Label Grid.Row="1"
+                                   Content="{Binding State}" Foreground="White" FontSize="20"/>
+                            </Grid>
+
+                            <Button Grid.Column="2" Grid.RowSpan="2" Name="AcceptButton" MinWidth="80"
+                                    FontSize="20" Content="Accept" BorderThickness="0" 
+                                    Click="AcceptButton_Click" Margin="5"/>
+
+                            <Button Grid.Column="3" Grid.RowSpan="2" Name="DenyButton" MinWidth="80"
+                                    FontSize="20" Content="Deny" BorderThickness="0" 
+                                    Click="DenyButton_Click" Margin="5"/>
+                        </StackPanel>
+                        
+
+                        
+                    </DataTemplate>
+
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+
+
+        <!--complete-->
+        <Grid Grid.Row="4">
+            <Button x:Name="CompleteButton" Content="Complete" HorizontalAlignment="Center"
+                    Background="#FF007ACC" Click="CompleteButton_Click" Foreground="White" FontSize="15"/>
+        </Grid>
+
+    </Grid>
+</Window>

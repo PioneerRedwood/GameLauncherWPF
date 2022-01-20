@@ -71,9 +71,9 @@ namespace GroguLauncher.Handlers
 			return result;
 		}
 
-		private Task<Social.Friend> GetUserByID(int id)
+		private Task<ContactModel> GetUserByID(int id)
 		{
-			Social.Friend friend = new Social.Friend();
+			ContactModel friend = new ContactModel();
 
 			if (MySQLManager.OpenConnection())
 			{
@@ -101,9 +101,9 @@ namespace GroguLauncher.Handlers
 			return Task.FromResult(friend);
 		}
 
-		private Task<Social.Friend> GetUserByName(string name)
+		private Task<ContactModel> GetUserByName(string name)
 		{
-			Social.Friend friend = new Social.Friend();
+			ContactModel friend = new ContactModel();
 
 			if (MySQLManager.OpenConnection())
 			{
@@ -157,9 +157,9 @@ namespace GroguLauncher.Handlers
 
 		#region public - can be used from outside
 
-		public async Task<ObservableCollection<Social.Friend>> GetFriendList()
+		public async Task<ObservableCollection<ContactModel>> GetFriendList()
 		{
-			ObservableCollection<Social.Friend> friends = new ObservableCollection<Social.Friend>();
+			ObservableCollection<ContactModel> friends = new ObservableCollection<ContactModel>();
 
 			if (MySQLManager.OpenConnection())
 			{
@@ -176,7 +176,7 @@ namespace GroguLauncher.Handlers
 					// TODO: !OPTIMIZATION!
 					foreach (DataRow row in ds.Tables[0].Rows)
 					{
-						Social.Friend friend;
+						ContactModel friend;
 						// Get a friend id
 						if (int.Parse(row["ADDRESSEE_ID"].ToString()) != int.Parse(App.UserInfo["USER_ID"]))
 						{
@@ -208,7 +208,7 @@ namespace GroguLauncher.Handlers
 
 			if (MySQLManager.OpenConnection())
 			{
-				Social.Friend friend = await GetUserByName(friendName);
+				ContactModel friend = await GetUserByName(friendName);
 
 				if (friend.Id != -1)
 				{
@@ -221,9 +221,9 @@ namespace GroguLauncher.Handlers
 			return result;
 		}
 
-		public async Task<ObservableCollection<Social.Friend>> GetFriendRequestList()
+		public async Task<ObservableCollection<ContactModel>> GetFriendRequestList()
 		{
-			ObservableCollection<Social.Friend> requests = new ObservableCollection<Social.Friend>();
+			ObservableCollection<ContactModel> requests = new ObservableCollection<ContactModel>();
 
 			if (MySQLManager.OpenConnection())
 			{
@@ -245,7 +245,7 @@ namespace GroguLauncher.Handlers
 						foreach (DataRow row in ds.Tables[0].Rows)
 						{
 							// user name, is logged in
-							Social.Friend friend = await GetUserByID(int.Parse(row["REQUESTER_ID"].ToString()));
+							ContactModel friend = await GetUserByID(int.Parse(row["REQUESTER_ID"].ToString()));
 							friend.Id = int.Parse(row["REQUESTER_ID"].ToString());
 
 							if (!await IsFriend(int.Parse(App.UserInfo["USER_ID"]), friend.Id))

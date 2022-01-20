@@ -19,7 +19,7 @@ namespace GroguLauncher
 	public partial class SearchFriendWindow : Window
 	{
 		private readonly Handlers.SocialHandler handler;
-		public ObservableCollection<Social.Friend> FriendshipRequestList { get; private set; }
+		public ObservableCollection<ContactModel> FriendshipRequestList { get; private set; }
 
 		public SearchFriendWindow(Handlers.SocialHandler socialHandler)
 		{
@@ -27,7 +27,7 @@ namespace GroguLauncher
 
 			handler = socialHandler;
 
-			FriendshipRequestList = new ObservableCollection<Social.Friend>();
+			FriendshipRequestList = new ObservableCollection<ContactModel>();
 
 			FriendshipRequestListBox.ItemsSource = FriendshipRequestList;
 		}
@@ -38,7 +38,7 @@ namespace GroguLauncher
 			{
 				if (await handler.AddFriendWithName(int.Parse(App.UserInfo["USER_ID"]), SearchText.Text, Handlers.SocialHandler.FriendshipStatusCode.Requested))
 				{
-					Social.Friend friend = new Social.Friend();
+					ContactModel friend = new ContactModel();
 					friend.Name = SearchText.Text;
 
 					FriendshipRequestList.Add(friend);
@@ -54,6 +54,19 @@ namespace GroguLauncher
 		}
 
 		private void CompleteButton_Click(object sender, RoutedEventArgs e)
+		{
+			Close();
+		}
+
+		private void Border_MouseDown(object sender, MouseButtonEventArgs e)
+		{
+			if (e.LeftButton == MouseButtonState.Pressed)
+			{
+				DragMove();
+			}
+		}
+
+		private void CloseButton_Click(object sender, RoutedEventArgs e)
 		{
 			Close();
 		}

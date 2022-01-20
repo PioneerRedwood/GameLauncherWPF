@@ -8,8 +8,6 @@ using System.Windows.Media;
 
 using GroguLauncher.Managers;
 using GroguLauncher.Handlers;
-using GroguLauncher.Components;
-using GroguLauncher.Social;
 
 namespace GroguLauncher
 {
@@ -18,10 +16,10 @@ namespace GroguLauncher
 		public GameLaunchManager LaunchManager { get; private set; }
 		public SocialHandler SocialHandler { get; private set; }
 
-		public ObservableCollection<Friend> FriendList { get; private set; }
-		public ObservableCollection<Friend> FriendRequestList { get; private set; }
+		public ObservableCollection<ContactModel> FriendList { get; private set; }
+		public ObservableCollection<ContactModel> FriendRequestList { get; private set; }
 
-		public ObservableCollection<GameComponent> GameList { get; private set; }
+		public ObservableCollection<GameModel> GameList { get; private set; }
 
 		public MainWindow()
 		{
@@ -33,7 +31,7 @@ namespace GroguLauncher
 
 			LaunchManager = new GameLaunchManager(this);
 			SocialHandler = new SocialHandler();
-			GameList = new ObservableCollection<GameComponent>();
+			GameList = new ObservableCollection<GameModel>();
 
 			for (int index = 0; index < LaunchManager.AvailableGames.Count; ++index)
 			{
@@ -73,7 +71,7 @@ namespace GroguLauncher
 
 		private void GamePatchButton_Click(object sender, RoutedEventArgs e)
 		{
-			GamePatchStatus status = ((GameComponent)GameListBox.SelectedItem).Status;
+			GamePatchStatus status = ((GameModel)GameListBox.SelectedItem).Status;
 			switch (status)
 			{
 				case GamePatchStatus.Play:
@@ -83,7 +81,7 @@ namespace GroguLauncher
 					LaunchManager.InstallGame();
 					break;
 				case GamePatchStatus.Uninitialized:
-					LaunchManager.InitializeGame((GameComponent)GameListBox.SelectedItem);
+					LaunchManager.InitializeGame((GameModel)GameListBox.SelectedItem);
 					break;
 				default:
 					break;

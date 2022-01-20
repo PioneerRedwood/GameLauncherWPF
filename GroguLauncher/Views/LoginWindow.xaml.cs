@@ -25,7 +25,7 @@ namespace GroguLauncher
 		public GoogleAuthHandler googleAuthHandler { get; private set; }
 		public object prevContent { get; private set; }
 		public bool isOAuthSucceed { get; private set; }
-		
+
 		public LoginWindow()
 		{
 			InitializeComponent();
@@ -86,19 +86,19 @@ namespace GroguLauncher
 				}
 				else
 				{
-					ResultText.Text = "Failed to login";
+					ResultLabel.Content = "Failed to login";
 				}
 			}
 			else
 			{
-				ResultText.Text = "Fill out ID, Password";
+				ResultLabel.Content = "Fill out ID, Password";
 			}
 		}
 
 		public void BattlenetAuthButton_Click(object sender, RoutedEventArgs e)
 		{
 			// TODO: 배틀넷 로그인
-			
+
 		}
 
 		public void GoogleAuthButton_Click(object sender, RoutedEventArgs e)
@@ -134,6 +134,35 @@ namespace GroguLauncher
 				default:
 					break;
 			}
+		}
+
+		private void Border_MouseDown(object sender, MouseButtonEventArgs e)
+		{
+			if (e.LeftButton == MouseButtonState.Pressed)
+			{
+				DragMove();
+			}
+		}
+		private void MiniMizeButton_Click(object sender, RoutedEventArgs e)
+		{
+			WindowState = WindowState.Minimized;
+		}
+
+		private void CloseButton_Click(object sender, RoutedEventArgs e)
+		{
+			Close();
+		}
+
+		private void SignupLabel_MouseEnter(object sender, MouseEventArgs e)
+		{
+			SignupLabel.Background = Brushes.White;
+			SignupLabel.Foreground = Brushes.Black;
+		}
+
+		private void SignupLabel_MouseLeave(object sender, MouseEventArgs e)
+		{
+			SignupLabel.Background = Brushes.Transparent;
+			SignupLabel.Foreground = Brushes.White;
 		}
 	}
 }
