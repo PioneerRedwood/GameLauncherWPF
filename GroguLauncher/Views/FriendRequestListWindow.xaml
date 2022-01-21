@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GroguLauncher"
+        xmlns:model="clr-namespace:GroguLauncher.Models"
         mc:Ignorable="d"
         WindowStartupLocation="Manual"
         ResizeMode="NoResize"
@@ -64,7 +65,7 @@
 
                 <ListBox.ItemTemplate>
 
-                    <DataTemplate DataType="{x:Type local:ContactModel}">
+                    <DataTemplate DataType="{x:Type model:ContactModel}">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="../Images/GroguPortrait.bmp" MinHeight="40" MinWidth="40"/>
                             

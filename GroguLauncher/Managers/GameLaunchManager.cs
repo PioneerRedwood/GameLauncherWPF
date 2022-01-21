@@ -171,7 +171,6 @@ namespace GroguLauncher.Managers
 		public void NotifySelectedGameChanged(int index)
 		{
 			// TODO: should be conducted after GameComponent initiailzed end
-			Console.WriteLine("NotifySelectedGameChanged " + index);
 
 			selectedGame = AvailableGames[index];
 

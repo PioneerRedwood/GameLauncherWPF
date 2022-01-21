@@ -1,14 +1,14 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Windows;
 
-namespace GroguLauncher
+namespace GroguLauncher.Models
 {
 	public enum CurrentConnectionState
 	{
 		Online = 0,
 		Offline = 1,
 		Sleeping = 2,
-
 	}
 
 	// ref https://docs.microsoft.com/ko-kr/dotnet/api/system.collections.specialized.inotifycollectionchanged?redirectedfrom=MSDN&view=net-6.0
@@ -98,6 +98,11 @@ namespace GroguLauncher
 			{
 				handler(this, new PropertyChangedEventArgs(name));
 			}
+		}
+
+		public override string ToString()
+		{
+			return name + " " + Id + " " + state.ToString();
 		}
 	}
 }

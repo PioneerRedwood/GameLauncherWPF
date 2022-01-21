@@ -8,6 +8,10 @@ using System.Windows.Media;
 
 using GroguLauncher.Managers;
 using GroguLauncher.Handlers;
+using System.Windows.Controls;
+using System.Data.Linq;
+
+using GroguLauncher.Models;
 
 namespace GroguLauncher
 {
@@ -145,5 +149,64 @@ namespace GroguLauncher
 		{
 			Application.Current.Shutdown();
 		}
+
+
+		#region When FriendListBox Double Clciked, Show MessageWindow
+		// ref https://docs.microsoft.com/ko-kr/dotnet/desktop/wpf/graphics-multimedia/hit-testing-in-the-visual-layer?view=netframeworkdesktop-4.8
+		private void FriendListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+		{
+			Point point = e.GetPosition(FriendListBox);
+
+			VisualTreeHelper.HitTest(FriendListBox,
+				new HitTestFilterCallback(FriendListHitTestFilter),
+				new HitTestResultCallback(FriendListHitTestResult),
+				new PointHitTestParameters(point));
+		}
+
+		private HitTestResultBehavior FriendListHitTestResult(HitTestResult result)
+		{
+			return HitTestResultBehavior.Continue;
+		}
+
+		private HitTestFilterBehavior FriendListHitTestFilter(DependencyObject @object)
+		{
+			ContactModel model = new ContactModel();
+
+			if (@object.GetType() == typeof(Image))
+			{
+				Image wrapper = (Image)@object;
+				object context = wrapper.DataContext;
+
+				if (model.GetType().IsAssignableFrom(context.GetType()))
+				{
+					model = (ContactModel)context;
+					ShowMessageWindow(model);
+
+					return HitTestFilterBehavior.Stop;
+				}
+			}
+			else if (@object.GetType() == typeof(Border))
+			{
+				Border wrapper = (Border)@object;
+				object context = wrapper.DataContext;
+
+				if (model.GetType().IsAssignableFrom(context.GetType()))
+				{
+					model = (ContactModel)context;
+					ShowMessageWindow(model);
+
+					return HitTestFilterBehavior.Stop;
+				}
+			}
+
+			return HitTestFilterBehavior.Continue;
+		}
+
+		private void ShowMessageWindow(ContactModel model)
+		{
+			Views.MessageWindow messageWindow = new Views.MessageWindow(model);
+			messageWindow.Show();
+		}
+		#endregion
 	}
 }

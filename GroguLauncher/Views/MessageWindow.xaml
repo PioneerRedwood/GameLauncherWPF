@@ -1,0 +1,185 @@
+﻿<Window x:Class="GroguLauncher.Views.MessageWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:view="clr-namespace:GroguLauncher.Views"
+        xmlns:model="clr-namespace:GroguLauncher.Models"
+        mc:Ignorable="d"
+        Title="MessageWindow" Height="450" Width="800"
+        WindowStyle="None"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        Background="#15171e" 
+        AllowsTransparency="True">
+  
+  <Window.Resources>
+    <Style x:Key="SpeakToListBox" TargetType="ListBox">
+      <Setter Property="Background" Value="#FF111218" />
+      <Setter Property="ItemsSource" Value="{Binding SpeakToList}"/>
+      <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    <Style x:Key="ProfileNameLabel" TargetType="Label">
+      <Setter Property="VerticalContentAlignment" Value="Center"/>
+      <Setter Property="Content" Value="{Binding Name}"/>
+      <Setter Property="Foreground" Value="White"/>
+      <Setter Property="FontSize" Value="14"/>
+    </Style>
+    <Style x:Key="ProfileStateLabel" TargetType="Label">
+      <Setter Property="VerticalContentAlignment" Value="Top"/>
+      <Setter Property="Content" Value="{Binding State}"/>
+      <Setter Property="Foreground" Value="White"/>
+      <Setter Property="FontSize" Value="11"/>
+    </Style>
+    
+    <Style x:Key="MessageListViewStyle" TargetType="ListView">
+      
+    </Style>
+
+  </Window.Resources>
+  
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="25"/>
+      <RowDefinition/>
+      <RowDefinition Height="50"/>
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="150"/>
+      <ColumnDefinition/>
+    </Grid.ColumnDefinitions>
+
+    <!--Title-->
+    <Border Grid.ColumnSpan="3"
+                MouseDown="Border_MouseDown"
+                Background="Transparent">
+
+      <Grid HorizontalAlignment="Stretch">
+
+        <StackPanel HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+
+          <Button Name="MiniMizeButton"
+                            Width="20" Height="20"
+                            Content="🗕" Padding="0,-3,0,3"
+                            FontSize="17"
+                            Foreground="White"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Margin="0,0,5,0"
+                            Click="MiniMizeButton_Click"/>
+
+          <Button Name="CloseButton" 
+                            Width="20" Height="20"
+                            Content="🗙" Padding="0,-3,0,3"
+                            FontSize="17"
+                            Foreground="White"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Click="CloseButton_Click"/>
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <!--SpeakToList-->
+    <DockPanel Grid.RowSpan="3">
+      <!--ListBox-->
+      <ListBox Name="SpeakToListBox" Style="{StaticResource SpeakToListBox}">
+        
+        <ListBox.ItemTemplate>
+          <ItemContainerTemplate>
+            
+          </ItemContainerTemplate>
+        </ListBox.ItemTemplate>
+        
+        <DataTemplate DataType="{x:Type model:ContactModel}">
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="50"/>
+              <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="26"/>
+              <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <!--Profile-->
+            <Image Grid.RowSpan="2" Source="../Images/GroguPortrait.bmp"/>
+            <Label Grid.Column="1" Style="{StaticResource ProfileNameLabel}"/>
+            <Label Grid.Column="1" Grid.Row="1" Style="{StaticResource ProfileStateLabel}"/>
+          </Grid>
+        </DataTemplate>
+      </ListBox>
+    </DockPanel>
+
+    <!--Main Message View-->
+    <Grid Grid.Row="1" Grid.Column="1">
+
+      <Grid.RowDefinitions>
+        <RowDefinition Height="75"/>
+        <RowDefinition/>
+      </Grid.RowDefinitions>
+
+      <StackPanel Grid.Row="0" Orientation="Horizontal" 
+                  Margin="10">
+        <!--Image-->
+        <Image Source="../Images/GroguPortrait.bmp"/>
+
+        <!--Name-->
+        <Label Name="SpeakToName" Content="Grogu" 
+               Foreground="White" FontSize="20"/>
+      </StackPanel>
+
+      <ListView Grid.Row="1" Background="Transparent">
+        <ListView.ItemContainerStyle>
+          <Style TargetType="{x:Type ListViewItem}">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="IsHitTestVisible" Value="False"/>
+          </Style>
+        </ListView.ItemContainerStyle>
+
+        <ListView.ItemTemplate>
+          <!--<DataTemplate DataType="{x:Type model:MessageModel}">-->
+          <DataTemplate>
+            <Grid>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="25"/>
+                <RowDefinition/>
+              </Grid.RowDefinitions>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="25"/>
+                <ColumnDefinition/>
+              </Grid.ColumnDefinitions>
+
+              <!--Image-->
+              <Image Grid.RowSpan="2" 
+                     Source="../Images/GroguPortrait.bmp"/>
+              
+              <!--Name-->
+              <Label Grid.Column="1" />
+              
+              <!--Time-->
+              <Label Grid.Column="1"/>
+              
+              <!--Content-->
+              <Label Grid.Column="1" Grid.Row="1"/>
+              
+              <!--Ownership?-->
+
+            </Grid>
+            
+          </DataTemplate>
+        </ListView.ItemTemplate>
+      </ListView>
+    </Grid>
+
+    <!--Message TextBox-->
+    <DockPanel Grid.Row="2" Grid.Column="1">
+      <!--MessageTextBox-->
+      <TextBox Margin="0,5,5,5" Background="#FF2D2F35" 
+                     Foreground="Gray"/>
+      <!--SendButton-->
+      <!--<Button Name="MessageSendButton" />-->
+    </DockPanel>
+  </Grid>
+</Window>

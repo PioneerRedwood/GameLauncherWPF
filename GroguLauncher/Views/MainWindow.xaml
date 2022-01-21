@@ -4,214 +4,245 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GroguLauncher"
+        xmlns:model="clr-namespace:GroguLauncher.Models"
         xmlns:cefsharp="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
         mc:Ignorable="d" Height="900" Width="1600" Icon="../Images/Icon.ico"
         Background="#15171E"
-        ResizeMode="CanResizeWithGrip"
+        ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
         AllowsTransparency="True"
         WindowStyle="None">
+  
+  <Window.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="../Resources/ButtonResourceDictionary.xaml"/>
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Window.Resources>
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="25"/>
+      <RowDefinition Height="75"/>
+      <RowDefinition Height="60"/>
+      <RowDefinition/>
+      <RowDefinition Height="10"/>
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="300"/>
+      <ColumnDefinition/>
+      <ColumnDefinition Width="300" />
+    </Grid.ColumnDefinitions>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="75"/>
-            <RowDefinition Height="62"/>
-            <RowDefinition Height="13"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
+    <!--Title bar-->
+    <Border Grid.ColumnSpan="3"
+            MouseDown="Border_MouseDown"
+            Background="Transparent">
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="300"/>
-            <ColumnDefinition/>
-            <ColumnDefinition Width="300" />
-        </Grid.ColumnDefinitions>
+      <Grid HorizontalAlignment="Stretch">
 
-        <!--Title bar-->
-        <Border Grid.ColumnSpan="3"
-                MouseDown="Border_MouseDown"
-                Background="Transparent">
+        <StackPanel HorizontalAlignment="Right"
+                    Orientation="Horizontal">
 
-            <Grid HorizontalAlignment="Stretch">
-                
-                <StackPanel HorizontalAlignment="Right"
-                        Orientation="Horizontal">
+          <Button Style="{StaticResource MinimizeButton}"
+                  Click="MiniMizeButton_Click"/>
 
-                    <Button Name="MiniMizeButton"
-                            Width="20" Height="20"
-                            Content="🗕" Padding="0,-3,0,3"
-                            FontSize="17"
-                            Foreground="White"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            Margin="0,0,5,0"
-                            Click="MiniMizeButton_Click"/>
-
-                    <Button Name="CloseButton" 
-                            Width="20" Height="20"
-                            Content="🗙" Padding="0,-3,0,3"
-                            FontSize="17"
-                            Foreground="White"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            Click="CloseButton_Click"/>
-                </StackPanel>
-            </Grid>
-        </Border>
-
-        <!--Setting-->
-        <StackPanel Grid.Row="1" Grid.Column="0" Background="#19DDDDDD" 
-                    Orientation="Horizontal" Margin="5">
-            <!--Logo <Image/>-->
-            <Button HorizontalAlignment="Left" MinWidth="100" Margin="10,10,0,10" Background="#19DDDDDD" 
-                        Content="G" FontSize="28" Foreground="#FF148EFF" BorderThickness="0" Width="62"/>
+          <Button Name="CloseButton" 
+                  Width="20" Height="20"
+                  Content="🗙" Padding="0,-3,0,3"
+                  FontSize="17" Foreground="White"
+                  Background="Transparent"
+                  BorderThickness="0"
+                  Click="CloseButton_Click"/>
         </StackPanel>
+      </Grid>
+    </Border>
 
-        <!--Game selection-->
-        <!--Show Available Game list-->
-        <ListBox Grid.Row="2" Grid.ColumnSpan="2" Name="GameListBox" 
-                 ItemsSource="{Binding GameList}" Background="#19DDDDDD" 
-                 Margin="5" BorderThickness="0" Padding="5" 
-                 SelectionChanged="GameListBox_SelectionChanged" Grid.RowSpan="2">
+    <!--Setting-->
+    <StackPanel Grid.Row="1" Background="#19DDDDDD" 
+                Orientation="Horizontal" Margin="5">
+      <!--Logo <Image/>-->
+      <Button HorizontalAlignment="Left" MinWidth="100" Margin="10,10,0,10" Background="#19DDDDDD" 
+              Content="G" FontSize="28" Foreground="#FF148EFF" BorderThickness="0" Width="62"/>
+    </StackPanel>
 
-            <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel Orientation="Horizontal"/>
-                </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
+    <!--Game selection-->
+    <!--Show Available Game list-->
+    <ListBox Grid.Row="2" Grid.ColumnSpan="2"
+             
+             Name="GameListBox" Style="{Binding HorizontalListBox}"
+             ItemsSource="{Binding GameList}" Background="#19DDDDDD" 
+             Margin="5" BorderThickness="0" Padding="5" 
+             SelectionChanged="GameListBox_SelectionChanged" >
 
-            <ListBox.ItemTemplate>
+      <ListBox.ItemsPanel>
+        <ItemsPanelTemplate>
+          <StackPanel Orientation="Horizontal"/>
+        </ItemsPanelTemplate>
+      </ListBox.ItemsPanel>
 
-                <DataTemplate DataType="{x:Type local:GameModel}">
-                    <StackPanel Name="GamePanelItem" Background="#15171e">
-                        <TextBlock DockPanel.Dock="Top" Text="{Binding Name}" 
-                                           Foreground="White" FontSize="20"/>
-                    </StackPanel>
-                </DataTemplate>
+      <ListBox.ItemTemplate>
 
-            </ListBox.ItemTemplate>
-        </ListBox>
+        <DataTemplate DataType="{x:Type local:GameModel}">
+          <StackPanel Name="GamePanelItem" Background="Transparent">
+            <TextBlock Text="{Binding Name}" 
+                                   Foreground="White" 
+                                   FontSize="20"/>
+          </StackPanel>
+        </DataTemplate>
 
-        <!--Game panel-->
-        <Grid Grid.Row="4" Background="#19DDDDDD" Margin="5" >
-            <Image VerticalAlignment="Top" HorizontalAlignment="Center" 
+      </ListBox.ItemTemplate>
+
+    </ListBox>
+
+    <!--Game panel-->
+    <Grid Grid.Row="3" Background="#19DDDDDD" Margin="5" >
+      <Image VerticalAlignment="Top" HorizontalAlignment="Center" 
                    MinWidth="150" MinHeight="150" Margin="10,10,10,0" 
                    Source="../Images/Icon.ico" Height="150" Width="150"/>
 
-            <Label Name="CurrentGameLabel" HorizontalAlignment="Center" 
+      <Label Name="CurrentGameLabel" HorizontalAlignment="Center" 
                    VerticalAlignment="Top" FontSize="20" Foreground="White" 
                    Margin="0,200,0,0" Content="Current Game Text"/>
 
-            <Label Name="VersionLabel" HorizontalAlignment="Left" 
+      <Label Name="VersionLabel" HorizontalAlignment="Left" 
                    VerticalAlignment="Top" FontSize="20" Foreground="White" 
                    Margin="164,621,0,0" Content="Version"/>
 
-            <Button Name="GamePatchButton" Content="Patch" Click="GamePatchButton_Click" 
+      <Button Name="GamePatchButton" Content="Patch" Click="GamePatchButton_Click" 
                     Height="60" FontSize="24" FontWeight="Bold" Foreground="#DDFFFF" 
                     Margin="0,0,0,60" VerticalAlignment="Bottom" HorizontalAlignment="Center" 
                     MinWidth="200" Background="#FFA50D0D" />
-        </Grid>
+    </Grid>
+
+    <!--Profile-->
+    <Grid Grid.Row="1" Grid.Column="2">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="70"/>
+        <ColumnDefinition Width="160"/>
+        <ColumnDefinition/>
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="45"/>
+        <RowDefinition/>
+      </Grid.RowDefinitions>
 
 
-        <!--Profile-->
-        <Grid Grid.Row="1" Grid.Column="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="70"/>
-                <ColumnDefinition Width="160"/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="45"/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
+      <Image Grid.RowSpan="2"/>
 
-
-            <Image Grid.RowSpan="2"/>
-
-            <Grid Name="ProfileGrid" Grid.Column="1" Grid.RowSpan="2"
+      <Grid Name="ProfileGrid" Grid.Column="1" Grid.RowSpan="2"
                   MouseEnter="ProfileGrid_MouseEnter" MouseLeave="ProfileGrid_MouseLeave" >
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="80"/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="80"/>
+          <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition/>
+          <RowDefinition/>
+        </Grid.RowDefinitions>
 
-                <Label Grid.ColumnSpan="2" Name="UserNameLabel"
+        <Label Grid.ColumnSpan="2" Name="UserNameLabel"
                        Content="USER_NAME" Foreground="#FF3C9EF1"
                        HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
 
-                <Label Grid.Row="1" Content="ONLINE" Name="UserStatusLabel"
+        <Label Grid.Row="1" Content="ONLINE" Name="UserStatusLabel"
                        Foreground="#FF3C9EF1" 
                        HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
 
-            </Grid>
-            <Button Grid.Column="2" Grid.Row="1"
+      </Grid>
+      <Button Grid.Column="2" Grid.Row="1"
                 x:Name="LogoutButton"
                     Content="Log out" Click="LogoutButton_Click" 
                         Background="#FF3C9EF1" Foreground="White" 
                         FontWeight="SemiBold" FontSize="13"
                         Margin="3"/>
-        </Grid>
+    </Grid>
 
-        <!--Community-->
-        <StackPanel Grid.Row="2" Grid.Column="2" Grid.RowSpan="2" 
+    <!--Community-->
+    <StackPanel Grid.Row="2" Grid.Column="2"
                     Orientation="Horizontal">
 
-            <Button Name="OpenSearchFriendWindowButton" Background="#19DDDDDD" 
+      <Button Name="OpenSearchFriendWindowButton" Background="#19DDDDDD" 
                     HorizontalAlignment="Left" TextBlock.FontSize="20"
                     FontWeight="Bold" Foreground="White" Margin="5"
                     Height="50"
                     Click="OpenSearchFriendWindowButton_Click" 
                     BorderThickness="0" Content="Search"/>
 
-            <Grid Name="FriendRequestListGrid" HorizontalAlignment="Right" 
+      <Grid Name="FriendRequestListGrid" HorizontalAlignment="Right" 
                   PreviewMouseDown="FriendRequestListGrid_PreviewMouseDown" 
                   Height="50" Background="#19DDDDDD">
 
-                <Label HorizontalAlignment="Left" FontSize="16" 
+        <Label HorizontalAlignment="Left" FontSize="16" 
                        Foreground="White" FontWeight="Bold" Width="110"
                        Content="Request" VerticalContentAlignment="Center"
                        />
 
-                <Button Name="FriendRequestCountText" HorizontalAlignment="Right" 
+        <Button Name="FriendRequestCountText" HorizontalAlignment="Right" 
                         Content="5" Width="30" Height="40" 
                         FontSize="20" FontWeight="Bold" />
+      </Grid>
+
+
+    </StackPanel>
+
+    <!--Contacts-->
+    <DockPanel Grid.Row="3" Grid.Column="2">
+      <ListBox Name="FriendListBox" Background="Transparent"
+               ItemsSource="{Binding FriendList}" BorderThickness="0"
+               MouseDoubleClick="FriendListBox_MouseDoubleClick">
+        
+        <!--https://stackoverflow.com/questions/1398559/there-is-no-listbox-selectionmode-none-is-there-another-way-to-disable-select-->
+        <ListBox.ItemContainerStyle>
+          <Style TargetType="{x:Type ListBoxItem}">
+            <Setter Property="Focusable" Value="False"/>
+          </Style>
+        </ListBox.ItemContainerStyle>
+
+        <ListBox.ItemTemplate>
+          <DataTemplate DataType="{x:Type model:ContactModel}">
+            
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="50"/>
+                <ColumnDefinition/>
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="26"/>
+                <RowDefinition/>
+              </Grid.RowDefinitions>
+
+              <!--Profile-->
+              <Image Grid.RowSpan="2" Source="../Images/GroguPortrait.bmp"/>
+
+              <Label Grid.Column="1"
+                     VerticalContentAlignment="Center"
+                     Content="{Binding Name}" 
+                     Foreground="White" 
+                     FontSize="14"/>
+
+              <Label Grid.Column="1" Grid.Row="1" 
+                     VerticalAlignment="Top"
+                     HorizontalAlignment="Right" 
+                     Content="{Binding State}" 
+                     Foreground="White" 
+                     FontSize="11"/>
             </Grid>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </DockPanel>
 
-
-        </StackPanel>
-
-        <!--Contacts-->
-        <StackPanel Grid.Row="4" Grid.Column="2">
-            <ListBox Name="FriendListBox" Background="#FF15171E" ItemsSource="{Binding FriendList}"
-                         Margin="0" BorderThickness="0">
-                <ListBox.ItemTemplate>
-                    <DataTemplate DataType="{x:Type local:ContactModel}">
-                        <DockPanel Background="#15171e">
-                            <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Left"
-                                           Text="{Binding Name}" Foreground="White" FontSize="16"/>
-
-                            <TextBlock DockPanel.Dock="Bottom" HorizontalAlignment="Right" 
-                                           Text="{Binding State}" Foreground="White" FontSize="16"/>
-                        </DockPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </StackPanel>
-
-        <!--New feed panel // CefSharp-->
-        <Grid Grid.Row="4" Grid.Column="1" 
+    <!--New feed panel // CefSharp-->
+    <Grid Grid.Row="3" Grid.Column="1" 
               Background="#19DDDDDD" HorizontalAlignment="Stretch" 
               VerticalAlignment="Stretch" Margin="5,5,5,10">
-            <Grid>
-                <cefsharp:ChromiumWebBrowser Name="MainBrowser" Address="github.com/PioneerRedwood">
+      <Grid>
+        <cefsharp:ChromiumWebBrowser Name="MainBrowser" Address="github.com/PioneerRedwood">
 
-                </cefsharp:ChromiumWebBrowser>
-            </Grid>
-        </Grid>
+        </cefsharp:ChromiumWebBrowser>
+      </Grid>
     </Grid>
+  </Grid>
 
 </Window>

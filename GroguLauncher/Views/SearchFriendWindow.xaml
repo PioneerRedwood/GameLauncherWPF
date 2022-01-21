@@ -4,31 +4,32 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:GroguLauncher"
+      xmlns:model="clr-namespace:GroguLauncher.Models"
       mc:Ignorable="d" WindowStartupLocation="CenterScreen"
       WindowStyle="None" ResizeMode="NoResize"
       Title="SearchFriendWindow" Width="500" Height="300"
       Background="#15171e">
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="50"/>
-            <RowDefinition/>
-            <RowDefinition Height="25"/>
-        </Grid.RowDefinitions>
-        
-        <!--Title Bar-->
-        <Border Grid.ColumnSpan="3"
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="25"/>
+      <RowDefinition Height="50"/>
+      <RowDefinition Height="50"/>
+      <RowDefinition/>
+      <RowDefinition Height="25"/>
+    </Grid.RowDefinitions>
+
+    <!--Title Bar-->
+    <Border Grid.ColumnSpan="3"
                 MouseDown="Border_MouseDown"
                 Background="Transparent">
 
-            <Grid HorizontalAlignment="Stretch">
+      <Grid HorizontalAlignment="Stretch">
 
-                <StackPanel HorizontalAlignment="Right"
+        <StackPanel HorizontalAlignment="Right"
                         Orientation="Horizontal">
 
-                    <Button Name="CloseButton" 
+          <Button Name="CloseButton" 
                             Width="20" Height="20"
                             Content="🗙" Padding="0,-3,0,3"
                             FontSize="17"
@@ -36,68 +37,68 @@
                             Background="Transparent"
                             BorderThickness="0"
                             Click="CloseButton_Click"/>
-                </StackPanel>
+        </StackPanel>
 
-            </Grid>
-        </Border>
+      </Grid>
+    </Border>
 
-        <!--Title-->
-        <Grid Grid.Row="1">
-            <Label HorizontalAlignment="Center" Content="Search Friend" 
+    <!--Title-->
+    <Grid Grid.Row="1">
+      <Label HorizontalAlignment="Center" Content="Search Friend" 
                    VerticalAlignment="Top" Height="50" Width="210" Foreground="#14327f" 
                    HorizontalContentAlignment="Center" FontSize="30" FontWeight="Bold"/>
-        </Grid>
-        
-        <!--search-->
-        <Grid Grid.Row="2">
-            <StackPanel Orientation="Horizontal">
-                <!--User name Text-->
-                <TextBox Name="SearchText"  Background="#7a7a78" 
+    </Grid>
+
+    <!--search-->
+    <Grid Grid.Row="2">
+      <StackPanel Orientation="Horizontal">
+        <!--User name Text-->
+        <TextBox Name="SearchText"  Background="#7a7a78" 
                          HorizontalAlignment="Left" TextBlock.FontSize="24" 
                          Foreground="#14327f" VerticalAlignment="Top" 
                          Margin="10,10,0,0" Height="30" Width="360" TextAlignment="Left"/>
 
-                <!--Search button-->
-                <Button x:Name="SearchButton" Content="Search" Width="92" Height="30" 
+        <!--Search button-->
+        <Button x:Name="SearchButton" Content="Search" Width="92" Height="30" 
                         Background="#FF007ACC" Click="SearchButton_Click" 
                         Foreground="White" FontSize="18" Margin="25,0,0,0"/>
-            </StackPanel>
-        </Grid>
-        
-        <!--request list-->
-        <Grid Grid.Row="3">
-            <ListBox x:Name="FriendshipRequestListBox" HorizontalAlignment="Stretch" 
+      </StackPanel>
+    </Grid>
+
+    <!--request list-->
+    <Grid Grid.Row="3">
+      <ListBox x:Name="FriendshipRequestListBox" HorizontalAlignment="Stretch" 
                      Padding="10" ItemsSource="{Binding FriendshipRequestList}"
                      Background="Gray" BorderThickness="0"
                      Margin="10">
 
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal"/>
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
+        <ListBox.ItemsPanel>
+          <ItemsPanelTemplate>
+            <StackPanel Orientation="Horizontal"/>
+          </ItemsPanelTemplate>
+        </ListBox.ItemsPanel>
 
-                <ListBox.ItemTemplate>
+        <ListBox.ItemTemplate>
 
-                    <DataTemplate DataType="{x:Type local:ContactModel}">
-                        <StackPanel Orientation="Vertical" Background="#15171e">
-                            <Image Source="../Images/GroguPortrait.bmp"/>
-                            <TextBlock VerticalAlignment="Center" Text="{Binding Name}"
+          <DataTemplate DataType="{x:Type model:ContactModel}">
+            <StackPanel Orientation="Vertical" Background="#15171e">
+              <Image Source="../Images/GroguPortrait.bmp"/>
+              <TextBlock VerticalAlignment="Center" Text="{Binding Name}"
                                        Foreground="White" FontSize="20" Padding="10">
-                            </TextBlock>
-                        </StackPanel>
-                    </DataTemplate>
+              </TextBlock>
+            </StackPanel>
+          </DataTemplate>
 
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </Grid>
-        
-        <!--complete-->
-        <Grid Grid.Row="4">
-            <Button x:Name="CompleteButton" Content="Complete" HorizontalAlignment="Center"
-                    Background="#FF007ACC" Click="CompleteButton_Click" Foreground="White" FontSize="15"/>
-        </Grid>
-
-
+        </ListBox.ItemTemplate>
+      </ListBox>
     </Grid>
+
+    <!--complete-->
+    <Grid Grid.Row="4">
+      <Button x:Name="CompleteButton" Content="Complete" HorizontalAlignment="Center"
+                    Background="#FF007ACC" Click="CompleteButton_Click" Foreground="White" FontSize="15"/>
+    </Grid>
+
+
+  </Grid>
 </Window>

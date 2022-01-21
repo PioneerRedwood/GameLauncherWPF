@@ -1,0 +1,41 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <!--<Setter Property="" Value=""/>-->
+  <Style x:Key="BlizzardOAuthButton" TargetType="Button">
+    <Setter Property="Width" Value="80"/>
+    <Setter Property="Height" Value="60"/>
+    <Setter Property="Background" Value="#FF0074E0"/>
+    <Setter Property="Foreground" Value="White"/>
+    <Setter Property="FontSize" Value="17"/>
+    <Setter Property="FontWeight" Value="SemiBold"/>
+    <Setter Property="Margin" Value="5"/>
+    <Setter Property="HorizontalAlignment" Value="Center"/>
+    <Setter Property="BorderThickness" Value="0"/>
+  </Style>
+
+
+  <Style x:Key="CloseButton" TargetType="Button">
+    <Setter Property="Width" Value="20"/>
+    <Setter Property="Height" Value="20"/>
+    <Setter Property="Content" Value="🗙"/>
+    <Setter Property="FontSize" Value="17"/>
+    <Setter Property="Foreground" Value="White"/>
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="Padding" Value="0,-3,0,3"/>
+  </Style>
+
+  <Style x:Key="MinimizeButton" TargetType="Button">
+    <Setter Property="Width" Value="20"/>
+    <Setter Property="Height" Value="20"/>
+    <Setter Property="Content" Value="🗕"/>
+    <Setter Property="FontSize" Value="17"/>
+    <Setter Property="Foreground" Value="White"/>
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="Padding" Value="0,-3,0,3"/>
+    <Setter Property="Margin" Value="0,0,5,0"/>
+  </Style>
+
+  
+</ResourceDictionary>

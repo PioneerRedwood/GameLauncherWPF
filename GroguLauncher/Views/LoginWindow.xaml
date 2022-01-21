@@ -5,148 +5,142 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GroguLauncher" 
         mc:Ignorable="d" Icon="../Images/GroguPortrait.bmp"
-        Height="621" Width="400" ResizeMode="NoResize"
+        Height="621" Width="340" ResizeMode="NoResize"
         WindowStyle="None"
         WindowStartupLocation="CenterScreen" KeyDown="Window_KeyDown"
         Background="#15171e" AllowsTransparency="True">
-    <Window.Resources>
-        <Style TargetType="Button" x:Key="OAuthStyle">
-            <Setter Property="Width" Value="100"/>
-            <Setter Property="Height" Value="80"/>
-            <Setter Property="Background" Value="#FF3C9EF1"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontSize" Value="20"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Padding" Value="0,0,0,5"/>
-            <Setter Property="Margin" Value="5"/>
-            <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="BorderThickness" Value="0"/>
-        </Style>
-    </Window.Resources>
-
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="150"/>
-            <RowDefinition Height="175"/>
-            <RowDefinition Height="100"/>
-            <RowDefinition/>
-            <RowDefinition Height="25"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="25"/>
-            <ColumnDefinition/>
-            <ColumnDefinition Width="25"/>
-        </Grid.ColumnDefinitions>
-        <!--Title-->
-        <Border Grid.ColumnSpan="3"
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="25"/>
+      <RowDefinition Height="150"/>
+      <RowDefinition Height="175"/>
+      <RowDefinition Height="100"/>
+      <RowDefinition/>
+      <RowDefinition Height="25"/>
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="25"/>
+      <ColumnDefinition/>
+      <ColumnDefinition Width="25"/>
+    </Grid.ColumnDefinitions>
+    <!--Title-->
+    <Border Grid.ColumnSpan="3"
                 MouseDown="Border_MouseDown"
                 Background="Transparent">
 
-            <Grid HorizontalAlignment="Stretch">
+      <Grid HorizontalAlignment="Stretch">
 
-                <StackPanel HorizontalAlignment="Right"
+        <StackPanel HorizontalAlignment="Right"
                         Orientation="Horizontal">
 
-                    <Button Name="MiniMizeButton"
-                            Width="20" Height="20"
-                            Content="🗕" Padding="0,-3,0,3"
-                            FontSize="17"
-                            Foreground="White"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            Margin="0,0,5,0"
-                            Click="MiniMizeButton_Click"/>
+          <Button Name="MiniMizeButton" 
+                  Click="MiniMizeButton_Click"
+                  Style="{StaticResource MinimizeButton}"/>
 
-                    <Button Name="CloseButton" 
-                            Width="20" Height="20"
-                            Content="🗙" Padding="0,-3,0,3"
-                            FontSize="17"
-                            Foreground="White"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            Click="CloseButton_Click"/>
-                </StackPanel>
-            </Grid>
-        </Border>
+          <Button Name="CloseButton"
+                  Click="CloseButton_Click"
+                  Style="{StaticResource CloseButton}"/>
+        </StackPanel>
+      </Grid>
+    </Border>
 
-        <!--Image and Logo-->
-        <Grid Grid.Row="1" Grid.Column="1">
-            <StackPanel>
-                <Image x:Name="LogoImage" Source="../Images/GroguPortrait.bmp" 
+    <!--Image and Logo-->
+    <Grid Grid.Row="1" Grid.Column="1">
+      <StackPanel>
+        <Image x:Name="LogoImage" Source="../Images/GroguPortrait.bmp" 
                    HorizontalAlignment="Center" Height="100" VerticalAlignment="Top" Width="100"/>
 
-                <Label HorizontalAlignment="Center" Width="100" FontSize="28" 
-                       Foreground="White" HorizontalContentAlignment="Center" Content="Grogu"/>
+        <Label HorizontalAlignment="Center" Width="100" FontSize="28"
+               Foreground="White" HorizontalContentAlignment="Center" Content="Grogu"/>
 
-            </StackPanel>
-        </Grid>
+      </StackPanel>
+    </Grid>
 
-        <!--ID & Pwd & Remember me & Login-->
-        <Grid Grid.Row="2" Grid.Column="1">
-            <StackPanel>
-                <TextBox x:Name="MailText" HorizontalAlignment="Stretch" Height="30" 
-                         TextWrapping="Wrap" Padding="5,5,1,1" 
-                         MaxLength="30" MaxLines="1" BorderThickness="0"
-                         Margin="10"/>
+    <!--ID & Pwd & Remember me & Login-->
+    <Grid Grid.Row="2" Grid.Column="1">
+      <StackPanel>
+        <TextBox x:Name="MailText" 
+                 HorizontalAlignment="Stretch" 
+                 Height="30" 
+                 TextWrapping="Wrap" 
+                 Padding="5,5,1,1" 
+                 MaxLength="30" 
+                 MaxLines="1" 
+                 BorderThickness="1"
+                 Margin="10" 
+                 Background="Transparent"
+                 Foreground="White" 
+                 CaretBrush="White"/>
 
-                <TextBox x:Name="PwdTextBox" HorizontalAlignment="Stretch" Height="30" 
-                         TextWrapping="Wrap" Padding="5,5,1,1" 
-                         MaxLength="30" MaxLines="1" BorderThickness="0"
-                         Margin="10"/>
+        <TextBox x:Name="PwdTextBox" 
+                 HorizontalAlignment="Stretch" 
+                 Height="30" 
+                 TextWrapping="Wrap" 
+                 Padding="5,5,1,1" 
+                 MaxLength="30" 
+                 MaxLines="1" 
+                 BorderThickness="1"
+                 Margin="10" 
+                 Background="Transparent"
+                 CaretBrush="White"
+                 Foreground="White"/>
 
-                <CheckBox x:Name="RememberMeCheckBox" Content="Remember me"
-                          HorizontalAlignment="Left" VerticalAlignment="Top" 
-                          FontSize="16" Foreground="White"
-                          Margin="15, 0, 0, 10"/>
+        <CheckBox x:Name="RememberMeCheckBox" Content="Remember me"
+                  HorizontalAlignment="Left" VerticalAlignment="Top" 
+                  FontSize="16" Foreground="White"
+                  Margin="15, 0, 0, 10"/>
 
-                <Button x:Name="LoginButton" Content="Login" HorizontalAlignment="Center" 
-                        Width="319" Height="35" FontSize="20" Foreground="White" 
-                        Padding="0,0,0,5" Click="LoginButton_Click" Background="#FF3C9EF1" 
-                        BorderThickness="0"/>
+        <Button x:Name="LoginButton" Content="Login" HorizontalAlignment="Center" 
+                Width="319" Height="35" FontSize="20" Foreground="White" 
+                Padding="0,0,0,5" Click="LoginButton_Click" Background="#FF0074E0"
+                BorderThickness="0"/>
 
-            </StackPanel>
+      </StackPanel>
 
+    </Grid>
 
-        </Grid>
-        
-        <!--Sign up & Result-->
-        <Grid Grid.Row="3" Grid.Column="1">
-            <StackPanel>
-                <Label x:Name="SignupLabel" HorizontalAlignment="Center" Content="Free to sign up!" 
+    <!--Sign up & Result-->
+    <Grid Grid.Row="3" Grid.Column="1">
+      <StackPanel>
+        <Label x:Name="SignupLabel" HorizontalAlignment="Center" Content="Free to sign up!" 
                        VerticalAlignment="Top" FontSize="20" Foreground="White" 
                        PreviewMouseDown="SignupText_PreviewMouseDown" Width="160" Height="40"
                        HorizontalContentAlignment="Center" 
                        MouseEnter="SignupLabel_MouseEnter"
                        MouseLeave="SignupLabel_MouseLeave"/>
 
-                <Label x:Name="ResultLabel" HorizontalAlignment="Center" VerticalAlignment="Bottom" 
+        <Label x:Name="ResultLabel" HorizontalAlignment="Center" VerticalAlignment="Bottom" 
                        HorizontalContentAlignment="Center" Foreground="#FFF04100" FontWeight="Bold"
                        FontSize="20" MinWidth="300" MinHeight="30"/>
 
-            </StackPanel>
-        </Grid>
-        
-        <!--OAuth-->
-        <Grid Grid.Row="4" Grid.Column="1" >
-            <StackPanel Orientation="Horizontal" Margin="10">
-                <Button x:Name="BattlenetAuthButton" Style="{StaticResource ResourceKey=OAuthStyle}"
-                        Click="BattlenetAuthButton_Click">
-                    <TextBlock Text="Battle.Net"></TextBlock>
-                </Button>
-
-                <Button x:Name="GoogleAuthButton" Style="{StaticResource ResourceKey=OAuthStyle}"
-                        Click="GoogleAuthButton_Click">
-                    <TextBlock Text="Google"></TextBlock>
-                </Button>
-
-                <Button x:Name="KakaoAuthButton" Style="{StaticResource ResourceKey=OAuthStyle}"
-                        Click="KakaoAuthButton_Click">
-                    <TextBlock Text="Kakao"></TextBlock>
-                </Button>
-
-            </StackPanel>
-        </Grid>
-
+      </StackPanel>
     </Grid>
+
+    <!--OAuth-->
+    <Grid Grid.Row="4" Grid.Column="1" >
+      <StackPanel Orientation="Horizontal" Margin="10">
+        <Button x:Name="BattlenetAuthButton" 
+                Click="BattlenetAuthButton_Click"
+                Style="{DynamicResource BlizzardOAuthButton}"
+                >
+          <TextBlock Text="Battle.Net"/>
+        </Button>
+
+        <Button x:Name="GoogleAuthButton"
+                Click="GoogleAuthButton_Click"
+                Style="{DynamicResource BlizzardOAuthButton}">
+          <TextBlock Text="Google"/>
+        </Button>
+
+        <Button x:Name="KakaoAuthButton" 
+                Click="KakaoAuthButton_Click"
+                Style="{DynamicResource BlizzardOAuthButton}">
+
+          <TextBlock Text="Kakao"/>
+        </Button>
+
+      </StackPanel>
+    </Grid>
+
+  </Grid>
 </Window>
