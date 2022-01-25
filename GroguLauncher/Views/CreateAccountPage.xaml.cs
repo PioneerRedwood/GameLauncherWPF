@@ -49,7 +49,7 @@ namespace GroguLauncher
 			// TODO: ID Mail regex check
 			if (!(MailText.Text.Length > 0 && IsEmailAllowed(MailText.Text)))
 			{
-				ResultText.Text = "Email";
+				ResultLabel.Content = "Email";
 				MailText.Focus();
 				return;
 			}
@@ -57,7 +57,7 @@ namespace GroguLauncher
 			// TODO: Name regex check
 			if (!(NameText.Text.Length > 0))
 			{
-				ResultText.Text = "Name";
+				ResultLabel.Content = "Name";
 				NameText.Focus();
 				return;
 			}
@@ -65,7 +65,7 @@ namespace GroguLauncher
 			// TODO: Pwd regex check
 			if (!(PwdText.Text.Length > 0))
 			{
-				ResultText.Text = "Password";
+				ResultLabel.Content = "Password";
 				PwdText.Focus();
 				return;
 			}
@@ -73,7 +73,7 @@ namespace GroguLauncher
 			// TODO: Pwd and PwdValid same check
 			if (!(PwdVaildText.Text.Length > 0 && PwdText.Text == PwdVaildText.Text))
 			{
-				ResultText.Text = "Confirm";
+				ResultLabel.Content = "Confirm";
 				PwdVaildText.Focus();
 				return;
 			}
@@ -107,7 +107,7 @@ namespace GroguLauncher
 			}
 			else
 			{
-				ResultText.Text = "The account already exsists.";
+				ResultLabel.Content = "The account already exsists.";
 				return;
 			}
 		}
@@ -133,5 +133,21 @@ namespace GroguLauncher
 			}
 		}
 
+		private void Border_MouseDown(object sender, MouseButtonEventArgs e)
+		{
+			if (e.LeftButton == MouseButtonState.Pressed)
+			{
+				window.DragMove();
+			}
+		}
+		private void MiniMizeButton_Click(object sender, RoutedEventArgs e)
+		{
+			window.WindowState = WindowState.Minimized;
+		}
+
+		private void CloseButton_Click(object sender, RoutedEventArgs e)
+		{
+			window.Close();
+		}
 	}
 }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GroguLauncher" 
         mc:Ignorable="d" Icon="../Images/GroguPortrait.bmp"
-        Height="621" Width="340" ResizeMode="NoResize"
+        Height="600" Width="340" ResizeMode="NoResize"
         WindowStyle="None"
         WindowStartupLocation="CenterScreen" KeyDown="Window_KeyDown"
         Background="#15171e" AllowsTransparency="True">

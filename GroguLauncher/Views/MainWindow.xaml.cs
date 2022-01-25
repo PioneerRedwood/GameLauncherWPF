@@ -19,11 +19,11 @@ namespace GroguLauncher
 	{
 		public GameLaunchManager LaunchManager { get; private set; }
 		public SocialHandler SocialHandler { get; private set; }
-
 		public ObservableCollection<ContactModel> FriendList { get; private set; }
 		public ObservableCollection<ContactModel> FriendRequestList { get; private set; }
-
 		public ObservableCollection<GameModel> GameList { get; private set; }
+
+		public Views.MessageWindow messageWindow;
 
 		public MainWindow()
 		{
@@ -204,9 +204,26 @@ namespace GroguLauncher
 
 		private void ShowMessageWindow(ContactModel model)
 		{
-			Views.MessageWindow messageWindow = new Views.MessageWindow(model);
-			messageWindow.Show();
+			if(messageWindow != null)
+			{
+				// TODO: message window set this model on top
+				messageWindow.Focus();
+			}
+			else
+			{
+				messageWindow = new Views.MessageWindow(this, model);
+				messageWindow.Show();
+				messageWindow.Focus();
+			}
 		}
+
+		public void OnMessageWindowClosed()
+		{
+			messageWindow = null;
+			Focus();
+		}
+
+		//public void SetMessageWindow
 		#endregion
 	}
 }

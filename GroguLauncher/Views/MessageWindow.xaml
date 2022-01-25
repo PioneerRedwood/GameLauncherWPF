@@ -12,7 +12,7 @@
         ResizeMode="NoResize"
         Background="#15171e" 
         AllowsTransparency="True">
-  
+
   <Window.Resources>
     <Style x:Key="SpeakToListBox" TargetType="ListBox">
       <Setter Property="Background" Value="#FF111218" />
@@ -31,13 +31,13 @@
       <Setter Property="Foreground" Value="White"/>
       <Setter Property="FontSize" Value="11"/>
     </Style>
-    
+
     <Style x:Key="MessageListViewStyle" TargetType="ListView">
-      
+
     </Style>
 
   </Window.Resources>
-  
+
   <Grid>
     <Grid.RowDefinitions>
       <RowDefinition Height="25"/>
@@ -84,31 +84,36 @@
     <!--SpeakToList-->
     <DockPanel Grid.RowSpan="3">
       <!--ListBox-->
-      <ListBox Name="SpeakToListBox" Style="{StaticResource SpeakToListBox}">
-        
+      <ListBox Name="SpeakToListBox" 
+               Style="{StaticResource SpeakToListBox}"
+               ItemsSource="{Binding contacts}">
+
         <ListBox.ItemTemplate>
-          <ItemContainerTemplate>
-            
-          </ItemContainerTemplate>
+          
+          <DataTemplate DataType="{x:Type model:ContactModel}">
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="50"/>
+                <ColumnDefinition/>
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="26"/>
+                <RowDefinition/>
+              </Grid.RowDefinitions>
+
+              <!--Profile-->
+              <Image Grid.RowSpan="2" 
+                     Height="30" Width="30"
+                     
+                     Source="../Images/GroguPortrait.bmp"/>
+              <Label Grid.Column="1" 
+                     Style="{StaticResource ProfileNameLabel}"/>
+              <Label Grid.Column="1" Grid.Row="1" 
+                     Style="{StaticResource ProfileStateLabel}"/>
+            </Grid>
+          </DataTemplate>
         </ListBox.ItemTemplate>
         
-        <DataTemplate DataType="{x:Type model:ContactModel}">
-          <Grid>
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="50"/>
-              <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-              <RowDefinition Height="26"/>
-              <RowDefinition/>
-            </Grid.RowDefinitions>
-
-            <!--Profile-->
-            <Image Grid.RowSpan="2" Source="../Images/GroguPortrait.bmp"/>
-            <Label Grid.Column="1" Style="{StaticResource ProfileNameLabel}"/>
-            <Label Grid.Column="1" Grid.Row="1" Style="{StaticResource ProfileStateLabel}"/>
-          </Grid>
-        </DataTemplate>
       </ListBox>
     </DockPanel>
 
@@ -154,20 +159,20 @@
               <!--Image-->
               <Image Grid.RowSpan="2" 
                      Source="../Images/GroguPortrait.bmp"/>
-              
+
               <!--Name-->
               <Label Grid.Column="1" />
-              
+
               <!--Time-->
               <Label Grid.Column="1"/>
-              
+
               <!--Content-->
               <Label Grid.Column="1" Grid.Row="1"/>
-              
+
               <!--Ownership?-->
 
             </Grid>
-            
+
           </DataTemplate>
         </ListView.ItemTemplate>
       </ListView>

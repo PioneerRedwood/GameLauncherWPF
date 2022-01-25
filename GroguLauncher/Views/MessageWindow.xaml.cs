@@ -18,25 +18,40 @@ namespace GroguLauncher.Views
 {
 	public partial class MessageWindow : Window
 	{
+		private readonly MainWindow mainWindow;
+
 		private readonly ContactModel onTopContact;
+		
 		private ObservableCollection<ContactModel> contacts;
-		public MessageWindow(ContactModel contact)
+		
+		public MessageWindow(MainWindow _mainWindow, ContactModel _onTopContact)
 		{
 			InitializeComponent();
 
+			mainWindow = _mainWindow;
+
 			// TODO: set top contact
-			onTopContact = contact;
+			onTopContact = _onTopContact;
 
 			// TODO: get Messages from DB
 			contacts = new ObservableCollection<ContactModel>();
-			for(int i= 0; i < 5; ++i)
+			
+			SpeakToListBox.ItemsSource = contacts;
+			
+			for (int i = 0; i < 5; ++i)
 			{
 				contacts.Add(onTopContact);
 			}
 
-
+			Closed += MessageWindow_OnClosed;
 		}
 
+		private void MessageWindow_OnClosed(object sender, EventArgs e)
+		{
+			mainWindow.OnMessageWindowClosed();
+		}
+
+		#region Control Title Actions
 		private void Border_MouseDown(object sender, MouseButtonEventArgs e)
 		{
 			if (e.LeftButton == MouseButtonState.Pressed)
@@ -54,5 +69,6 @@ namespace GroguLauncher.Views
 		{
 			Close();
 		}
+		#endregion
 	}
 }

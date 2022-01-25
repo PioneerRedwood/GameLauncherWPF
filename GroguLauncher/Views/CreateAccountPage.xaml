@@ -5,42 +5,149 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:GroguLauncher"
       mc:Ignorable="d" 
-      d:DesignHeight="621" d:DesignWidth="400"
+      d:DesignHeight="600"
+      d:DesignWidth="340"
       Title="CreateAccountPage">
+  <Page.Resources>
+    <ResourceDictionary>
+      <Style x:Key="InputInfoLabel" TargetType="Label">
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="Margin" Value="5,5,5,0"/>
+        
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="Padding" Value="0,2,0,0"/>
+      </Style>
+      <Style x:Key="InputInfoTextBox" TargetType="TextBox">
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="Margin" Value="5,5,5,0"/>
 
-    <Grid Background="#15171e">
-        <TextBlock x:Name="PageTitle" HorizontalAlignment="Center" Margin="107,72,108,0" TextWrapping="Wrap" Text="Sign up" VerticalAlignment="Top" Height="37" Foreground="White" Width="185" FontSize="25" TextAlignment="Center" Padding="0"/>
-        <Grid HorizontalAlignment="Left" Height="40" Margin="38,143,0,0" VerticalAlignment="Top" Width="316">
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Width" Value="220"/>
+        <Setter Property="Height" Value="35"/>
+        <Setter Property="Padding" Value="5,5,5,0"/>
+        
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="MaxLines" Value="1"/>
+        <Setter Property="BorderBrush" Value="#14327f"/>
+      </Style>
+    </ResourceDictionary>
+  </Page.Resources>
 
-            <TextBlock HorizontalAlignment="Left" Margin="5,5,0,0" TextWrapping="Wrap" Text="ID(email)" VerticalAlignment="Top" Foreground="White" FontSize="18" Height="30" Padding="0,2,0,0"/>
-            <TextBox x:Name="MailText" HorizontalAlignment="Right" Height="30" Margin="5" TextWrapping="Wrap" VerticalAlignment="Top" Width="220" Padding="5,5,5,0" 
-                     BorderBrush="#14327f" FontSize="14" MaxLines="1" IsUndoEnabled="True" MaxLength="30"
-                     />
-        </Grid>
-        <Grid HorizontalAlignment="Left" Height="40" Margin="38,206,0,0" VerticalAlignment="Top" Width="316">
+    <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="25"/>
+      <RowDefinition Height="75"/>
+      <RowDefinition Height="300"/>
+      <RowDefinition Height="120"/>
+      <RowDefinition Height="80"/>
+    </Grid.RowDefinitions>
 
-            <TextBlock HorizontalAlignment="Left" Margin="5,5,0,0" TextWrapping="Wrap" Text="Name" VerticalAlignment="Top" Foreground="White" FontSize="18" Height="30" Padding="0,2,0,0"/>
-            <TextBox x:Name="NameText" HorizontalAlignment="Right" Height="30" Margin="5" TextWrapping="Wrap" VerticalAlignment="Top" Width="220" Padding="5,5,5,0" BorderBrush="#14327f" FontSize="14" MaxLines="1" MaxLength="16"/>
-        </Grid>
-        <Grid HorizontalAlignment="Left" Height="40" Margin="38,268,0,0" VerticalAlignment="Top" Width="316">
+      
+    <!--Title-->
+    <Border Grid.ColumnSpan="3"
+                MouseDown="Border_MouseDown"
+                Background="Transparent">
 
-            <TextBlock HorizontalAlignment="Left" Margin="5,5,0,0" TextWrapping="Wrap" Text="Password" VerticalAlignment="Top" Foreground="White" FontSize="18" Height="30" Padding="0,2,0,0"/>
-            <TextBox x:Name="PwdText" HorizontalAlignment="Right" Height="30" Margin="5" TextWrapping="Wrap" VerticalAlignment="Top" Width="220" Padding="5,5,5,0" BorderBrush="#14327f" FontSize="14" MaxLines="1" MaxLength="30"/>
-        </Grid>
-        <Grid HorizontalAlignment="Left" Height="40" Margin="38,328,0,0" VerticalAlignment="Top" Width="316">
+      <Grid HorizontalAlignment="Stretch">
 
-            <TextBlock HorizontalAlignment="Left" Margin="5,5,0,0" TextWrapping="Wrap" Text="Confirm" VerticalAlignment="Top" Foreground="White" FontSize="18" Height="30" Padding="0,2,0,0"/>
-            <TextBox x:Name="PwdVaildText" HorizontalAlignment="Right" Height="30" Margin="5" TextWrapping="Wrap" VerticalAlignment="Top" Width="220" Padding="5,5,5,0" 
-                     BorderBrush="#14327f" FontSize="14" MaxLines="1" MaxLength="30"/>
-        </Grid>
-        <TextBlock x:Name="ResultText" HorizontalAlignment="Center" Margin="0,410,0,0" TextWrapping="Wrap" VerticalAlignment="Top"
-                   TextAlignment="Center" Foreground="#FFF04100" FontSize="20" MinWidth="300" MinHeight="30"/>
+        <StackPanel HorizontalAlignment="Right"
+                        Orientation="Horizontal">
 
-        <Button x:Name="SubmitButton" Content="Submit" HorizontalAlignment="Left" Margin="66,487,0,0" VerticalAlignment="Top" 
-                Width="100" Height="40" RenderTransformOrigin="0.28,0.5" Background="#FF0074E0" Foreground="White" FontSize="16"
-                Click="SubmitButton_Click"/>
-        <Button x:Name="GoToLoginButton" Content="Go to Login" HorizontalAlignment="Left" Margin="228,487,0,0" VerticalAlignment="Top"
-                Width="100" Height="40" Background="#FF0074E0" Foreground="White" FontSize="16"
-                Click="GoToLoginButton_Click" />
+          <Button Name="MiniMizeButton" 
+                  Click="MiniMizeButton_Click"
+                  Style="{StaticResource MinimizeButton}"/>
+
+          <Button Name="CloseButton"
+                  Click="CloseButton_Click"
+                  Style="{StaticResource CloseButton}"/>
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="1">
+      <Label x:Name="PageTitle" HorizontalAlignment="Center" 
+             Content="Sign up" VerticalAlignment="Top" Height="37" 
+             Foreground="White" Width="185" FontSize="25" 
+             HorizontalContentAlignment="Center" Padding="0"/>
     </Grid>
+
+    <!--Main panel-->
+    <Grid Grid.Row="2">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="50"/>
+        <RowDefinition Height="50"/>
+        <RowDefinition Height="50"/>
+        <RowDefinition Height="50"/>
+        <RowDefinition Height="75"/>
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="85"/>
+        <ColumnDefinition/>
+      </Grid.ColumnDefinitions>
+
+      <Label Grid.Row="0" Grid.Column="0" 
+             Content="ID(email)" 
+             Style="{StaticResource InputInfoLabel}"/>
+      
+      <TextBox Grid.Row="0" Grid.Column="1"
+               x:Name="MailText" 
+               IsUndoEnabled="True"
+               MaxLength="30"
+               Style="{StaticResource InputInfoTextBox}"/>
+
+      <Label Grid.Row="1" Grid.Column="0" 
+             Content="Name"
+             Style="{StaticResource InputInfoLabel}"/>
+      
+      <TextBox Grid.Row="1" Grid.Column="1"
+               x:Name="NameText" 
+               MaxLength="16"
+               Style="{StaticResource InputInfoTextBox}"/>
+
+      <Label Grid.Row="2" Grid.Column="0" 
+             Content="Password" 
+             Style="{StaticResource InputInfoLabel}"/>
+      
+      <TextBox Grid.Row="2" Grid.Column="1"
+               x:Name="PwdText" 
+               MaxLength="30"
+               Style="{StaticResource InputInfoTextBox}"/>
+
+      <Label Grid.Row="3" Grid.Column="0"
+             Content="Confirm"
+             Style="{StaticResource InputInfoLabel}"/>
+      
+      <TextBox Grid.Row="3" Grid.Column="1"
+               x:Name="PwdVaildText" 
+               MaxLength="30"
+               Style="{StaticResource InputInfoTextBox}"/>
+
+      <Label Grid.Row="4" Grid.ColumnSpan="2"
+             x:Name="ResultLabel" HorizontalAlignment="Center" VerticalAlignment="Top"
+             HorizontalContentAlignment="Center" Foreground="#FFF04100" FontSize="20" 
+             MinWidth="300" MinHeight="30"/>
+    </Grid>
+
+    <!--Buttons-->
+    <Grid Grid.Row="3">
+      <StackPanel Orientation="Vertical">
+        <Button x:Name="SubmitButton" Content="Submit" 
+                Width="150" Height="40" 
+                Click="SubmitButton_Click"
+                Style="{StaticResource BlizzardOAuthButton}"/>
+        
+        <Button x:Name="GoToLoginButton" Content="Go to Login" 
+                Width="150" Height="40" 
+                Margin="0,25,0,0"
+                Click="GoToLoginButton_Click" 
+                Style="{StaticResource BlizzardOAuthButton}"/>
+      </StackPanel>
+      
+    </Grid>
+  </Grid>
 </Page>
