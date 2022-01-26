@@ -30,7 +30,7 @@ namespace GroguLauncher
 			// TODO: if you're coming via OAuth, the MailTextBox should be filled out and can't be edited.
 			if (window.isOAuthSucceed)
 			{
-				MailText.Text = window.googleAuthHandler.userInfo["email"];
+				MailText.Text = window.googleAuthHandler.UserInfo["email"];
 				MailText.IsReadOnly = true;
 			}
 			else

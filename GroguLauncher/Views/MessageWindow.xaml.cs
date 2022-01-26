@@ -12,43 +12,49 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using GroguLauncher.Handlers;
 using GroguLauncher.Models;
 
 namespace GroguLauncher.Views
 {
 	public partial class MessageWindow : Window
 	{
-		private readonly MainWindow mainWindow;
+		private readonly MainWindow _mainWindow;
 
-		private readonly ContactModel onTopContact;
-		
-		private ObservableCollection<ContactModel> contacts;
-		
-		public MessageWindow(MainWindow _mainWindow, ContactModel _onTopContact)
+		private readonly SocialHandler _socialHandler;
+
+		private ObservableCollection<UserModel> _contacts;
+
+		private UserModel _selectedUser;
+
+		public MessageWindow(MainWindow mainWindow, UserModel selectedUser)
 		{
 			InitializeComponent();
 
-			mainWindow = _mainWindow;
-
-			// TODO: set top contact
-			onTopContact = _onTopContact;
-
-			// TODO: get Messages from DB
-			contacts = new ObservableCollection<ContactModel>();
+			_mainWindow = mainWindow;
+			_selectedUser = selectedUser;
 			
-			SpeakToListBox.ItemsSource = contacts;
-			
-			for (int i = 0; i < 5; ++i)
+			_socialHandler = new SocialHandler();
+
+			GetContactList();
+			foreach(UserModel model in _contacts)
 			{
-				contacts.Add(onTopContact);
+				if (_selectedUser.Equals(model))
+				{
+					SpeakToListBox.SelectedItem = model;
+					break;
+				}
 			}
 
+			GetSelectedUserMessage();
+
 			Closed += MessageWindow_OnClosed;
+
 		}
 
 		private void MessageWindow_OnClosed(object sender, EventArgs e)
 		{
-			mainWindow.OnMessageWindowClosed();
+			_mainWindow.OnMessageWindowClosed();
 		}
 
 		#region Control Title Actions
@@ -69,6 +75,56 @@ namespace GroguLauncher.Views
 		{
 			Close();
 		}
+
 		#endregion
+
+		private async void GetContactList()
+		{
+			_contacts = await _socialHandler.GetFriendList();
+
+			SpeakToListBox.ItemsSource = _contacts;
+		}
+
+		private async void GetSelectedUserMessage()
+		{
+			// change UI
+			_selectedUser = (UserModel)SpeakToListBox.SelectedItem;
+
+			SpeakToNameLabel.Content = _selectedUser.Name;
+
+			Console.WriteLine("Get Selected User Message");
+			MessageListView.ItemsSource = await _socialHandler.GetMessageData(_selectedUser.Id);
+		}
+
+		private void SpeakToListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			GetSelectedUserMessage();
+
+			if(MessageListView.Items.Count > 0)
+			{
+				Console.WriteLine("Set auto scroll to the end");
+				// auto scroll to the end of list
+				MessageListView.SelectedItem = MessageListView.Items.Count - 1;
+				MessageListView.ScrollIntoView(MessageListView.SelectedItem);
+
+				MessageListView.SelectedItem = MessageListView.Items.GetItemAt(MessageListView.Items.Count - 1);
+				MessageListView.ScrollIntoView(MessageListView.SelectedItem);
+			}
+		}
+
+		private async void MessageText_KeyDown(object sender, KeyEventArgs e)
+		{
+			if(e.Key == Key.Enter && MessageText.Text.Length > 0)
+			{
+				if(await _socialHandler.SendMessage(_selectedUser, MessageText.Text))
+				{
+					MessageText.Text = "";
+				}
+				else
+				{
+					// ERROR? 
+				}
+			}
+		}
 	}
 }

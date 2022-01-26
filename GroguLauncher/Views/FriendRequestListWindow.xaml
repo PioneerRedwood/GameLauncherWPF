@@ -65,7 +65,7 @@
 
                 <ListBox.ItemTemplate>
 
-                    <DataTemplate DataType="{x:Type model:ContactModel}">
+                    <DataTemplate DataType="{x:Type model:UserModel}">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="../Images/GroguPortrait.bmp" MinHeight="40" MinWidth="40"/>
                             

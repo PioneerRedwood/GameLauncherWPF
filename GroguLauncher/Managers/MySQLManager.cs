@@ -6,20 +6,20 @@ namespace GroguLauncher.Managers
 {
 	public static class MySQLManager
 	{
-		private static MySqlConnection connection;
+		private static MySqlConnection _connection;
 
-		private static bool initialized = false;
+		private static bool _initialized = false;
 
 		public static void Initialize()
 		{
-			if(!initialized)
+			if (!_initialized)
 			{
-				initialized = true;
+				_initialized = true;
 				Debug.WriteLine("Database Initialize");
 
 				string path = "Server=127.0.0.1;port=3306;Database=red_db;Uid=admin;pwd=5303aa!@;";
 
-				connection = new MySqlConnection(path);
+				_connection = new MySqlConnection(path);
 			}
 			else
 			{
@@ -31,13 +31,13 @@ namespace GroguLauncher.Managers
 		{
 			try
 			{
-				if(connection.State == ConnectionState.Open)
+				if (_connection.State == ConnectionState.Open)
 				{
 					return true;
 				}
 				else
 				{
-					connection.Open();
+					_connection.Open();
 				}
 
 				return true;
@@ -63,7 +63,7 @@ namespace GroguLauncher.Managers
 
 		public static void CloseConnection()
 		{
-			connection.Close();
+			_connection.Close();
 		}
 
 		// Use `Select` getting one or more data
@@ -72,7 +72,7 @@ namespace GroguLauncher.Managers
 			try
 			{
 				DataSet ds = new DataSet();
-				MySqlDataAdapter dataAdapter = new MySqlDataAdapter(query, connection);
+				MySqlDataAdapter dataAdapter = new MySqlDataAdapter(query, _connection);
 				result = dataAdapter.Fill(ds, dsName);
 				return ds;
 			}
@@ -92,7 +92,7 @@ namespace GroguLauncher.Managers
 			{
 				if (OpenConnection())
 				{
-					using (MySqlCommand cmd = new MySqlCommand(query, connection))
+					using (MySqlCommand cmd = new MySqlCommand(query, _connection))
 					{
 						affected = cmd.ExecuteNonQuery();
 						CloseConnection();
@@ -118,10 +118,10 @@ namespace GroguLauncher.Managers
 			{
 				if (OpenConnection())
 				{
-					using(MySqlCommand cmd = new MySqlCommand(query, connection))
+					using (MySqlCommand cmd = new MySqlCommand(query, _connection))
 					{
 						object temp = cmd.ExecuteScalar();
-						if(temp != null)
+						if (temp != null)
 						{
 							return -1;
 						}
@@ -131,7 +131,7 @@ namespace GroguLauncher.Managers
 					return result;
 				}
 			}
-			catch(MySqlException e)
+			catch (MySqlException e)
 			{
 				Debug.WriteLine(e.Message);
 				return -1;

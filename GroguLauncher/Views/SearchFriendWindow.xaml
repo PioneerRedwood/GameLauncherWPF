@@ -80,7 +80,7 @@
 
         <ListBox.ItemTemplate>
 
-          <DataTemplate DataType="{x:Type model:ContactModel}">
+          <DataTemplate DataType="{x:Type model:UserModel}">
             <StackPanel Orientation="Vertical" Background="#15171e">
               <Image Source="../Images/GroguPortrait.bmp"/>
               <TextBlock VerticalAlignment="Center" Text="{Binding Name}"

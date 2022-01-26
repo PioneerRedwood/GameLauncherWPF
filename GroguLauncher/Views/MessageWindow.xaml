@@ -21,19 +21,32 @@
     </Style>
     <Style x:Key="ProfileNameLabel" TargetType="Label">
       <Setter Property="VerticalContentAlignment" Value="Center"/>
-      <Setter Property="Content" Value="{Binding Name}"/>
       <Setter Property="Foreground" Value="White"/>
       <Setter Property="FontSize" Value="14"/>
     </Style>
     <Style x:Key="ProfileStateLabel" TargetType="Label">
       <Setter Property="VerticalContentAlignment" Value="Top"/>
-      <Setter Property="Content" Value="{Binding State}"/>
       <Setter Property="Foreground" Value="White"/>
       <Setter Property="FontSize" Value="11"/>
     </Style>
 
-    <Style x:Key="MessageListViewStyle" TargetType="ListView">
+    <Style x:Key="MessageNameLabel" TargetType="Label">
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="Foreground" Value="White"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+      <Setter Property="FontSize" Value="14"/>
+    </Style>
 
+    <Style x:Key="MessageDateLabel" TargetType="Label">
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="Foreground" Value="White"/>
+      <Setter Property="FontSize" Value="13"/>
+    </Style>
+
+    <Style x:Key="MessageContentsLabel" TargetType="Label">
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="Foreground" Value="White"/>
+      <Setter Property="FontSize" Value="17"/>
     </Style>
 
   </Window.Resources>
@@ -85,12 +98,12 @@
     <DockPanel Grid.RowSpan="3">
       <!--ListBox-->
       <ListBox Name="SpeakToListBox" 
-               Style="{StaticResource SpeakToListBox}"
-               ItemsSource="{Binding contacts}">
+               Style="{StaticResource SpeakToListBox}"               
+               SelectionChanged="SpeakToListBox_SelectionChanged">
 
         <ListBox.ItemTemplate>
           
-          <DataTemplate DataType="{x:Type model:ContactModel}">
+          <DataTemplate DataType="{x:Type model:UserModel}">
             <Grid>
               <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="50"/>
@@ -104,11 +117,14 @@
               <!--Profile-->
               <Image Grid.RowSpan="2" 
                      Height="30" Width="30"
-                     
                      Source="../Images/GroguPortrait.bmp"/>
+              
               <Label Grid.Column="1" 
+                     Content="{Binding Name}"
                      Style="{StaticResource ProfileNameLabel}"/>
+              
               <Label Grid.Column="1" Grid.Row="1" 
+                     Content="{Binding State}"
                      Style="{StaticResource ProfileStateLabel}"/>
             </Grid>
           </DataTemplate>
@@ -131,11 +147,14 @@
         <Image Source="../Images/GroguPortrait.bmp"/>
 
         <!--Name-->
-        <Label Name="SpeakToName" Content="Grogu" 
+        <Label Name="SpeakToNameLabel" Content="Grogu" 
                Foreground="White" FontSize="20"/>
       </StackPanel>
 
-      <ListView Grid.Row="1" Background="Transparent">
+      <ListView Grid.Row="1" 
+                Name="MessageListView"
+                Background="Transparent">
+        
         <ListView.ItemContainerStyle>
           <Style TargetType="{x:Type ListViewItem}">
             <Setter Property="Focusable" Value="False"/>
@@ -144,8 +163,7 @@
         </ListView.ItemContainerStyle>
 
         <ListView.ItemTemplate>
-          <!--<DataTemplate DataType="{x:Type model:MessageModel}">-->
-          <DataTemplate>
+          <DataTemplate DataType="{x:Type model:MessageDataModel}">
             <Grid>
               <Grid.RowDefinitions>
                 <RowDefinition Height="25"/>
@@ -160,14 +178,20 @@
               <Image Grid.RowSpan="2" 
                      Source="../Images/GroguPortrait.bmp"/>
 
-              <!--Name-->
-              <Label Grid.Column="1" />
+              <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <!--Name-->
+                <Label Style="{StaticResource MessageNameLabel}"
+                     Content="{Binding Sender.Name}"/>
 
-              <!--Time-->
-              <Label Grid.Column="1"/>
+                <!--Time-->
+                <Label Style="{StaticResource MessageDateLabel}"
+                     Content="{Binding MessageDate}"/>
+              </StackPanel>
 
               <!--Content-->
-              <Label Grid.Column="1" Grid.Row="1"/>
+              <Label Grid.Column="1" Grid.Row="1"
+                     Style="{StaticResource MessageContentsLabel}"
+                     Content="{Binding Message}"/>
 
               <!--Ownership?-->
 
@@ -179,12 +203,15 @@
     </Grid>
 
     <!--Message TextBox-->
-    <DockPanel Grid.Row="2" Grid.Column="1">
+    <DockPanel Name="TextPanel"
+               Grid.Row="2" Grid.Column="1">
       <!--MessageTextBox-->
-      <TextBox Margin="0,5,5,5" Background="#FF2D2F35" 
-                     Foreground="Gray"/>
-      <!--SendButton-->
-      <!--<Button Name="MessageSendButton" />-->
+      <TextBox Name="MessageText"
+               Margin="0,5,5,5" 
+               Background="#FF2D2F35" 
+               Foreground="Gray"
+               MaxLength="500"
+               KeyDown="MessageText_KeyDown"/>
     </DockPanel>
   </Grid>
 </Window>

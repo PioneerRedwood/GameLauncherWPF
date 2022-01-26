@@ -11,19 +11,13 @@ using GroguLauncher.Models;
 
 namespace GroguLauncher.Handlers
 {
-	/// <summary>
-	/// SocialHandler
-	/// DB: red_db, tb: friendship, my_status, friend_relation
-	/// - Post & Get
-	/// !OPTIMIZATION!
-	/// - make the queries reuseable, control table's properties by enum 
-	/// </summary>
 	public class SocialHandler
 	{
 		/** Tables 
 		* FRIENDSHIP - requester_id, addressee_id, created_time
 		* MY_STATUS - request status table: 'R': "Requested", 'A': "Accepted", 'D': "Denied", 'B': "Blocked"
 		* FRIEND_RELATION - requester_id, addresssee_id, status_code, specifier_id, specified_datetime
+		* MESSENGER - sender_id, receiver_id, sent_datetime, contents
 		*/
 
 		public enum FriendshipStatusCode
@@ -34,9 +28,10 @@ namespace GroguLauncher.Handlers
 			Blocked = 'B',
 		};
 
-		private const string userTable = "RED_USER";
-		private const string friendshipTable = "FRIENDSHIP";
-		private const string friendRelationTable = "FRIEND_RELATION";
+		private const string _userTable = "RED_USER";
+		private const string _friendshipTable = "FRIENDSHIP";
+		private const string _friendRelationTable = "FRIEND_RELATION";
+		private const string _messengerTable = "MESSENGER";
 
 		public SocialHandler()
 		{
@@ -57,7 +52,7 @@ namespace GroguLauncher.Handlers
 				}
 
 				string query =
-					"INSERT INTO " + friendshipTable +
+					"INSERT INTO " + _friendshipTable +
 					" (REQUESTER_ID, ADDRESSEE_ID, CREATED_TIME)" +
 					$" VALUES({friend}, {self}, NOW())";
 
@@ -72,14 +67,14 @@ namespace GroguLauncher.Handlers
 			return result;
 		}
 
-		private Task<ContactModel> GetUserByID(int id)
+		private Task<UserModel> GetUserByID(int id)
 		{
-			ContactModel friend = new ContactModel();
+			UserModel friend = new UserModel();
 
 			if (MySQLManager.OpenConnection())
 			{
 				string query =
-					"SELECT USER_NAME, IS_LOGGED_IN FROM " + userTable +
+					"SELECT USER_NAME, IS_LOGGED_IN FROM " + _userTable +
 					$" WHERE USER_ID = {id}";
 
 				int result = 0;
@@ -102,14 +97,14 @@ namespace GroguLauncher.Handlers
 			return Task.FromResult(friend);
 		}
 
-		private Task<ContactModel> GetUserByName(string name)
+		private Task<UserModel> GetUserByName(string name)
 		{
-			ContactModel friend = new ContactModel();
+			UserModel friend = new UserModel();
 
 			if (MySQLManager.OpenConnection())
 			{
 				string query =
-					"SELECT USER_ID, IS_LOGGED_IN FROM " + userTable +
+					"SELECT USER_ID, IS_LOGGED_IN FROM " + _userTable +
 					$" WHERE USER_NAME = '{name}'";
 				int result = 0;
 				DataSet ds = MySQLManager.ExecuteDataSet("friend info", query, ref result);
@@ -138,7 +133,7 @@ namespace GroguLauncher.Handlers
 			if (MySQLManager.OpenConnection())
 			{
 				string query =
-					"SELECT REQUESTER_ID FROM " + friendshipTable +
+					"SELECT REQUESTER_ID FROM " + _friendshipTable +
 					$" WHERE (REQUESTER_ID = {self} AND ADDRESSEE_ID = {other}) OR (REQUESTER_ID = {other} AND ADDRESSEE_ID = {self})";
 
 				int result = 0;
@@ -158,15 +153,15 @@ namespace GroguLauncher.Handlers
 
 		#region public - can be used from outside
 
-		public async Task<ObservableCollection<ContactModel>> GetFriendList()
+		public async Task<ObservableCollection<UserModel>> GetFriendList()
 		{
-			ObservableCollection<ContactModel> friends = new ObservableCollection<ContactModel>();
+			ObservableCollection<UserModel> friends = new ObservableCollection<UserModel>();
 
 			if (MySQLManager.OpenConnection())
 			{
 				// TODO: 
 				string query =
-					"SELECT REQUESTER_ID, ADDRESSEE_ID FROM " + friendshipTable +
+					"SELECT REQUESTER_ID, ADDRESSEE_ID FROM " + _friendshipTable +
 					$" WHERE REQUESTER_ID = {int.Parse(App.UserInfo["USER_ID"])} OR ADDRESSEE_ID = {int.Parse(App.UserInfo["USER_ID"])}";
 
 				int result = 0;
@@ -177,7 +172,7 @@ namespace GroguLauncher.Handlers
 					// TODO: !OPTIMIZATION!
 					foreach (DataRow row in ds.Tables[0].Rows)
 					{
-						ContactModel friend;
+						UserModel friend;
 						// Get a friend id
 						if (int.Parse(row["ADDRESSEE_ID"].ToString()) != int.Parse(App.UserInfo["USER_ID"]))
 						{
@@ -191,7 +186,6 @@ namespace GroguLauncher.Handlers
 							friend = await GetUserByID(target);
 							friend.Id = target;
 						}
-						//friend.Date = DateTime.Parse(row["CREATED_TIME"].ToString());
 
 						friends.Add(friend);
 					}
@@ -209,7 +203,7 @@ namespace GroguLauncher.Handlers
 
 			if (MySQLManager.OpenConnection())
 			{
-				ContactModel friend = await GetUserByName(friendName);
+				UserModel friend = await GetUserByName(friendName);
 
 				if (friend.Id != -1)
 				{
@@ -222,16 +216,16 @@ namespace GroguLauncher.Handlers
 			return result;
 		}
 
-		public async Task<ObservableCollection<ContactModel>> GetFriendRequestList()
+		public async Task<ObservableCollection<UserModel>> GetFriendRequestList()
 		{
-			ObservableCollection<ContactModel> requests = new ObservableCollection<ContactModel>();
+			ObservableCollection<UserModel> requests = new ObservableCollection<UserModel>();
 
 			if (MySQLManager.OpenConnection())
 			{
 				// 2022-01-14 This query has a problem !
 				// TODO: Get friend request list, which still not made friendship with me
 				string query =
-					"SELECT REQUESTER_ID FROM " + friendRelationTable +
+					"SELECT REQUESTER_ID FROM " + _friendRelationTable +
 					$" WHERE ADDRESSEE_ID = {int.Parse(App.UserInfo["USER_ID"])}" +
 					$" AND STATUS_CODE = 'R'";
 
@@ -246,7 +240,7 @@ namespace GroguLauncher.Handlers
 						foreach (DataRow row in ds.Tables[0].Rows)
 						{
 							// user name, is logged in
-							ContactModel friend = await GetUserByID(int.Parse(row["REQUESTER_ID"].ToString()));
+							UserModel friend = await GetUserByID(int.Parse(row["REQUESTER_ID"].ToString()));
 							friend.Id = int.Parse(row["REQUESTER_ID"].ToString());
 
 							if (!await IsFriend(int.Parse(App.UserInfo["USER_ID"]), friend.Id))
@@ -270,7 +264,7 @@ namespace GroguLauncher.Handlers
 			if (MySQLManager.OpenConnection())
 			{
 				string query =
-					"INSERT INTO " + friendRelationTable +
+					"INSERT INTO " + _friendRelationTable +
 					" (REQUESTER_ID, ADDRESSEE_ID, STATUS_CODE, SPECIFIER_ID, SPECIFIED_DATETIME)" +
 					$" VALUES ({self}, {friend}, '{(char)code}', {self}, NOW())";
 
@@ -298,6 +292,76 @@ namespace GroguLauncher.Handlers
 			}
 
 			return result;
+		}
+		
+		public async Task<ObservableCollection<MessageDataModel>> GetMessageData(int target)
+		{
+			ObservableCollection<MessageDataModel> models = null;
+
+			if (MySQLManager.OpenConnection())
+			{
+				models = new ObservableCollection<MessageDataModel>();
+				string query =
+					$"SELECT * FROM {_messengerTable}" +
+					$" WHERE (SENDER_ID = {int.Parse(App.UserInfo["USER_ID"])} AND RECEIVER_ID = {target})" +
+					$" OR (SENDER_ID = {target} AND RECEIVER_ID = {int.Parse(App.UserInfo["USER_ID"])})" +
+					$" ORDER BY SENT_DATETIME";
+
+				int result = 0;
+				DataSet ds = MySQLManager.ExecuteDataSet("messages", query, ref result);
+				if(result > 0 && ds.Tables[0].Rows.Count > 0)
+				{
+					foreach(DataRow row in ds.Tables[0].Rows)
+					{
+						MessageDataModel model = new MessageDataModel();
+
+						model.Sender = await GetUserByID(int.Parse(row["SENDER_ID"].ToString()));
+						model.Receiver = await GetUserByID(int.Parse(row["RECEIVER_ID"].ToString()));
+						model.Message = row["CONTENTS"].ToString();
+						model.MessageDate = DateTime.Parse(row["SENT_DATETIME"].ToString());
+
+						models.Add(model);
+					}
+				}
+
+				MySQLManager.CloseConnection();
+			}
+
+			return models;
+		}
+
+		// Not used ..
+		public async Task<ObservableCollection<MessageDataModel>> GetMessagesToSelf()
+		{
+			ObservableCollection<MessageDataModel> messages = new ObservableCollection<MessageDataModel>();
+			
+			ObservableCollection<UserModel> friends = await GetFriendList();
+			foreach(UserModel user in friends)
+			{
+				messages = await GetMessageData(user.Id);
+			}
+			
+			return messages;
+		}
+
+		public Task<bool> SendMessage(UserModel friend, string content)
+		{
+			bool result = false;
+			if (MySQLManager.OpenConnection())
+			{
+				string query =
+					$"INSERT INTO {_messengerTable} (SENDER_ID, RECEIVER_ID, SENT_DATETIME, CONTENTS)" +
+					$" VALUES({int.Parse(App.UserInfo["USER_ID"].ToString())}, {friend.Id}, NOW(2), \"{content}\")";
+
+				if (MySQLManager.ExecuteNonQuery(query) == 1)
+				{
+					result = true;
+				}
+
+				MySQLManager.CloseConnection();
+			}
+
+			return Task.FromResult(result);
 		}
 		#endregion
 	}

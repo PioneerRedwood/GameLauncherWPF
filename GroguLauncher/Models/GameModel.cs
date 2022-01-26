@@ -12,12 +12,11 @@ namespace GroguLauncher
 {
 	public class GameModel : INotifyPropertyChanged
 	{
-		private string name;
-		private int id;
-		private GamePatchStatus status = GamePatchStatus.Uninitialized;
+		private string _name;
+		private int _id;
+		private GamePatchStatus _status = GamePatchStatus.Uninitialized;
 
 		public bool IsInitialized = false;
-		//public GamePatchStatus Status = GamePatchStatus.Uninitialized;
 		public GameVersion Version;
 		public string RootPath { get; private set; }
 		public string VersionFile { get; private set; }
@@ -29,13 +28,13 @@ namespace GroguLauncher
 
 		public GameModel(string _name, int _id, string _versionUri, string _zipUri, string _pageUrl)
 		{
-			name = _name;
-			id = _id;
+			this._name = _name;
+			this._id = _id;
 			VersionUri = _versionUri;
 			ZipUri = _zipUri;
 			PageUrl = _pageUrl;
 
-			RootPath = Directory.GetCurrentDirectory() + $"/{name}";
+			RootPath = Directory.GetCurrentDirectory() + $"/{this._name}";
 
 			if (!Directory.Exists(RootPath))
 			{
@@ -43,47 +42,47 @@ namespace GroguLauncher
 			}
 
 			VersionFile = Path.Combine(RootPath, "Version.txt");
-			ZipFile = Path.Combine(RootPath, name + ".zip");
-			ExeFile = Path.Combine(RootPath, name + ".exe");
+			ZipFile = Path.Combine(RootPath, this._name + ".zip");
+			ExeFile = Path.Combine(RootPath, this._name + ".exe");
 		}
 
 		public string Name
 		{
-			get => name;
+			get => _name;
 			set
 			{
-				if (name == value)
+				if (_name == value)
 				{
 					return;
 				}
-				name = value;
+				_name = value;
 				NotifyChanged("name");
 			}
 		}
 		public int Id
 		{
-			get => id;
+			get => _id;
 			set
 			{
-				if (id == value)
+				if (_id == value)
 				{
 					return;
 				}
-				id = value;
+				_id = value;
 				NotifyChanged("id");
 			}
 		}
 
 		public GamePatchStatus Status
 		{
-			get => status;
+			get => _status;
 			set 
 			{
-				if(status == value)
+				if(_status == value)
 				{
 					return;
 				}
-				status = value;
+				_status = value;
 				NotifyChanged("status");
 			}
 		}

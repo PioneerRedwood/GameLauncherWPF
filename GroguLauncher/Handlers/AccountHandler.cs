@@ -15,8 +15,8 @@ namespace GroguLauncher.Handlers
 	/// </summary>
 	public class AccountHandler
 	{
-		private readonly string tbName = "red_user";
-		private readonly string dsName = "Accounts";
+		private readonly string _tableName = "red_user";
+		private readonly string _dsName = "Accounts";
 
 		public AccountHandler()
 		{
@@ -30,12 +30,12 @@ namespace GroguLauncher.Handlers
 			if (MySQLManager.OpenConnection())
 			{
 				string query =
-					"SELECT * FROM " + tbName +
+					"SELECT * FROM " + _tableName +
 					" WHERE ACCOUNT_MAIL = '" + mail + "'" +
 					" AND ACCOUNT_PWD = '" + pwd + "'";
 
 				int result = 0;
-				DataSet ds = MySQLManager.ExecuteDataSet(dsName, query, ref result);
+				DataSet ds = MySQLManager.ExecuteDataSet(_dsName, query, ref result);
 
 				switch (result)
 				{

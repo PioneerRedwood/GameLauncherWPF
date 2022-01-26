@@ -29,23 +29,23 @@ namespace GroguLauncher.Handlers
 {
 	public class GoogleAuthHandler : OAuthHandler
 	{
-		private LoginWindow window;
+		private LoginWindow _loginWindow;
 
 		// access_token, expires_in, refresh_token, scope, token_type, id_token
-		public Dictionary<string, string> authToken { get; private set; }
+		public Dictionary<string, string> AuthToken { get; private set; }
 		// sub, name, given_name, family_name, picture_uri, locale
 		// 
-		public Dictionary<string, string> userInfo { get; private set; }
+		public Dictionary<string, string> UserInfo { get; private set; }
 
 		public GoogleAuthHandler(LoginWindow _window)
 		{
-			window = _window;
+			_loginWindow = _window;
 		}
 
 		// client config
-		private const string clientID = "58613277-67o5b6avkmnk7t3sa2qob64serpt9p7n.apps.googleusercontent.com";
-		private string clientSecret = Environment.GetEnvironmentVariable("GROGU_LAUNCHER_GOOGLE_OAUTH2_SECRET");
-		private const string authorizationEndpoint = "https://accounts.google.com/o/oauth2/v2/auth";
+		private const string _clientID = "58613277-67o5b6avkmnk7t3sa2qob64serpt9p7n.apps.googleusercontent.com";
+		private readonly string _clientSecret = Environment.GetEnvironmentVariable("GROGU_LAUNCHER_GOOGLE_OAUTH2_SECRET");
+		private const string _authorizationEndpoint = "https://accounts.google.com/o/oauth2/v2/auth";
 
 		// execution auth
 		public async void Authenticate()
@@ -90,9 +90,9 @@ namespace GroguLauncher.Handlers
 					"&code_challenge={4}" +
 					"&code_challenge_method={5}",
 
-					authorizationEndpoint,
+					_authorizationEndpoint,
 					Uri.EscapeDataString(redirectURI),
-					clientID,
+					_clientID,
 					state,
 					code_challenge,
 					code_challenge_method);
@@ -173,9 +173,9 @@ namespace GroguLauncher.Handlers
 
 				code,
 				Uri.EscapeDataString(redirectURI),
-				clientID,
+				_clientID,
 				code_verifier,
-				clientSecret
+				_clientSecret
 				);
 
 			// sends the request
@@ -202,10 +202,10 @@ namespace GroguLauncher.Handlers
 					PrintOutput(responseText);
 
 					// converts to dictionary
-					authToken =
+					AuthToken =
 						JsonConvert.DeserializeObject<Dictionary<string, string>>(responseText);
 
-					string access_token = authToken["access_token"];
+					string access_token = AuthToken["access_token"];
 					RequestUserInfo(access_token);
 				}
 			}
@@ -249,10 +249,10 @@ namespace GroguLauncher.Handlers
 			{
 				// reads response body
 				string responseText = await reader.ReadToEndAsync();
-				userInfo =
+				UserInfo =
 					JsonConvert.DeserializeObject<Dictionary<string, string>>(responseText);
 
-				window.NotifyAuthDone();
+				_loginWindow.NotifyAuthDone();
 
 				PrintOutput(responseText);
 			}

@@ -12,79 +12,64 @@ namespace GroguLauncher.Models
 	}
 
 	// ref https://docs.microsoft.com/ko-kr/dotnet/api/system.collections.specialized.inotifycollectionchanged?redirectedfrom=MSDN&view=net-6.0
-	public class ContactModel : INotifyPropertyChanged
+	public class UserModel : INotifyPropertyChanged
 	{
-		private string name;
-		private int id;
-		private DateTime date;
-		private bool isLoggedIn;
-		private CurrentConnectionState state;
+		private string _name;
+		private int _id;
+		private bool _isLoggedIn;
+		private CurrentConnectionState _state;
 
 		public string Name
 		{
-			get => name;
+			get => _name;
 			set
 			{
-				if (name == value)
+				if (_name == value)
 				{
 					return;
 				}
-				name = value;
+				_name = value;
 				NotifyChanged("name");
 			}
 		}
 		public int Id
 		{
-			get => id;
+			get => _id;
 			set
 			{
-				if (id == value)
+				if (_id == value)
 				{
 					return;
 				}
-				id = value;
+				_id = value;
 				NotifyChanged("id");
-			}
-		}
-
-		public DateTime Date
-		{
-			get => date;
-			set
-			{
-				if (date == value)
-				{
-					return;
-				}
-				date = value;
-				NotifyChanged("date");
 			}
 		}
 
 		public bool IsLoggedIn
 		{
-			get => isLoggedIn;
+			get => _isLoggedIn;
 			set
 			{
-				if (isLoggedIn == value)
+				if (_isLoggedIn == value)
 				{
 					return;
 				}
-				isLoggedIn = value;
+				_isLoggedIn = value;
 				NotifyChanged("isLoggedIn");
 			}
 		}
 
 		public CurrentConnectionState State
 		{
-			get => state;
+			get => _state;
 			set
 			{
-				if (state == value)
+				if (_state == value)
 				{
 					return;
 				}
-				state = value;
+				_state = value;
 				NotifyChanged("state");
 			}
 		}
@@ -93,16 +78,17 @@ namespace GroguLauncher.Models
 
 		protected void NotifyChanged(string name)
 		{
-			PropertyChangedEventHandler handler = PropertyChanged;
-			if (handler != null)
-			{
-				handler(this, new PropertyChangedEventArgs(name));
-			}
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 		}
 
 		public override string ToString()
 		{
-			return name + " " + Id + " " + state.ToString();
+			return _name + " " + Id + " " + _state.ToString();
+		}
+
+		public bool Equals(UserModel model)
+		{
+			return _id == model.Id;
 		}
 	}
 }

@@ -23,17 +23,17 @@ namespace GroguLauncher
 	}
 	public struct GameVersion
 	{
-		public static GameVersion zero = new GameVersion(0, 0, 0);
+		public static GameVersion Zero = new GameVersion(0, 0, 0);
 
-		private readonly short major;
-		private readonly short minor;
-		private readonly short subMinor;
+		private readonly short _major;
+		private readonly short _minor;
+		private readonly short _subMinor;
 
 		public GameVersion(short major, short minor, short subMinor)
 		{
-			this.major = major;
-			this.minor = minor;
-			this.subMinor = subMinor;
+			_major = major;
+			_minor = minor;
+			_subMinor = subMinor;
 		}
 
 		public GameVersion(string version)
@@ -41,27 +41,27 @@ namespace GroguLauncher
 			string[] versionStrings = version.Split('.');
 			if (versionStrings.Length != 3)
 			{
-				major = 0;
-				minor = 0;
-				subMinor = 0;
+				_major = 0;
+				_minor = 0;
+				_subMinor = 0;
 				return;
 			}
 
-			major = short.Parse(versionStrings[0]);
-			minor = short.Parse(versionStrings[1]);
-			subMinor = short.Parse(versionStrings[2]);
+			_major = short.Parse(versionStrings[0]);
+			_minor = short.Parse(versionStrings[1]);
+			_subMinor = short.Parse(versionStrings[2]);
 		}
 
 		public bool Equals(GameVersion otherVersion)
 		{
-			return (major == otherVersion.major)
-				& (minor == otherVersion.minor)
-				& (subMinor == otherVersion.subMinor);
+			return (_major == otherVersion._major)
+				& (_minor == otherVersion._minor)
+				& (_subMinor == otherVersion._subMinor);
 		}
 
 		public override string ToString()
 		{
-			return $"{major}.{minor}.{subMinor}";
+			return $"{_major}.{_minor}.{_subMinor}";
 		}
 	}
 }
@@ -70,15 +70,15 @@ namespace GroguLauncher.Managers
 {
 	public class GameLaunchManager
 	{
-		private readonly MainWindow window;
+		private readonly MainWindow _mainWindow;
 		public List<string> GameList { get; private set; }
 		public Dictionary<int, GameModel> AvailableGames { get; private set; }
 
-		private GameModel selectedGame = null;
+		private GameModel _selectedGame = null;
 
 		public GameLaunchManager(MainWindow _mainWindow)
 		{
-			window = _mainWindow;
+			this._mainWindow = _mainWindow;
 
 			GameList = new List<string> { "BrawlMasters", "TowerDefenseGame" };
 
@@ -153,7 +153,7 @@ namespace GroguLauncher.Managers
 							File.WriteAllText(temp.VersionFile, token.Result);
 
 							int index = GameList.IndexOf(temp.Name);
-							if(index == window.GameListBox.SelectedIndex)
+							if(index == _mainWindow.GameListBox.SelectedIndex)
 							{
 								NotifySelectedGameChanged(index);
 							}
@@ -172,27 +172,27 @@ namespace GroguLauncher.Managers
 		{
 			// TODO: should be conducted after GameComponent initiailzed end
 
-			selectedGame = AvailableGames[index];
+			_selectedGame = AvailableGames[index];
 
-			window.CurrentGameLabel.Content = selectedGame.Name;
-			window.GamePatchButton.Content = selectedGame.Status.ToString();
+			_mainWindow.CurrentGameLabel.Content = _selectedGame.Name;
+			_mainWindow.GamePatchButton.Content = _selectedGame.Status.ToString();
 
-			window.MainBrowser.Address = selectedGame.PageUrl;
-			window.VersionLabel.Content = selectedGame.Version.ToString();
+			_mainWindow.MainBrowser.Address = _selectedGame.PageUrl;
+			_mainWindow.VersionLabel.Content = _selectedGame.Version.ToString();
 		}
 
 		public void ExecuteGame()
 		{
-			if (File.Exists(selectedGame.ExeFile) && selectedGame.Status == GamePatchStatus.Play)
+			if (File.Exists(_selectedGame.ExeFile) && _selectedGame.Status == GamePatchStatus.Play)
 			{
-				ProcessStartInfo startInfo = new ProcessStartInfo(selectedGame.ExeFile);
-				startInfo.WorkingDirectory = Path.Combine(selectedGame.RootPath, selectedGame.Name);
+				ProcessStartInfo startInfo = new ProcessStartInfo(_selectedGame.ExeFile);
+				startInfo.WorkingDirectory = Path.Combine(_selectedGame.RootPath, _selectedGame.Name);
 
-				window.Hide();
+				_mainWindow.Hide();
 
 				Process.Start(startInfo).WaitForExit();
 
-				window.Show();
+				_mainWindow.Show();
 			}
 		}
 
@@ -204,7 +204,7 @@ namespace GroguLauncher.Managers
 				OnGamePatchStatusChanged(GamePatchStatus.Updating, null);
 
 				// TODO: delete all the game files exist
-				if (File.Exists(selectedGame.ExeFile))
+				if (File.Exists(_selectedGame.ExeFile))
 				{
 					ClearOldGameFiles();
 				}
@@ -214,8 +214,8 @@ namespace GroguLauncher.Managers
 					{
 						try
 						{
-							ZipFile.ExtractToDirectory(selectedGame.ZipFile, selectedGame.RootPath);
-							File.Delete(selectedGame.ZipFile);
+							ZipFile.ExtractToDirectory(_selectedGame.ZipFile, _selectedGame.RootPath);
+							File.Delete(_selectedGame.ZipFile);
 
 							OnGamePatchStatusChanged(GamePatchStatus.Play, null);
 						}
@@ -225,7 +225,7 @@ namespace GroguLauncher.Managers
 						}
 					});
 
-				webClient.DownloadFileAsync(new Uri(selectedGame.ZipUri), selectedGame.ZipFile);
+				webClient.DownloadFileAsync(new Uri(_selectedGame.ZipUri), _selectedGame.ZipFile);
 			}
 			catch (Exception ex)
 			{
@@ -237,7 +237,7 @@ namespace GroguLauncher.Managers
 		private void ClearOldGameFiles()
 		{
 			// TODO: delete every files and directories exclude Version.txt
-			string[] filePaths = Directory.GetFiles(selectedGame.RootPath);
+			string[] filePaths = Directory.GetFiles(_selectedGame.RootPath);
 			foreach(string filePath in filePaths)
 			{
 				FileInfo info = new FileInfo(filePath);
@@ -248,7 +248,7 @@ namespace GroguLauncher.Managers
 				}
 			}
 
-			foreach(string dirPath in Directory.GetDirectories(selectedGame.RootPath))
+			foreach(string dirPath in Directory.GetDirectories(_selectedGame.RootPath))
 			{
 				Directory.Delete(dirPath, true);
 			}
@@ -256,8 +256,8 @@ namespace GroguLauncher.Managers
 
 		private void OnGamePatchStatusChanged(GamePatchStatus status, Exception ex)
 		{
-			selectedGame.Status = status;
-			window.GamePatchButton.Content = status.ToString();
+			_selectedGame.Status = status;
+			_mainWindow.GamePatchButton.Content = status.ToString();
 
 			switch (status)
 			{

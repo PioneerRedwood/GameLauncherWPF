@@ -19,11 +19,10 @@ namespace GroguLauncher
 	{
 		public GameLaunchManager LaunchManager { get; private set; }
 		public SocialHandler SocialHandler { get; private set; }
-		public ObservableCollection<ContactModel> FriendList { get; private set; }
-		public ObservableCollection<ContactModel> FriendRequestList { get; private set; }
+		public ObservableCollection<UserModel> FriendRequestList { get; private set; }
 		public ObservableCollection<GameModel> GameList { get; private set; }
 
-		public Views.MessageWindow messageWindow;
+		private Views.MessageWindow _messageWindow;
 
 		public MainWindow()
 		{
@@ -170,7 +169,7 @@ namespace GroguLauncher
 
 		private HitTestFilterBehavior FriendListHitTestFilter(DependencyObject @object)
 		{
-			ContactModel model = new ContactModel();
+			UserModel model = new UserModel();
 
 			if (@object.GetType() == typeof(Image))
 			{
@@ -179,7 +178,7 @@ namespace GroguLauncher
 
 				if (model.GetType().IsAssignableFrom(context.GetType()))
 				{
-					model = (ContactModel)context;
+					model = (UserModel)context;
 					ShowMessageWindow(model);
 
 					return HitTestFilterBehavior.Stop;
@@ -192,7 +191,7 @@ namespace GroguLauncher
 
 				if (model.GetType().IsAssignableFrom(context.GetType()))
 				{
-					model = (ContactModel)context;
+					model = (UserModel)context;
 					ShowMessageWindow(model);
 
 					return HitTestFilterBehavior.Stop;
@@ -202,24 +201,28 @@ namespace GroguLauncher
 			return HitTestFilterBehavior.Continue;
 		}
 
-		private void ShowMessageWindow(ContactModel model)
+		private void ShowMessageWindow(UserModel model)
 		{
-			if(messageWindow != null)
+			if(_messageWindow != null)
 			{
 				// TODO: message window set this model on top
-				messageWindow.Focus();
+				if(_messageWindow.WindowState == WindowState.Minimized)
+				{
+					_messageWindow.WindowState = WindowState.Normal;
+				}
+				_messageWindow.Focus();
 			}
 			else
 			{
-				messageWindow = new Views.MessageWindow(this, model);
-				messageWindow.Show();
-				messageWindow.Focus();
+				_messageWindow = new Views.MessageWindow(this, model);
+				_messageWindow.Show();
+				_messageWindow.Focus();
 			}
 		}
 
 		public void OnMessageWindowClosed()
 		{
-			messageWindow = null;
+			_messageWindow = null;
 			Focus();
 		}
 

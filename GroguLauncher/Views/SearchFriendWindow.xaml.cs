@@ -20,7 +20,7 @@ namespace GroguLauncher
 	public partial class SearchFriendWindow : Window
 	{
 		private readonly Handlers.SocialHandler handler;
-		public ObservableCollection<ContactModel> FriendshipRequestList { get; private set; }
+		public ObservableCollection<UserModel> FriendshipRequestList { get; private set; }
 
 		public SearchFriendWindow(Handlers.SocialHandler socialHandler)
 		{
@@ -28,7 +28,7 @@ namespace GroguLauncher
 
 			handler = socialHandler;
 
-			FriendshipRequestList = new ObservableCollection<ContactModel>();
+			FriendshipRequestList = new ObservableCollection<UserModel>();
 
 			FriendshipRequestListBox.ItemsSource = FriendshipRequestList;
 		}
@@ -39,7 +39,7 @@ namespace GroguLauncher
 			{
 				if (await handler.AddFriendWithName(int.Parse(App.UserInfo["USER_ID"]), SearchText.Text, Handlers.SocialHandler.FriendshipStatusCode.Requested))
 				{
-					ContactModel friend = new ContactModel();
+					UserModel friend = new UserModel();
 					friend.Name = SearchText.Text;
 
 					FriendshipRequestList.Add(friend);

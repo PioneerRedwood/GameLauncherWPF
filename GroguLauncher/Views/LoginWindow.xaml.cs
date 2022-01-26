@@ -58,7 +58,7 @@ namespace GroguLauncher
 			Content = prevContent;
 			if (isOAuthSucceed)
 			{
-				MailText.Text = googleAuthHandler.userInfo["email"];
+				MailText.Text = googleAuthHandler.UserInfo["email"];
 			}
 			else
 			{
