@@ -1,48 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using GroguLauncher.Handlers;
 using GroguLauncher.Models;
 
 namespace GroguLauncher
 {
 	public partial class SearchFriendWindow : Window
 	{
-		private readonly Handlers.SocialHandler handler;
-		public ObservableCollection<UserModel> FriendshipRequestList { get; private set; }
+		private readonly ObservableCollection<UserModel> _requestList;
 
-		public SearchFriendWindow(Handlers.SocialHandler socialHandler)
+		private readonly SocialHandler _socialHandler;
+
+		public SearchFriendWindow(SocialHandler socialHandler)
 		{
 			InitializeComponent();
 
-			handler = socialHandler;
+			_socialHandler = socialHandler;
 
-			FriendshipRequestList = new ObservableCollection<UserModel>();
+			_requestList = new ObservableCollection<UserModel>();
 
-			FriendshipRequestListBox.ItemsSource = FriendshipRequestList;
+			FriendshipRequestListBox.ItemsSource = _requestList;
 		}
 
 		private async void SearchButton_Click(object sender, RoutedEventArgs e)
 		{
 			if ((SearchText.Text.Length > 0) && (SearchText.Text != App.UserInfo["USER_NAME"]))
 			{
-				if (await handler.AddFriendWithName(int.Parse(App.UserInfo["USER_ID"]), SearchText.Text, Handlers.SocialHandler.FriendshipStatusCode.Requested))
+				if (await _socialHandler.AddFriendWithName(int.Parse(App.UserInfo["USER_ID"]), SearchText.Text, SocialHandler.FriendshipStatusCode.Requested))
 				{
 					UserModel friend = new UserModel();
 					friend.Name = SearchText.Text;
 
-					FriendshipRequestList.Add(friend);
+					_requestList.Add(friend);
 				}
 
 				SearchText.Text = "";
@@ -59,6 +49,7 @@ namespace GroguLauncher
 			Close();
 		}
 
+		#region Control bar
 		private void Border_MouseDown(object sender, MouseButtonEventArgs e)
 		{
 			if (e.LeftButton == MouseButtonState.Pressed)
@@ -71,5 +62,6 @@ namespace GroguLauncher
 		{
 			Close();
 		}
+		#endregion
 	}
 }

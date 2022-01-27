@@ -1,36 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Mail;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using GroguLauncher.Managers;
 
 namespace GroguLauncher
 {
 	public partial class CreateAccountPage : Page
 	{
-		private LoginWindow window;
+		private readonly LoginWindow _loginWindow;
 
 		public CreateAccountPage(LoginWindow _window)
 		{
 			InitializeComponent();
-			window = _window;
+			_loginWindow = _window;
 
 			// TODO: if you're coming via OAuth, the MailTextBox should be filled out and can't be edited.
-			if (window.isOAuthSucceed)
+			if (_loginWindow.IsOAuthSucceed)
 			{
-				MailText.Text = window.googleAuthHandler.UserInfo["email"];
+				MailText.Text = _loginWindow.GoogleAuthHandler.UserInfo["email"];
 				MailText.IsReadOnly = true;
 			}
 			else
@@ -63,7 +52,7 @@ namespace GroguLauncher
 			}
 
 			// TODO: Pwd regex check
-			if (!(PwdText.Text.Length > 0))
+			if (!(PwdText.Password.Length> 0))
 			{
 				ResultLabel.Content = "Password";
 				PwdText.Focus();
@@ -71,7 +60,7 @@ namespace GroguLauncher
 			}
 
 			// TODO: Pwd and PwdValid same check
-			if (!(PwdVaildText.Text.Length > 0 && PwdText.Text == PwdVaildText.Text))
+			if (!(PwdVaildText.Password.Length > 0 && PwdText.Password == PwdVaildText.Password))
 			{
 				ResultLabel.Content = "Confirm";
 				PwdVaildText.Focus();
@@ -79,20 +68,20 @@ namespace GroguLauncher
 			}
 
 			// TODO: Valid with User DB
-			Task<bool> checkTask = window.accountHandler.CheckAccountExsists(MailText.Text, NameText.Text);
+			Task<bool> checkTask = _loginWindow.AccountHandler.CheckAccountExsists(MailText.Text, NameText.Text);
 			bool result = await checkTask;
 			if (result)
 			{
 				if (MessageBox.Show("You can create account with this.\nDo you want to create?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
 				{
 					// TODO: Insert user data
-					checkTask = window.accountHandler.CreateAccount(MailText.Text, NameText.Text, PwdText.Text);
+					checkTask = _loginWindow.AccountHandler.CreateAccount(MailText.Text, NameText.Text, PwdText.Password);
 					result = await checkTask;
 
 					// TODO: Go to the LoginWindow
 					if (result)
 					{
-						window.LoadPreviousContent();
+						_loginWindow.LoadPreviousContent();
 					}
 					else
 					{
@@ -114,7 +103,7 @@ namespace GroguLauncher
 
 		public void GoToLoginButton_Click(object sender, RoutedEventArgs e)
 		{
-			window.LoadPreviousContent();
+			_loginWindow.LoadPreviousContent();
 		}
 
 		// ref https://stackoverflow.com/questions/201323/how-can-i-validate-an-email-address-using-a-regular-expression
@@ -137,17 +126,17 @@ namespace GroguLauncher
 		{
 			if (e.LeftButton == MouseButtonState.Pressed)
 			{
-				window.DragMove();
+				_loginWindow.DragMove();
 			}
 		}
 		private void MiniMizeButton_Click(object sender, RoutedEventArgs e)
 		{
-			window.WindowState = WindowState.Minimized;
+			_loginWindow.WindowState = WindowState.Minimized;
 		}
 
 		private void CloseButton_Click(object sender, RoutedEventArgs e)
 		{
-			window.Close();
+			_loginWindow.Close();
 		}
 	}
 }

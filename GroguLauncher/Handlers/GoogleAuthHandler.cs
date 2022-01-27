@@ -16,7 +16,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Security.Cryptography;
@@ -29,7 +28,7 @@ namespace GroguLauncher.Handlers
 {
 	public class GoogleAuthHandler : OAuthHandler
 	{
-		private LoginWindow _loginWindow;
+		private readonly LoginWindow _loginWindow;
 
 		// access_token, expires_in, refresh_token, scope, token_type, id_token
 		public Dictionary<string, string> AuthToken { get; private set; }

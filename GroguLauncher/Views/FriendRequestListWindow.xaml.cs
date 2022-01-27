@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using GroguLauncher.Handlers;
 using GroguLauncher.Models;
 
 namespace GroguLauncher
@@ -19,34 +20,40 @@ namespace GroguLauncher
 	public partial class FriendRequestListWindow : Window
 	{
 		private readonly ObservableCollection<UserModel> FriendRequestList;
-		private Handlers.SocialHandler socialHandler;
+		private readonly SocialHandler _socialHandler;
 
-		public FriendRequestListWindow(ObservableCollection<UserModel> requestList)
+		public FriendRequestListWindow(ObservableCollection<UserModel> requestList, SocialHandler socialHandler)
 		{
 			InitializeComponent();
 
-			socialHandler = new Handlers.SocialHandler();
+			_socialHandler = socialHandler;
 
-			// TODO: Get a request list
 			FriendRequestList = requestList;
 			FriendshipRequestListBox.ItemsSource = FriendRequestList;
 		}
 
 		private async void AcceptButton_Click(object sender, RoutedEventArgs e)
 		{
-			// TODO: PostRequest Accepted
-
 			UserModel friend = (sender as Button).DataContext as UserModel;
-			if (await socialHandler.PostRequestFriendRelation(int.Parse(App.UserInfo["USER_ID"]), friend.Id, Handlers.SocialHandler.FriendshipStatusCode.Accepted))
+			if (await _socialHandler.PostRequestFriendRelation(
+						int.Parse(App.UserInfo["USER_ID"]),
+						friend.Id,
+						SocialHandler.FriendshipStatusCode.Accepted))
 			{
 				FriendRequestList.Remove(friend);
 			}
 		}
 
-		private void DenyButton_Click(object sender, RoutedEventArgs e)
+		private async void DenyButton_Click(object sender, RoutedEventArgs e)
 		{
-			// TODO: PostRequest Denied
 			UserModel friend = (sender as Button).DataContext as UserModel;
+			if (await _socialHandler.PostRequestFriendRelation(
+						int.Parse(App.UserInfo["USER_ID"]),
+						friend.Id,
+						SocialHandler.FriendshipStatusCode.Denied))
+			{
+				FriendRequestList.Remove(friend);
+			}
 		}
 
 		private void CompleteButton_Click(object sender, RoutedEventArgs e)
@@ -54,6 +61,7 @@ namespace GroguLauncher
 			Close();
 		}
 
+		#region Control bar
 		private void Border_MouseDown(object sender, MouseButtonEventArgs e)
 		{
 			if (e.LeftButton == MouseButtonState.Pressed)
@@ -66,5 +74,6 @@ namespace GroguLauncher
 		{
 			Close();
 		}
+		#endregion
 	}
 }

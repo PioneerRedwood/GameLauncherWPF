@@ -2,9 +2,9 @@
 using System.Diagnostics;
 using System.Data;
 
-namespace GroguLauncher.Managers
+namespace GroguLauncher.Handlers
 {
-	public static class MySQLManager
+	public static class MySQLHandler
 	{
 		private static MySqlConnection _connection;
 
@@ -20,10 +20,6 @@ namespace GroguLauncher.Managers
 				string path = "Server=127.0.0.1;port=3306;Database=red_db;Uid=admin;pwd=5303aa!@;";
 
 				_connection = new MySqlConnection(path);
-			}
-			else
-			{
-				Debug.WriteLine("Database already Initialized");
 			}
 		}
 
@@ -109,7 +105,6 @@ namespace GroguLauncher.Managers
 			return affected;
 		}
 
-		// just for test
 		// see https://stackoverflow.com/questions/35928312/c-sharp-mysqlcommand-executenonquery-return-1
 		public static int ExecuteSql(string query)
 		{

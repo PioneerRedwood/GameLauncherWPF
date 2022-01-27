@@ -25,15 +25,27 @@
         <Setter Property="VerticalAlignment" Value="Top"/>
         <Setter Property="Margin" Value="5,5,5,0"/>
 
-        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Foreground" Value="Black"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="Width" Value="220"/>
         <Setter Property="Height" Value="35"/>
-        <Setter Property="Padding" Value="5,5,5,0"/>
         
         <Setter Property="TextWrapping" Value="Wrap"/>
         <Setter Property="MaxLines" Value="1"/>
         <Setter Property="BorderBrush" Value="#14327f"/>
+      </Style>
+      <Style x:Key="InputInfoPasswordBox" TargetType="PasswordBox">
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="Margin" Value="5,5,5,0"/>
+
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Width" Value="220"/>
+        <Setter Property="Height" Value="35"/>
+
+        <Setter Property="BorderBrush" Value="#14327f"/>
+        <Setter Property="PasswordChar" Value="*"/>
       </Style>
     </ResourceDictionary>
   </Page.Resources>
@@ -113,19 +125,19 @@
              Content="Password" 
              Style="{StaticResource InputInfoLabel}"/>
       
-      <TextBox Grid.Row="2" Grid.Column="1"
+      <PasswordBox Grid.Row="2" Grid.Column="1"
                x:Name="PwdText" 
                MaxLength="30"
-               Style="{StaticResource InputInfoTextBox}"/>
+               Style="{StaticResource InputInfoPasswordBox}"/>
 
       <Label Grid.Row="3" Grid.Column="0"
              Content="Confirm"
              Style="{StaticResource InputInfoLabel}"/>
       
-      <TextBox Grid.Row="3" Grid.Column="1"
+      <PasswordBox Grid.Row="3" Grid.Column="1"
                x:Name="PwdVaildText" 
                MaxLength="30"
-               Style="{StaticResource InputInfoTextBox}"/>
+               Style="{StaticResource InputInfoPasswordBox}"/>
 
       <Label Grid.Row="4" Grid.ColumnSpan="2"
              x:Name="ResultLabel" HorizontalAlignment="Center" VerticalAlignment="Top"

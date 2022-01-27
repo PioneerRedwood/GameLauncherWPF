@@ -1,0 +1,78 @@
+﻿<Window x:Class="GroguLauncher.Views.LicenseWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GroguLauncher.Views"
+        xmlns:model="clr-namespace:GroguLauncher.Models"
+        mc:Ignorable="d"
+        Height="900" Width="700" 
+        Icon="../Images/Icon.ico"
+        Background="#FF15171E"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        AllowsTransparency="True"
+        WindowStyle="None">
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition/>
+      <ColumnDefinition/>
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="25"/>
+      <RowDefinition/>
+    </Grid.RowDefinitions>
+
+    <!--Title-->
+    <Border Grid.ColumnSpan="3"
+                MouseDown="Border_MouseDown"
+                Background="Transparent">
+      
+      <Grid HorizontalAlignment="Stretch">
+        <Label Content="License" Foreground="White"
+               FontWeight="SemiBold"/>
+        <StackPanel HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+
+          <Button Name="MiniMizeButton" 
+                  Click="MiniMizeButton_Click"
+                  Style="{StaticResource MinimizeButton}"/>
+
+          <Button Name="CloseButton"
+                  Click="CloseButton_Click"
+                  Style="{StaticResource CloseButton}"/>
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <!--License label-->
+    <ListView Grid.Row="1" Grid.ColumnSpan="2" 
+              Background="Transparent"
+              Name="LicenseList">
+      
+      <ListView.ItemContainerStyle>
+        <Style TargetType="{x:Type ListViewItem}">
+          <Setter Property="Focusable" Value="False"/>
+          <Setter Property="IsHitTestVisible" Value="False"/>
+        </Style>
+      </ListView.ItemContainerStyle>
+      
+      <ListView.ItemTemplate>
+        <DataTemplate DataType="{x:Type model:LicenseModel}">
+          <StackPanel Grid.Column="1" Orientation="Vertical">
+            <!--Title-->
+            <Label Foreground="White"
+                   Content="{Binding Title}"
+                   FontSize="17"/>
+
+            <!--Content-->
+            <Label Foreground="White"
+                   Content="{Binding Content}"
+                   FontSize="15"/>
+          </StackPanel>
+
+        </DataTemplate>
+      </ListView.ItemTemplate>
+    </ListView>
+  </Grid>
+</Window>

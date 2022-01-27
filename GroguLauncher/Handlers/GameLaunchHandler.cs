@@ -7,7 +7,6 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace GroguLauncher
@@ -66,21 +65,21 @@ namespace GroguLauncher
 	}
 }
 
-namespace GroguLauncher.Managers
+namespace GroguLauncher.Handlers
 {
-	public class GameLaunchManager
+	public class GameLaunchHandler
 	{
-		private readonly MainWindow _mainWindow;
-		public List<string> GameList { get; private set; }
 		public Dictionary<int, GameModel> AvailableGames { get; private set; }
 
+		private readonly List<string> _gameList;
+		private readonly MainWindow _mainWindow;
 		private GameModel _selectedGame = null;
 
-		public GameLaunchManager(MainWindow _mainWindow)
+		public GameLaunchHandler(MainWindow _mainWindow)
 		{
 			this._mainWindow = _mainWindow;
 
-			GameList = new List<string> { "BrawlMasters", "TowerDefenseGame" };
+			_gameList = new List<string> { "BrawlMasters", "TowerDefenseGame" };
 
 			AvailableGames = new Dictionary<int, GameModel>
 			{
@@ -98,11 +97,10 @@ namespace GroguLauncher.Managers
 				},
 			};
 
-			// TODO: async check for all avable game list
 			InitializeGames();
 		}
 
-		public void InitializeGames()
+		private void InitializeGames()
 		{
 			for (int index = 0; index < AvailableGames.Count; ++index)
 			{
@@ -152,8 +150,8 @@ namespace GroguLauncher.Managers
 
 							File.WriteAllText(temp.VersionFile, token.Result);
 
-							int index = GameList.IndexOf(temp.Name);
-							if(index == _mainWindow.GameListBox.SelectedIndex)
+							int index = _gameList.IndexOf(temp.Name);
+							if (index == _mainWindow.GameListBox.SelectedIndex)
 							{
 								NotifySelectedGameChanged(index);
 							}
@@ -238,7 +236,7 @@ namespace GroguLauncher.Managers
 		{
 			// TODO: delete every files and directories exclude Version.txt
 			string[] filePaths = Directory.GetFiles(_selectedGame.RootPath);
-			foreach(string filePath in filePaths)
+			foreach (string filePath in filePaths)
 			{
 				FileInfo info = new FileInfo(filePath);
 				string lowerName = info.Name.ToLower();
@@ -248,7 +246,7 @@ namespace GroguLauncher.Managers
 				}
 			}
 
-			foreach(string dirPath in Directory.GetDirectories(_selectedGame.RootPath))
+			foreach (string dirPath in Directory.GetDirectories(_selectedGame.RootPath))
 			{
 				Directory.Delete(dirPath, true);
 			}
@@ -278,7 +276,6 @@ namespace GroguLauncher.Managers
 					break;
 			}
 		}
-
 
 	}
 }

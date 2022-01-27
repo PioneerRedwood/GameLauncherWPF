@@ -1,10 +1,5 @@
-﻿using System;
-using System.Diagnostics;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using GroguLauncher.Managers;
 using System.Data;
 
 namespace GroguLauncher.Handlers
@@ -20,14 +15,14 @@ namespace GroguLauncher.Handlers
 
 		public AccountHandler()
 		{
-			MySQLManager.Initialize();
+			MySQLHandler.Initialize();
 		}
 
 		public Task<Dictionary<string, string>> Login(string mail, string pwd)
 		{
 			Dictionary<string, string> userInfo = new Dictionary<string, string>();
 
-			if (MySQLManager.OpenConnection())
+			if (MySQLHandler.OpenConnection())
 			{
 				string query =
 					"SELECT * FROM " + _tableName +
@@ -35,7 +30,7 @@ namespace GroguLauncher.Handlers
 					" AND ACCOUNT_PWD = '" + pwd + "'";
 
 				int result = 0;
-				DataSet ds = MySQLManager.ExecuteDataSet(_dsName, query, ref result);
+				DataSet ds = MySQLHandler.ExecuteDataSet(_dsName, query, ref result);
 
 				switch (result)
 				{
@@ -56,7 +51,7 @@ namespace GroguLauncher.Handlers
 					default:
 						break;
 				}
-				MySQLManager.CloseConnection();
+				MySQLHandler.CloseConnection();
 			}
 
 			return Task.FromResult(userInfo);
@@ -65,11 +60,11 @@ namespace GroguLauncher.Handlers
 		public Task<bool> CheckAccountExsists(string mail, string name)
 		{
 			bool succeed = false;
-			if (MySQLManager.OpenConnection())
+			if (MySQLHandler.OpenConnection())
 			{
 				// TODO: How to distinguish there are accounts the same mail or name
 				// execute query double times? .. that is not good
-				int result = MySQLManager.ExecuteSql(
+				int result = MySQLHandler.ExecuteSql(
 					"SELECT USER_NAME FROM RED_USER " +
 					$"WHERE ACCOUNT_MAIL = '{mail}'" +
 					$" OR USER_NAME = '{name}'");
@@ -92,9 +87,9 @@ namespace GroguLauncher.Handlers
 		public Task<bool> CreateAccount(string mail, string name, string pwd)
 		{
 			bool succeed = false;
-			if (MySQLManager.OpenConnection())
+			if (MySQLHandler.OpenConnection())
 			{
-				int result = MySQLManager.ExecuteNonQuery(
+				int result = MySQLHandler.ExecuteNonQuery(
 							"INSERT INTO RED_USER " +
 							"(ACCOUNT_MAIL, ACCOUNT_PWD, USER_NAME, SIGNUP_DATE, IS_LOGGED_IN)" +
 							$"VALUES('{mail}', '{pwd}', '{name}', now(), 0)");

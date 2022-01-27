@@ -1,11 +1,6 @@
-﻿using GroguLauncher.Managers;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Data;
-using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using GroguLauncher.Models;
 
@@ -35,7 +30,7 @@ namespace GroguLauncher.Handlers
 
 		public SocialHandler()
 		{
-			MySQLManager.Initialize();
+			MySQLHandler.Initialize();
 		}
 
 		#region private - used from only inside of this class
@@ -43,7 +38,7 @@ namespace GroguLauncher.Handlers
 		private async Task<bool> PostAcceptFriendship(int self, int friend)
 		{
 			bool result = false;
-			if (MySQLManager.OpenConnection())
+			if (MySQLHandler.OpenConnection())
 			{
 				bool isFriend = await IsFriend(self, friend);
 				if (isFriend)
@@ -56,12 +51,12 @@ namespace GroguLauncher.Handlers
 					" (REQUESTER_ID, ADDRESSEE_ID, CREATED_TIME)" +
 					$" VALUES({friend}, {self}, NOW())";
 
-				if (MySQLManager.ExecuteNonQuery(query) == 1)
+				if (MySQLHandler.ExecuteNonQuery(query) == 1)
 				{
 					result = true;
 				}
 
-				MySQLManager.CloseConnection();
+				MySQLHandler.CloseConnection();
 			}
 
 			return result;
@@ -71,14 +66,14 @@ namespace GroguLauncher.Handlers
 		{
 			UserModel friend = new UserModel();
 
-			if (MySQLManager.OpenConnection())
+			if (MySQLHandler.OpenConnection())
 			{
 				string query =
 					"SELECT USER_NAME, IS_LOGGED_IN FROM " + _userTable +
 					$" WHERE USER_ID = {id}";
 
 				int result = 0;
-				DataSet ds = MySQLManager.ExecuteDataSet("friends", query, ref result);
+				DataSet ds = MySQLHandler.ExecuteDataSet("friends", query, ref result);
 
 				if (result == 1)
 				{
@@ -101,13 +96,13 @@ namespace GroguLauncher.Handlers
 		{
 			UserModel friend = new UserModel();
 
-			if (MySQLManager.OpenConnection())
+			if (MySQLHandler.OpenConnection())
 			{
 				string query =
 					"SELECT USER_ID, IS_LOGGED_IN FROM " + _userTable +
 					$" WHERE USER_NAME = '{name}'";
 				int result = 0;
-				DataSet ds = MySQLManager.ExecuteDataSet("friend info", query, ref result);
+				DataSet ds = MySQLHandler.ExecuteDataSet("friend info", query, ref result);
 
 				// TODO: !OPTIMIZATION!
 				if (ds.Tables[0].Rows.Count > 0)
@@ -120,7 +115,7 @@ namespace GroguLauncher.Handlers
 					}
 				}
 
-				MySQLManager.CloseConnection();
+				MySQLHandler.CloseConnection();
 			}
 
 			return Task.FromResult(friend);
@@ -130,20 +125,21 @@ namespace GroguLauncher.Handlers
 		{
 			bool isFriend = false;
 
-			if (MySQLManager.OpenConnection())
+			if (MySQLHandler.OpenConnection())
 			{
 				string query =
 					"SELECT REQUESTER_ID FROM " + _friendshipTable +
-					$" WHERE (REQUESTER_ID = {self} AND ADDRESSEE_ID = {other}) OR (REQUESTER_ID = {other} AND ADDRESSEE_ID = {self})";
+					$" WHERE (REQUESTER_ID = {self} AND ADDRESSEE_ID = {other}) " +
+					$"OR (REQUESTER_ID = {other} AND ADDRESSEE_ID = {self})";
 
 				int result = 0;
-				DataSet _ = MySQLManager.ExecuteDataSet("results", query, ref result);
+				DataSet _ = MySQLHandler.ExecuteDataSet("results", query, ref result);
 				if (result != 0)
 				{
 					isFriend = true;
 				}
 
-				MySQLManager.CloseConnection();
+				MySQLHandler.CloseConnection();
 			}
 
 			return Task.FromResult(isFriend);
@@ -157,7 +153,7 @@ namespace GroguLauncher.Handlers
 		{
 			ObservableCollection<UserModel> friends = new ObservableCollection<UserModel>();
 
-			if (MySQLManager.OpenConnection())
+			if (MySQLHandler.OpenConnection())
 			{
 				// TODO: 
 				string query =
@@ -165,7 +161,7 @@ namespace GroguLauncher.Handlers
 					$" WHERE REQUESTER_ID = {int.Parse(App.UserInfo["USER_ID"])} OR ADDRESSEE_ID = {int.Parse(App.UserInfo["USER_ID"])}";
 
 				int result = 0;
-				DataSet ds = MySQLManager.ExecuteDataSet("friends", query, ref result);
+				DataSet ds = MySQLHandler.ExecuteDataSet("friends", query, ref result);
 
 				if (result > 0 && ds.Tables[0].Rows.Count > 0)
 				{
@@ -191,7 +187,7 @@ namespace GroguLauncher.Handlers
 					}
 				}
 
-				MySQLManager.CloseConnection();
+				MySQLHandler.CloseConnection();
 			}
 
 			return friends;
@@ -201,7 +197,7 @@ namespace GroguLauncher.Handlers
 		{
 			bool result = false;
 
-			if (MySQLManager.OpenConnection())
+			if (MySQLHandler.OpenConnection())
 			{
 				UserModel friend = await GetUserByName(friendName);
 
@@ -210,7 +206,7 @@ namespace GroguLauncher.Handlers
 					result = await PostRequestFriendRelation(self, friend.Id, code);
 				}
 
-				MySQLManager.CloseConnection();
+				MySQLHandler.CloseConnection();
 			}
 
 			return result;
@@ -220,7 +216,7 @@ namespace GroguLauncher.Handlers
 		{
 			ObservableCollection<UserModel> requests = new ObservableCollection<UserModel>();
 
-			if (MySQLManager.OpenConnection())
+			if (MySQLHandler.OpenConnection())
 			{
 				// 2022-01-14 This query has a problem !
 				// TODO: Get friend request list, which still not made friendship with me
@@ -230,7 +226,7 @@ namespace GroguLauncher.Handlers
 					$" AND STATUS_CODE = 'R'";
 
 				int result = 0;
-				DataSet ds = MySQLManager.ExecuteDataSet("requests", query, ref result);
+				DataSet ds = MySQLHandler.ExecuteDataSet("requests", query, ref result);
 
 				if (result > 0)
 				{
@@ -251,7 +247,7 @@ namespace GroguLauncher.Handlers
 					}
 				}
 
-				MySQLManager.CloseConnection();
+				MySQLHandler.CloseConnection();
 			}
 
 			return requests;
@@ -261,14 +257,14 @@ namespace GroguLauncher.Handlers
 		{
 			bool result = false;
 
-			if (MySQLManager.OpenConnection())
+			if (MySQLHandler.OpenConnection())
 			{
 				string query =
 					"INSERT INTO " + _friendRelationTable +
 					" (REQUESTER_ID, ADDRESSEE_ID, STATUS_CODE, SPECIFIER_ID, SPECIFIED_DATETIME)" +
 					$" VALUES ({self}, {friend}, '{(char)code}', {self}, NOW())";
 
-				if (MySQLManager.ExecuteNonQuery(query) == 1)
+				if (MySQLHandler.ExecuteNonQuery(query) == 1)
 				{
 					result = true;
 					switch (code)
@@ -288,7 +284,7 @@ namespace GroguLauncher.Handlers
 					}
 				}
 
-				MySQLManager.CloseConnection();
+				MySQLHandler.CloseConnection();
 			}
 
 			return result;
@@ -298,7 +294,7 @@ namespace GroguLauncher.Handlers
 		{
 			ObservableCollection<MessageDataModel> models = null;
 
-			if (MySQLManager.OpenConnection())
+			if (MySQLHandler.OpenConnection())
 			{
 				models = new ObservableCollection<MessageDataModel>();
 				string query =
@@ -308,7 +304,7 @@ namespace GroguLauncher.Handlers
 					$" ORDER BY SENT_DATETIME";
 
 				int result = 0;
-				DataSet ds = MySQLManager.ExecuteDataSet("messages", query, ref result);
+				DataSet ds = MySQLHandler.ExecuteDataSet("messages", query, ref result);
 				if(result > 0 && ds.Tables[0].Rows.Count > 0)
 				{
 					foreach(DataRow row in ds.Tables[0].Rows)
@@ -324,7 +320,7 @@ namespace GroguLauncher.Handlers
 					}
 				}
 
-				MySQLManager.CloseConnection();
+				MySQLHandler.CloseConnection();
 			}
 
 			return models;
@@ -347,18 +343,18 @@ namespace GroguLauncher.Handlers
 		public Task<bool> SendMessage(UserModel friend, string content)
 		{
 			bool result = false;
-			if (MySQLManager.OpenConnection())
+			if (MySQLHandler.OpenConnection())
 			{
 				string query =
 					$"INSERT INTO {_messengerTable} (SENDER_ID, RECEIVER_ID, SENT_DATETIME, CONTENTS)" +
 					$" VALUES({int.Parse(App.UserInfo["USER_ID"].ToString())}, {friend.Id}, NOW(2), \"{content}\")";
 
-				if (MySQLManager.ExecuteNonQuery(query) == 1)
+				if (MySQLHandler.ExecuteNonQuery(query) == 1)
 				{
 					result = true;
 				}
 
-				MySQLManager.CloseConnection();
+				MySQLHandler.CloseConnection();
 			}
 
 			return Task.FromResult(result);

@@ -1,48 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
+﻿using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
-using GroguLauncher.Managers;
 using GroguLauncher.Handlers;
-
 
 namespace GroguLauncher
 {
 	public partial class LoginWindow : Window
 	{
-		public AccountHandler accountHandler { get; private set; }
-		public GoogleAuthHandler googleAuthHandler { get; private set; }
-		public object prevContent { get; private set; }
-		public bool isOAuthSucceed { get; private set; }
+		public AccountHandler AccountHandler { get; private set; }
+
+		public GoogleAuthHandler GoogleAuthHandler { get; private set; }
+
+		public bool IsOAuthSucceed { get; private set; }
+
+		private object _prevContent;
 
 		public LoginWindow()
 		{
 			InitializeComponent();
 
+			// TODO: First Debugging
 			MailText.Text = "A@mail.com";
-			PwdTextBox.Text = "123";
+			PwdBox.Password = "123";
 
-			accountHandler = new AccountHandler();
+			AccountHandler = new AccountHandler();
 
-			prevContent = Content;
+			_prevContent = Content;
 		}
 
 		public void NotifyAuthDone()
 		{
 			// TODO: OAuth done.. what you gonna do?
 			StoreCurrentContent();
-			isOAuthSucceed = true;
+			IsOAuthSucceed = true;
 
 			CreateAccountPage page = new CreateAccountPage(this);
 			Content = page;
@@ -50,15 +40,15 @@ namespace GroguLauncher
 
 		public void StoreCurrentContent()
 		{
-			prevContent = Content;
+			_prevContent = Content;
 		}
 
 		public void LoadPreviousContent()
 		{
-			Content = prevContent;
-			if (isOAuthSucceed)
+			Content = _prevContent;
+			if (IsOAuthSucceed)
 			{
-				MailText.Text = googleAuthHandler.UserInfo["email"];
+				MailText.Text = GoogleAuthHandler.UserInfo["email"];
 			}
 			else
 			{
@@ -68,14 +58,14 @@ namespace GroguLauncher
 
 		private void LoginButton_Click(object sender, RoutedEventArgs e)
 		{
-			Login();
+			TryLogin();
 		}
 
-		private async void Login()
+		private async void TryLogin()
 		{
-			if (MailText.Text.Length > 0 && PwdTextBox.Text.Length > 0)
+			if (MailText.Text.Length > 0 && PwdBox.Password.Length > 0)
 			{
-				App.UserInfo = await accountHandler.Login(MailText.Text, PwdTextBox.Text);
+				App.UserInfo = await AccountHandler.Login(MailText.Text, PwdBox.Password);
 
 				if (App.UserInfo.Count > 0)
 				{
@@ -95,6 +85,7 @@ namespace GroguLauncher
 			}
 		}
 
+		#region OAuth click
 		public void BattlenetAuthButton_Click(object sender, RoutedEventArgs e)
 		{
 			// TODO: 배틀넷 로그인
@@ -103,11 +94,10 @@ namespace GroguLauncher
 
 		public void GoogleAuthButton_Click(object sender, RoutedEventArgs e)
 		{
-			// TODO: 구글 로그인
-			// https://github.com/googlesamples/oauth-apps-for-windows/blob/master/OAuthDesktopApp/
+			// ref https://github.com/googlesamples/oauth-apps-for-windows/blob/master/OAuthDesktopApp/
 
-			googleAuthHandler = new GoogleAuthHandler(this);
-			googleAuthHandler.Authenticate();
+			GoogleAuthHandler = new GoogleAuthHandler(this);
+			GoogleAuthHandler.Authenticate();
 		}
 
 		public void KakaoAuthButton_Click(object sender, RoutedEventArgs e)
@@ -115,6 +105,7 @@ namespace GroguLauncher
 			// TODO: Kakao 로그인
 
 		}
+		#endregion
 
 		private void SignupText_PreviewMouseDown(object sender, MouseButtonEventArgs e)
 		{
@@ -129,13 +120,14 @@ namespace GroguLauncher
 			switch (e.Key)
 			{
 				case Key.Enter:
-					Login();
+					TryLogin();
 					break;
 				default:
 					break;
 			}
 		}
 
+		#region Control bar
 		private void Border_MouseDown(object sender, MouseButtonEventArgs e)
 		{
 			if (e.LeftButton == MouseButtonState.Pressed)
@@ -152,6 +144,7 @@ namespace GroguLauncher
 		{
 			Close();
 		}
+		#endregion
 
 		private void SignupLabel_MouseEnter(object sender, MouseEventArgs e)
 		{

@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 
-using GroguLauncher.Managers;
 using GroguLauncher.Handlers;
 using System.Windows.Controls;
-using System.Data.Linq;
-
 using GroguLauncher.Models;
 
 namespace GroguLauncher
 {
 	public partial class MainWindow : Window
 	{
-		public GameLaunchManager LaunchManager { get; private set; }
+		public GameLaunchHandler LaunchManager { get; private set; }
 		public SocialHandler SocialHandler { get; private set; }
 		public ObservableCollection<UserModel> FriendRequestList { get; private set; }
 		public ObservableCollection<GameModel> GameList { get; private set; }
@@ -32,7 +26,7 @@ namespace GroguLauncher
 			// WARNING! Set non-UI elements first
 			UserNameLabel.Content = App.UserInfo["USER_NAME"];
 
-			LaunchManager = new GameLaunchManager(this);
+			LaunchManager = new GameLaunchHandler(this);
 			SocialHandler = new SocialHandler();
 			GameList = new ObservableCollection<GameModel>();
 
@@ -91,6 +85,7 @@ namespace GroguLauncher
 			}
 		}
 
+		#region Profile grid
 		private void ProfileGrid_MouseEnter(object sender, MouseEventArgs e)
 		{
 			//ProfileGrid.Background = new SolidColorBrush(Color.FromArgb(0, 0x7a, 0x7a, 0x78));
@@ -101,16 +96,18 @@ namespace GroguLauncher
 		{
 			ProfileGrid.Background = null;
 		}
+		#endregion
 
 		private void OpenSearchFriendWindowButton_Click(object sender, RoutedEventArgs e)
 		{
-			SearchFriendWindow window = new SearchFriendWindow(SocialHandler);
-			window.ShowDialog();
+			SearchFriendWindow searchFriendWindow = new SearchFriendWindow(SocialHandler);
+
+			searchFriendWindow.ShowDialog();
 		}
 
 		private void FriendRequestListGrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
 		{
-			FriendRequestListWindow window = new FriendRequestListWindow(FriendRequestList);
+			FriendRequestListWindow window = new FriendRequestListWindow(FriendRequestList, SocialHandler);
 			window.ShowDialog();
 
 			SocialSectorUpdate();
@@ -131,6 +128,7 @@ namespace GroguLauncher
 			LaunchManager.NotifySelectedGameChanged(GameListBox.SelectedIndex);
 		}
 
+		#region Control bar
 		private void Border_MouseDown(object sender, MouseButtonEventArgs e)
 		{
 			if (e.LeftButton == MouseButtonState.Pressed)
@@ -148,7 +146,7 @@ namespace GroguLauncher
 		{
 			Application.Current.Shutdown();
 		}
-
+		#endregion
 
 		#region When FriendListBox Double Clciked, Show MessageWindow
 		// ref https://docs.microsoft.com/ko-kr/dotnet/desktop/wpf/graphics-multimedia/hit-testing-in-the-visual-layer?view=netframeworkdesktop-4.8
@@ -210,13 +208,16 @@ namespace GroguLauncher
 				{
 					_messageWindow.WindowState = WindowState.Normal;
 				}
+				_messageWindow.SetCurrentSelectedUser(model);
 				_messageWindow.Focus();
 			}
 			else
 			{
 				_messageWindow = new Views.MessageWindow(this, model);
+				_messageWindow.SetCurrentSelectedUser(model);
+
 				_messageWindow.Show();
-				_messageWindow.Focus();
+				//_messageWindow.Focus();
 			}
 		}
 
@@ -228,5 +229,12 @@ namespace GroguLauncher
 
 		//public void SetMessageWindow
 		#endregion
+
+		private void LicenseApp_Click(object sender, RoutedEventArgs e)
+		{
+			// open the license window
+			Views.LicenseWindow licenseWindow = new Views.LicenseWindow();
+			licenseWindow.ShowDialog();
+		}
 	}
 }
