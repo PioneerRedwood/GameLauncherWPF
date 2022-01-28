@@ -6,10 +6,11 @@
         xmlns:local="clr-namespace:GroguLauncher"
         xmlns:model="clr-namespace:GroguLauncher.Models"
         mc:Ignorable="d"
-        WindowStartupLocation="Manual"
+        WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
         WindowStyle="None"
-        Title="FriendRequestListWindow" Height="600" Width="400"
+        Title="FriendRequestListWindow" 
+        Height="600" Width="400"
         Background="#15171e">
 
     <Grid>
@@ -39,7 +40,6 @@
                             BorderThickness="0"
                             Click="CloseButton_Click"/>
                 </StackPanel>
-
             </Grid>
         </Border>
         

@@ -84,9 +84,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Handlers\LobbyHandler.cs" />
+    <Compile Include="Models\ChatDataModel.cs" />
     <Compile Include="Models\LicenseModel.cs" />
     <Compile Include="Models\MessageModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Compile Include="Views\ChattingLobbyWindow.xaml.cs">
+      <DependentUpon>ChattingLobbyWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\FriendRequestListWindow.xaml.cs">
       <DependentUpon>FriendRequestListWindow.xaml</DependentUpon>
     </Compile>
@@ -113,6 +118,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\ListResourceDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ChattingLobbyWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

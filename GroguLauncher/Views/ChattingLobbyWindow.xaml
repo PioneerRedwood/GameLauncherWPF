@@ -1,0 +1,110 @@
+﻿<Window x:Class="GroguLauncher.Views.ChattingLobbyWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GroguLauncher.Views"
+        xmlns:model="clr-namespace:GroguLauncher.Models"
+        mc:Ignorable="d"
+        Title="ChattingLobbyWindow" 
+        Height="400"
+        Width="300"
+        WindowStyle="None"
+        Background="#15171E"
+        WindowStartupLocation="CenterOwner"
+        AllowsTransparency="True" 
+        KeyDown="Window_KeyDown">
+  <Window.Resources>
+    
+  </Window.Resources>
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="25"/>
+      <RowDefinition />
+      <RowDefinition Height="50"/>
+    </Grid.RowDefinitions>
+    
+    <!--Control bar-->
+    <Border Grid.ColumnSpan="3"
+                MouseDown="Border_MouseDown"
+                Background="Transparent">
+
+      <Grid HorizontalAlignment="Stretch">
+
+        <StackPanel HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+
+          <Button Name="MiniMizeButton" 
+                  Click="MiniMizeButton_Click"
+                  Style="{StaticResource MinimizeButton}"/>
+
+          <Button Name="CloseButton"
+                  Click="CloseButton_Click"
+                  Style="{StaticResource CloseButton}"/>
+        </StackPanel>
+      </Grid>
+    </Border>
+    
+    <!--Chattings-->
+    <Grid Grid.Row="1">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="25"/>
+        <RowDefinition/>
+      </Grid.RowDefinitions>
+
+      <Label Name="ChannelInfoLabel"
+             Foreground="White"
+             Content="Channel Info Label"/>
+      
+      <ListView Grid.Row="1" 
+                Name="ChatListView"
+                Background="Transparent">
+        <ListView.ItemContainerStyle>
+          <Style TargetType="{x:Type ListViewItem}">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="IsHitTestVisible" Value="False"/>
+          </Style>
+        </ListView.ItemContainerStyle>
+
+        <ListView.ItemTemplate>
+          
+          <DataTemplate DataType="{x:Type model:ChatDataModel}">
+            <Grid>
+              <!--<Grid.RowDefinitions>
+                <RowDefinition Height="25"/>
+                <RowDefinition/>
+              </Grid.RowDefinitions>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="25"/>
+                <ColumnDefinition/>
+              </Grid.ColumnDefinitions>-->
+              
+              <!--Channel Name-->
+              
+              <!--Sender-->
+              
+              <!--Content-->
+              <Label Foreground="White"
+                     FontSize="12"
+                     Content="{Binding Content}"/>
+
+            </Grid>
+          </DataTemplate>
+        </ListView.ItemTemplate>
+        
+      </ListView>
+    </Grid>
+    
+        
+    <!--TextBox-->
+    <TextBox Grid.Row="2" 
+             Name="SendTextBox"
+             Background="Transparent"
+             Foreground="White"
+             MaxHeight="40"
+             MaxLength="255"
+             CaretBrush="White"
+             GotFocus="SendTextBox_GotFocus"/>
+  </Grid>
+</Window>

@@ -182,8 +182,6 @@
                      Style="{StaticResource MessageContentsLabel}"
                      Content="{Binding Message}"/>
 
-              <!--Ownership?-->
-
             </Grid>
 
           </DataTemplate>

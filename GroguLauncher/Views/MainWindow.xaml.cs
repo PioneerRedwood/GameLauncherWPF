@@ -18,6 +18,8 @@ namespace GroguLauncher
 
 		private Views.MessageWindow _messageWindow;
 
+		private Views.ChattingLobbyWindow _chattingLobbyWindow;
+
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -227,7 +229,6 @@ namespace GroguLauncher
 			Focus();
 		}
 
-		//public void SetMessageWindow
 		#endregion
 
 		private void LicenseApp_Click(object sender, RoutedEventArgs e)
@@ -235,6 +236,32 @@ namespace GroguLauncher
 			// open the license window
 			Views.LicenseWindow licenseWindow = new Views.LicenseWindow();
 			licenseWindow.ShowDialog();
+		}
+
+		private void OpenChattingLobbyWindowButton_Click(object sender, RoutedEventArgs e)
+		{
+			if(_chattingLobbyWindow != null)
+			{
+				if(_chattingLobbyWindow.WindowState == WindowState.Minimized)
+				{
+					_chattingLobbyWindow.WindowState = WindowState.Normal;
+				}
+
+				//_chattingLobbyWindow.Focus();
+				_chattingLobbyWindow.Activate();
+			}
+			else
+			{
+				_chattingLobbyWindow = new Views.ChattingLobbyWindow(this);
+
+				_chattingLobbyWindow.Show();
+			}
+		}
+
+		public void OnChattingLobbyWindowClosed()
+		{
+			_chattingLobbyWindow = null;
+			Focus();
 		}
 	}
 }

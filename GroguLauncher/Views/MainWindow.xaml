@@ -7,7 +7,9 @@
         xmlns:model="clr-namespace:GroguLauncher.Models"
         xmlns:cefsharp="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
-        mc:Ignorable="d" Height="900" Width="1600" Icon="../Images/Icon.ico"
+        mc:Ignorable="d" 
+        Height="900" Width="1600" 
+        Icon="../Images/Icon.ico"
         
         Background="#FF15171E"
         ResizeMode="NoResize"
@@ -64,7 +66,7 @@
       <Button HorizontalAlignment="Left" MinWidth="100" Margin="10,0,0,10" Background="Transparent" 
               FontSize="28" Foreground="#FF148EFF" BorderThickness="0" Width="62"
               Content="G" FontWeight="SemiBold" Height="45" VerticalAlignment="Bottom">
-        
+
         <b:Interaction.Triggers>
           <b:EventTrigger EventName="Click">
             <b:ChangePropertyAction TargetName="contextMenu"
@@ -72,7 +74,7 @@
                                     Value="True"/>
           </b:EventTrigger>
         </b:Interaction.Triggers>
-        
+
         <Button.ContextMenu>
           <ContextMenu x:Name="contextMenu"
                        Background="#FF15171E">
@@ -82,7 +84,7 @@
                       Foreground="White"
                       Click="CloseButton_Click">
             </MenuItem>
-            
+
             <Separator/>
 
             <MenuItem Header="License"
@@ -213,6 +215,17 @@
                         FontSize="20" FontWeight="Bold" />
       </Grid>
 
+      <Button Name="OpenChattingLobbyWindowButton"
+              Background="#19DDDDDD"
+              HorizontalAlignment="Left" 
+              TextBlock.FontSize="18"
+              FontWeight="Bold" 
+              Foreground="White" 
+              Margin="5"
+              Height="50"
+              Click="OpenChattingLobbyWindowButton_Click" 
+              BorderThickness="0" 
+              Content="Enter Lobby"/>
 
     </StackPanel>
 
