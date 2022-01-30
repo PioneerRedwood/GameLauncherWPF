@@ -20,9 +20,6 @@ using System.Windows.Threading;
 
 namespace GroguLauncher.Views
 {
-	/// <summary>
-	/// ChattingLobbyWindow.xaml에 대한 상호 작용 논리
-	/// </summary>
 	public partial class ChattingLobbyWindow : Window
 	{
 		private readonly MainWindow _mainWindow;
@@ -60,6 +57,8 @@ namespace GroguLauncher.Views
 			{
 				_lobbyHandler = new LobbyHandler(_queue);
 				StartConnectToServer();
+
+				SendTextBox.Focus();
 			};
 
 			Closed += (object sender, EventArgs e) =>
@@ -117,6 +116,8 @@ namespace GroguLauncher.Views
 		private void NotifyNewMessageComing(string message)
 		{
 			_chatModels.Add(new ChatDataModel(message));
+
+			// TODO: auto scroll down the last message
 		}
 		#endregion
 
@@ -124,7 +125,9 @@ namespace GroguLauncher.Views
 		{
 			if (e.Key == Key.Enter && SendTextBox.Text.Length > 0)
 			{
-				_lobbyHandler.Send(SendTextBox.Text);
+				_lobbyHandler.SendGeneralMessage("[" + App.UserInfo["USER_ID"].ToString() + "]: " + SendTextBox.Text);
+
+				SendTextBox.Text = "";
 			}
 		}
 	}

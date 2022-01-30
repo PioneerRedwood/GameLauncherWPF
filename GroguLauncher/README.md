@@ -1,5 +1,5 @@
 # GroguLauncher
-updated: 2022-01-28
+updated: 2022-01-30
 
 ## Lastest Photos
 ### Login Window
@@ -31,4 +31,4 @@ updated: 2022-01-28
 
 ### Chatting Lobby Window
 
-<img src="https://user-images.githubusercontent.com/45554623/151488980-53318ed7-7694-4539-a9fc-1c50e567d200.png">
+<img src="https://user-images.githubusercontent.com/45554623/151697956-65576be8-70e3-4bfd-b1c7-b91241cd4cb0.png">
