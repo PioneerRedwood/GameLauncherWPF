@@ -103,8 +103,17 @@ namespace GroguLauncher.Views
 		#region Network wrapper
 		private void StartConnectToServer()
 		{
-			_lobbyHandler.Start();
-			_messagePumpThread.Start();
+			if (_lobbyHandler.Start())
+			{
+				_messagePumpThread.Start();
+			}
+			else
+			{
+				if(MessageBox.Show("Can't connect to the lobby server!") == MessageBoxResult.OK)
+				{
+					Close();
+				}
+			}
 		}
 
 		private void Disconnect()

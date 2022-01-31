@@ -145,6 +145,30 @@ namespace GroguLauncher.Handlers
 			return Task.FromResult(isFriend);
 		}
 
+		private Task<bool> HasDenied(int targetID)
+		{
+			bool hasDenied = false;
+
+			if (MySQLHandler.OpenConnection())
+			{
+				string query =
+					"SELECT REQUESTER_ID FROM " + _friendRelationTable +
+					$" WHERE ADDRESSEE_ID = {targetID}" +
+					$" AND REQUESTER_ID = {int.Parse(App.UserInfo["USER_ID"])} AND STATUS_CODE = 'D' ";
+
+				int result = 0;
+				DataSet _ = MySQLHandler.ExecuteDataSet("results", query, ref result);
+				if(result != 0)
+				{
+					hasDenied = true;
+				}
+
+				MySQLHandler.CloseConnection();
+			}
+
+			return Task.FromResult(hasDenied);
+		}
+
 		#endregion
 
 		#region public - can be used from outside
@@ -218,8 +242,6 @@ namespace GroguLauncher.Handlers
 
 			if (MySQLHandler.OpenConnection())
 			{
-				// 2022-01-14 This query has a problem !
-				// TODO: Get friend request list, which still not made friendship with me
 				string query =
 					"SELECT REQUESTER_ID FROM " + _friendRelationTable +
 					$" WHERE ADDRESSEE_ID = {int.Parse(App.UserInfo["USER_ID"])}" +
@@ -230,7 +252,6 @@ namespace GroguLauncher.Handlers
 
 				if (result > 0)
 				{
-					// TODO: !OPTIMIZATION!
 					if (ds.Tables[0].Rows.Count > 0)
 					{
 						foreach (DataRow row in ds.Tables[0].Rows)
@@ -239,7 +260,8 @@ namespace GroguLauncher.Handlers
 							UserModel friend = await GetUserByID(int.Parse(row["REQUESTER_ID"].ToString()));
 							friend.Id = int.Parse(row["REQUESTER_ID"].ToString());
 
-							if (!await IsFriend(int.Parse(App.UserInfo["USER_ID"]), friend.Id))
+							if (!await IsFriend(int.Parse(App.UserInfo["USER_ID"]), friend.Id)
+								&& !await HasDenied(friend.Id))
 							{
 								requests.Add(friend);
 							}

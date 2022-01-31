@@ -150,7 +150,7 @@ namespace GroguLauncher
 		}
 		#endregion
 
-		#region When FriendListBox Double Clciked, Show MessageWindow
+		#region When FriendListBox Double Clicked, Show MessageWindow
 		// ref https://docs.microsoft.com/ko-kr/dotnet/desktop/wpf/graphics-multimedia/hit-testing-in-the-visual-layer?view=netframeworkdesktop-4.8
 		private void FriendListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
 		{

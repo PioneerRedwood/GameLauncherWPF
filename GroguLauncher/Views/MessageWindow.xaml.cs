@@ -14,7 +14,7 @@ namespace GroguLauncher.Views
 
 		private readonly SocialHandler _socialHandler;
 
-		private ObservableCollection<UserModel> _contacts;
+		private ObservableCollection<UserModel> _users;
 
 		private UserModel _selectedUser;
 
@@ -28,24 +28,19 @@ namespace GroguLauncher.Views
 			_socialHandler = new SocialHandler();
 
 			GetContactList();
-			foreach (UserModel model in _contacts)
+
+			GetSelectedUserMessage(selectedUser);
+
+			Closed += (object sender, EventArgs e) =>
 			{
-				if (_selectedUser.Equals(model))
-				{
-					SpeakToListBox.SelectedItem = model;
-					break;
-				}
-			}
-
-			GetSelectedUserMessage();
-
-			Closed += MessageWindow_OnClosed;
+				_mainWindow.OnMessageWindowClosed();
+			};
 		}
 
 		private bool IsInContacts(UserModel model)
 		{
 			bool result = false;
-			foreach (UserModel user in _contacts)
+			foreach (UserModel user in _users)
 			{
 				if (model.Equals(user))
 				{
@@ -60,28 +55,31 @@ namespace GroguLauncher.Views
 		{
 			if (model != null && IsInContacts(model))
 			{
-				_selectedUser = model;
-				GetSelectedUserMessage();
+				GetSelectedUserMessage(model);
+
+				foreach (UserModel user in _users)
+				{
+					if (_selectedUser.Equals(user))
+					{
+						SpeakToListBox.SelectedItem = user;
+						break;
+					}
+				}
 
 				AutoScrollToEnd();
 			}
 		}
 
-		private void MessageWindow_OnClosed(object sender, EventArgs e)
-		{
-			_mainWindow.OnMessageWindowClosed();
-		}
-
 		private async void GetContactList()
 		{
-			_contacts = await _socialHandler.GetFriendList();
+			_users = await _socialHandler.GetFriendList();
 
-			SpeakToListBox.ItemsSource = _contacts;
+			SpeakToListBox.ItemsSource = _users;
 		}
 
-		private async void GetSelectedUserMessage()
+		private async void GetSelectedUserMessage(UserModel model)
 		{
-			_selectedUser = (UserModel)SpeakToListBox.SelectedItem;
+			_selectedUser = model;
 
 			SpeakToNameLabel.Content = _selectedUser.Name;
 
@@ -90,7 +88,7 @@ namespace GroguLauncher.Views
 
 		private void SpeakToListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			GetSelectedUserMessage();
+			GetSelectedUserMessage((UserModel)SpeakToListBox.SelectedItem);
 
 			AutoScrollToEnd();
 		}
@@ -99,8 +97,8 @@ namespace GroguLauncher.Views
 		{
 			if (MessageListView.Items.Count > 0)
 			{
-				MessageListView.SelectedItem = MessageListView.Items.GetItemAt(MessageListView.Items.Count - 1);
-				MessageListView.ScrollIntoView(MessageListView.SelectedItem);
+				object item = MessageListView.Items.GetItemAt(MessageListView.Items.Count - 1);
+				MessageListView.ScrollIntoView(item);
 			}
 		}
 
@@ -111,6 +109,7 @@ namespace GroguLauncher.Views
 				if (await _socialHandler.SendMessage(_selectedUser, MessageText.Text))
 				{
 					MessageText.Text = "";
+					MessageListView.ItemsSource = await _socialHandler.GetMessageData(_selectedUser.Id);
 				}
 				else
 				{

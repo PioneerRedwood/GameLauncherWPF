@@ -35,7 +35,7 @@ namespace GroguLauncher.Handlers
 				Size = size;
 			}
 		}
-		
+
 		private const uint NetworkID = uint.MaxValue;
 		private const int BufferSize = 2048;
 		private const string ServerAddress = "127.0.0.1";
@@ -59,10 +59,10 @@ namespace GroguLauncher.Handlers
 			_readBuffer = new byte[BufferSize];
 		}
 
-		public void Start()
+		public bool Start()
 		{
 			//connect to server
-			Connect();
+			return Connect();
 		}
 
 		public void Stop()
@@ -99,7 +99,17 @@ namespace GroguLauncher.Handlers
 		private void ConnectCallback(IAsyncResult ar)
 		{
 			Socket socket = (Socket)ar.AsyncState;
-			socket.EndConnect(ar);
+			try
+			{
+				socket.EndConnect(ar);
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e);
+				return;
+			}
+
+
 			if (socket.Connected)
 			{
 				Console.WriteLine("Connected");
