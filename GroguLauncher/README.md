@@ -1,5 +1,5 @@
 # GroguLauncher
-updated: 2022-01-30
+updated: 2022-02-02
 
 ## Lastest Photos
 ### Login Window
@@ -12,7 +12,7 @@ updated: 2022-01-30
 
 ### Main Window
 
-<img src="https://user-images.githubusercontent.com/45554623/151307345-57eeef38-b75b-4e04-add1-9b843c6931e2.png"/>
+<img src="https://user-images.githubusercontent.com/45554623/152109894-e38fc1e5-f79f-45de-a2aa-8c620e52690a.png"/>
 
 ### Search Friend Window
 

@@ -84,7 +84,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Cef\CefHandler.cs" />
+    <Compile Include="Cef\CefLocalSchemeHandler.cs" />
+    <Compile Include="Cef\CefSettings.cs" />
     <Compile Include="Handlers\LobbyHandler.cs" />
+    <Compile Include="Cef\CefLocalSchemeHandlerFactory.cs" />
     <Compile Include="Models\ChatDataModel.cs" />
     <Compile Include="Models\LicenseModel.cs" />
     <Compile Include="Models\MessageModel.cs" />
@@ -219,9 +223,7 @@
   <ItemGroup>
     <Resource Include="Images\Icon.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Commands\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="Resources\Licenses\CefSharp.license">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -244,6 +246,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Handlers\GameLaunchHandler.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\Htmls\BrawlMasters.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Htmls\TowerDefenseGame.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

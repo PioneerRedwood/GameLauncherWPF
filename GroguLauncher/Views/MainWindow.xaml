@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GroguLauncher"
         xmlns:model="clr-namespace:GroguLauncher.Models"
-        xmlns:cefsharp="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
+        xmlns:cef="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d" 
         Height="900" Width="1600" 
@@ -128,7 +128,7 @@
     </ListBox>
 
     <!--Game panel-->
-    <Grid Grid.Row="3" Background="#19DDDDDD" Margin="5" >
+    <Grid Grid.Row="3" Background="Transparent" Margin="5" >
       <Image VerticalAlignment="Top" HorizontalAlignment="Center" 
                    MinWidth="150" MinHeight="150" Margin="10,10,10,0" 
                    Source="../Images/Icon.ico" Height="150" Width="150"/>
@@ -279,12 +279,12 @@
 
     <!--New feed panel // CefSharp-->
     <Grid Grid.Row="3" Grid.Column="1" 
-              Background="#19DDDDDD" HorizontalAlignment="Stretch" 
+              Background="Transparent" HorizontalAlignment="Stretch" 
               VerticalAlignment="Stretch" Margin="5,5,5,10">
       <Grid>
-        <cefsharp:ChromiumWebBrowser Name="MainBrowser" Address="github.com/PioneerRedwood">
+        <cef:ChromiumWebBrowser Name="CefBrowser" 
+                                Address="github.com/PioneerRedwood"/>
 
-        </cefsharp:ChromiumWebBrowser>
       </Grid>
     </Grid>
   </Grid>

@@ -2,10 +2,13 @@
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Controls;
+
+using CefSharp;
 
 using GroguLauncher.Handlers;
-using System.Windows.Controls;
 using GroguLauncher.Models;
+using System;
 
 namespace GroguLauncher
 {
@@ -20,12 +23,20 @@ namespace GroguLauncher
 
 		private Views.ChattingLobbyWindow _chattingLobbyWindow;
 
+		private Cef.CefHandler _cefHandler;
+
 		public MainWindow()
 		{
+			// TODO: CefSharp.Cef.Initialize()
+			if (!InitCefSharp())
+			{
+				Close();
+				return;
+			}
+
 			InitializeComponent();
 			DataContext = this;
 
-			// WARNING! Set non-UI elements first
 			UserNameLabel.Content = App.UserInfo["USER_NAME"];
 
 			LaunchManager = new GameLaunchHandler(this);
@@ -86,8 +97,35 @@ namespace GroguLauncher
 					break;
 			}
 		}
+		
+		#region CefSharp 
+		private bool InitCefSharp()
+		{
+			bool result = false;
 
-		#region Profile grid
+			if (_cefHandler == null)
+			{
+				_cefHandler = new Cef.CefHandler();
+			}
+
+			if (!CefSharp.Cef.IsInitialized)
+			{
+				if (CefSharp.Cef.Initialize(_cefHandler.Settings))
+				{
+					result = true;
+				}
+			}
+
+			return result;
+		}
+
+		public void CefBrowser_UrlChanged(string url)
+		{
+			CefBrowser.Load(url);
+		}
+		#endregion
+
+		#region Profile mouse event
 		private void ProfileGrid_MouseEnter(object sender, MouseEventArgs e)
 		{
 			//ProfileGrid.Background = new SolidColorBrush(Color.FromArgb(0, 0x7a, 0x7a, 0x78));
@@ -203,10 +241,10 @@ namespace GroguLauncher
 
 		private void ShowMessageWindow(UserModel model)
 		{
-			if(_messageWindow != null)
+			if (_messageWindow != null)
 			{
 				// TODO: message window set this model on top
-				if(_messageWindow.WindowState == WindowState.Minimized)
+				if (_messageWindow.WindowState == WindowState.Minimized)
 				{
 					_messageWindow.WindowState = WindowState.Normal;
 				}
@@ -240,9 +278,9 @@ namespace GroguLauncher
 
 		private void OpenChattingLobbyWindowButton_Click(object sender, RoutedEventArgs e)
 		{
-			if(_chattingLobbyWindow != null)
+			if (_chattingLobbyWindow != null)
 			{
-				if(_chattingLobbyWindow.WindowState == WindowState.Minimized)
+				if (_chattingLobbyWindow.WindowState == WindowState.Minimized)
 				{
 					_chattingLobbyWindow.WindowState = WindowState.Normal;
 				}
