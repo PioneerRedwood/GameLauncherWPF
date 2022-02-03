@@ -6,17 +6,15 @@
         xmlns:local="clr-namespace:GroguLauncher"
         xmlns:model="clr-namespace:GroguLauncher.Models"
         xmlns:cef="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
-        xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:b="http://schemas.microsoft.com/xaml/behaviors" 
         mc:Ignorable="d" 
-        Height="900" Width="1600" 
+        Height="900" Width="1400"
         Icon="../Images/Icon.ico"
-        
         Background="#FF15171E"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
         AllowsTransparency="True"
         WindowStyle="None">
-
   <Window.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -33,7 +31,7 @@
       <RowDefinition Height="10"/>
     </Grid.RowDefinitions>
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="300"/>
+      <ColumnDefinition Width="350"/>
       <ColumnDefinition/>
       <ColumnDefinition Width="300" />
     </Grid.ColumnDefinitions>

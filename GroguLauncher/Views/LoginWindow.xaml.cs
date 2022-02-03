@@ -68,7 +68,7 @@ namespace GroguLauncher
 				// TODO: Login result type as enum
 				App.UserInfo = await AccountHandler.Login(MailText.Text, PwdBox.Password);
 
-				if (App.UserInfo["USER_ID"] != null)
+				if (App.UserInfo.ContainsKey("USER_ID"))
 				{
 					MainWindow window = new MainWindow();
 

@@ -1,0 +1,18 @@
+.headline {
+  background: #80808039;
+  border-radius: 3px;
+  text-align: center;
+  height: 200px;
+}
+
+.card-news {
+  background: #80808039;
+  border-radius: 3px;
+  text-align: center;
+}
+
+.recent-news {
+  background: #80808039;
+  border-radius: 3px;
+  text-align: center;
+}
