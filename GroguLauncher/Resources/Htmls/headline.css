@@ -1,0 +1,42 @@
+﻿.headline {
+  display: flex;
+  border-radius: 3px;
+  text-align: center;
+  margin-top: 50px;
+  height: 300px;
+
+  margin-top: 25px;
+}
+
+.headline .thumbnail {
+  background: #ff000010;
+  width: 75%;
+}
+
+.headline .description {
+  background: #80808039;
+  width: 50%;
+  height: 100%;
+  display: flex;
+  margin: 0px 0px 0px 5px;
+  flex-direction: column;
+}
+
+.headline .description .category {
+  margin: 5px 0px 0px 5px;
+  text-align: left;
+  color: grey;
+}
+
+.headline .description .title {
+  margin: 2px 0px 0px 5px;
+  text-align: left;
+  color: white;
+  font-size: 21px;
+}
+
+.headline .description > .content {
+  margin: 2px 0px 0px 5px;
+  text-align: left;
+  color: white;
+}

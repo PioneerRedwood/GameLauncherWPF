@@ -33,7 +33,7 @@
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="350"/>
       <ColumnDefinition/>
-      <ColumnDefinition Width="300" />
+      <ColumnDefinition Width="300"/>
     </Grid.ColumnDefinitions>
 
     <!--Title-->
@@ -277,11 +277,13 @@
 
     <!--New feed panel // CefSharp-->
     <Grid Grid.Row="3" Grid.Column="1" 
-              Background="Transparent" HorizontalAlignment="Stretch" 
-              VerticalAlignment="Stretch" Margin="5,5,5,10">
+          Background="Transparent" HorizontalAlignment="Stretch" 
+          VerticalAlignment="Stretch" Margin="5,5,5,10">
       <Grid>
+        
         <cef:ChromiumWebBrowser Name="CefBrowser" 
-                                Address="github.com/PioneerRedwood"/>
+                                Address="github.com/PioneerRedwood">
+        </cef:ChromiumWebBrowser>
 
       </Grid>
     </Grid>

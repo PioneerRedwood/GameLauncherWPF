@@ -1,18 +1,46 @@
-.headline {
-  background: #80808039;
-  border-radius: 3px;
-  text-align: center;
-  height: 200px;
-}
-
 .card-news {
-  background: #80808039;
   border-radius: 3px;
+
   text-align: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 250px 250px;
+
+  row-gap: 10px;
+  column-gap: 10px;
+
+  margin-top: 100px;
 }
 
-.recent-news {
+.card-news .item {
   background: #80808039;
   border-radius: 3px;
-  text-align: center;
 }
+
+.card-news .card {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-news .thumbnail {
+  background-color: wheat;
+  height: 175px;
+}
+
+.card-news .description {
+  margin: 0px 0px 0px 5px;
+  text-align: left;
+  height: 65px;
+}
+
+.card-news .description .category {
+  margin: 5px 0px 0px 5px;
+  color: grey;
+}
+
+.card-news .description .title {
+  margin: 5px 0px 0px 5px;
+  font-weight: bold;
+  color: white;
+}
+

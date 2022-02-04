@@ -1,0 +1,46 @@
+﻿.recent-news {
+  border-radius: 3px;
+  
+  display: flex;
+  flex-direction: column;
+  row-gap: 50px;
+
+  align-items: center;
+
+  margin-top: 100px;
+}
+
+.recent-news .item {
+  background: #80808039;
+  border-radius: 3px;
+}
+
+.recent-news .feed {
+  display: flex;
+  flex-direction: column;
+}
+
+.recent-news .thumbnail {
+  background-color: wheat;
+  width: 400px;
+  height: 300px;
+}
+
+.recent-news .description {
+  margin: 0px 0px 0px 5px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+}
+
+.recent-news .description .title{
+  margin: 5px 0px 0px 5px;
+  font-weight: bold;
+  color: white;
+}
+
+.recent-news .description .date{
+  margin: 5px 0px 0px 5px;
+  font-weight: bold;
+  color: grey;
+}
