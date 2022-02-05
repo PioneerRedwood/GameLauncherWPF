@@ -9,6 +9,8 @@ using CefSharp;
 using GroguLauncher.Handlers;
 using GroguLauncher.Models;
 using System;
+using System.ComponentModel;
+using System.Windows.Threading;
 
 namespace GroguLauncher
 {
@@ -19,13 +21,15 @@ namespace GroguLauncher
 		public ObservableCollection<UserModel> FriendRequestList { get; private set; }
 		public ObservableCollection<GameModel> GameList { get; private set; }
 
+		private readonly LoginWindow _loginWindow;
+
 		private Views.MessageWindow _messageWindow;
 
 		private Views.ChattingLobbyWindow _chattingLobbyWindow;
 
 		private Cef.CefHandler _cefHandler;
 
-		public MainWindow()
+		public MainWindow(LoginWindow loginWindow)
 		{
 			// TODO: CefSharp.Cef.Initialize()
 			if (!InitCefSharp())
@@ -37,7 +41,7 @@ namespace GroguLauncher
 			InitializeComponent();
 			DataContext = this;
 
-			UserNameLabel.Content = App.UserInfo["USER_NAME"];
+			_loginWindow = loginWindow;
 
 			LaunchManager = new GameLaunchHandler(this);
 			SocialHandler = new SocialHandler();
@@ -52,6 +56,28 @@ namespace GroguLauncher
 			GameListBox.ItemsSource = GameList;
 
 			Loaded += Window_Loaded;
+
+			IsVisibleChanged += MainWindow_IsVisibleChanged;
+		}
+
+		private void MainWindow_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+		{
+			if (App.UserInfo.ContainsKey("USER_ID"))
+			{
+				UserNameLabel.Content = App.UserInfo["USER_NAME"];
+
+				SocialSectorUpdate();
+
+				// Version check
+			}
+		}
+
+		// ref https://social.msdn.microsoft.com/Forums/en-US/85faaad1-a092-4bfe-b934-2d0ae917b654/reopen-a-window-in-wpf?forum=wpf
+		protected override void OnClosing(CancelEventArgs e)
+		{
+			e.Cancel = true;
+			Dispatcher dispatcher = Application.Current.Dispatcher;
+			dispatcher.InvokeAsync(new Action(() => { Hide(); }));
 		}
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -157,8 +183,7 @@ namespace GroguLauncher
 		{
 			App.UserInfo.Clear();
 
-			LoginWindow window = new LoginWindow();
-			window.Show();
+			_loginWindow.Show();
 
 			Close();
 		}

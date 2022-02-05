@@ -1,6 +1,9 @@
-﻿using System.Windows;
+﻿using System;
+using System.ComponentModel;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using GroguLauncher.Handlers;
 
 namespace GroguLauncher
@@ -8,12 +11,11 @@ namespace GroguLauncher
 	public partial class LoginWindow : Window
 	{
 		public AccountHandler AccountHandler { get; private set; }
-
 		public GoogleAuthHandler GoogleAuthHandler { get; private set; }
-
 		public bool IsOAuthSucceed { get; private set; }
 
 		private object _prevContent;
+		private MainWindow _mainWindow = null;
 
 		public LoginWindow()
 		{
@@ -26,6 +28,14 @@ namespace GroguLauncher
 			AccountHandler = new AccountHandler();
 
 			_prevContent = Content;
+		}
+
+		// ref https://social.msdn.microsoft.com/Forums/en-US/85faaad1-a092-4bfe-b934-2d0ae917b654/reopen-a-window-in-wpf?forum=wpf
+		protected override void OnClosing(CancelEventArgs e)
+		{
+			e.Cancel = true;
+			Dispatcher dispatcher = Application.Current.Dispatcher;
+			dispatcher.InvokeAsync(new Action(() => { Hide(); }));
 		}
 
 		public void NotifyAuthDone()
@@ -70,9 +80,17 @@ namespace GroguLauncher
 
 				if (App.UserInfo.ContainsKey("USER_ID"))
 				{
-					MainWindow window = new MainWindow();
+					if (_mainWindow == null)
+					{
+						_mainWindow = new MainWindow(this);
 
-					window.Show();
+						_mainWindow.Show();
+					}
+					else
+					{
+						_mainWindow.Show();
+					}
+
 					Close();
 				}
 				else

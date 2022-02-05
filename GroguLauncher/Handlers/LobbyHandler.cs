@@ -45,7 +45,7 @@ namespace GroguLauncher.Handlers
 		private ConcurrentQueue<string> _queue = null;
 		private byte[] _writeBuffer = null;
 		private byte[] _readBuffer = null;
-		//private bool _isStarted = false;
+		public bool Started { get; private set; }
 
 		//private Thread _heartbeatThread;
 
@@ -57,12 +57,6 @@ namespace GroguLauncher.Handlers
 			_socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 			_writeBuffer = new byte[BufferSize];
 			_readBuffer = new byte[BufferSize];
-		}
-
-		public bool Start()
-		{
-			//connect to server
-			return Connect();
 		}
 
 		public void Stop()
@@ -78,21 +72,15 @@ namespace GroguLauncher.Handlers
 			return _socket != null && _socket.Connected;
 		}
 
-		private bool Connect()
+		public void Connect()
 		{
 			try
 			{
-				bool result = false;
-				if (_socket != null)
-				{
-					_socket.BeginConnect(IPAddress.Parse(ServerAddress), ServerPort, ConnectCallback, _socket);
-				}
-				return result;
+				_socket.BeginConnect(IPAddress.Parse(ServerAddress), ServerPort, ConnectCallback, _socket);
 			}
 			catch (Exception e)
 			{
 				Console.WriteLine(e);
-				return false;
 			}
 		}
 
@@ -109,34 +97,13 @@ namespace GroguLauncher.Handlers
 				return;
 			}
 
-
 			if (socket.Connected)
 			{
 				Console.WriteLine("Connected");
+
+				Started = true;
+
 				ReceiveHeader();
-
-				//_heartbeatThread = new Thread(
-				//	() =>
-				//	{
-				//		while (true)
-				//		{
-				//			if (Connected())
-				//			{
-				//				int size = 0;
-				//				Buffer.BlockCopy(BitConverter.GetBytes((uint)LobbyHeader.Heartbeat), 0, _writeBuffer, 0, sizeof(uint));
-				//				size += sizeof(uint);
-				//				_socket.BeginSend(_writeBuffer, 0, size, SocketFlags.None, SendCallback, _socket);
-				//			}
-				//			else
-				//			{
-				//				Console.WriteLine("[Send] Socket it not vaild");
-				//				break;
-				//			}
-
-				//			Thread.Sleep(500);
-				//		}
-				//	});
-				//_heartbeatThread.Start();
 			}
 			else
 			{
@@ -144,10 +111,32 @@ namespace GroguLauncher.Handlers
 			}
 		}
 
-		#region specified operations
+		private void StartHeartbeating() 
+		{
+			//_heartbeatThread = new Thread(
+			//	() =>
+			//	{
+			//		while (true)
+			//		{
+			//			if (Connected())
+			//			{
+			//				int size = 0;
+			//				Buffer.BlockCopy(BitConverter.GetBytes((uint)LobbyHeader.Heartbeat), 0, _writeBuffer, 0, sizeof(uint));
+			//				size += sizeof(uint);
+			//				_socket.BeginSend(_writeBuffer, 0, size, SocketFlags.None, SendCallback, _socket);
+			//			}
+			//			else
+			//			{
+			//				Console.WriteLine("[Send] Socket it not vaild");
+			//				break;
+			//			}
 
-		// TODO: Copy the send data into _writeBuffer
-		// return type: copied size
+			//			Thread.Sleep(500);
+			//		}
+			//	});
+			//_heartbeatThread.Start();
+		}
+
 		private int CopyToWriteBuffer(LobbyHeader type, string content)
 		{
 			// |TYPE OF MESSAGE|SIZE OF MESSAGE|CONTENT OF MESSAGE|
@@ -180,7 +169,6 @@ namespace GroguLauncher.Handlers
 				return;
 			}
 		}
-		#endregion
 
 		#region Receive & Send
 		private void ReceiveHeader()

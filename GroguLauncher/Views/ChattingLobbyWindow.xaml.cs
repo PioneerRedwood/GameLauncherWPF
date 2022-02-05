@@ -33,8 +33,10 @@ namespace GroguLauncher.Views
 		{
 			InitializeComponent();
 			_mainWindow = mainWindow;
+
 			_queue = new ConcurrentQueue<string>();
 			_chatModels = new ObservableCollection<ChatDataModel>();
+
 			_messagePumpThread = new Thread(
 				() =>
 				{
@@ -103,23 +105,45 @@ namespace GroguLauncher.Views
 		#region Network wrapper
 		private void StartConnectToServer()
 		{
-			if (_lobbyHandler.Start())
+			Task connectionTask = new Task(() =>
 			{
-				_messagePumpThread.Start();
-			}
-			else
-			{
-				if(MessageBox.Show("Can't connect to the lobby server!") == MessageBoxResult.OK)
+				int count = 5;
+				while (count > 0)
 				{
-					Close();
+					_lobbyHandler.Connect();
+
+					Thread.Sleep(500);
+
+					if (_lobbyHandler.Started)
+					{
+						_messagePumpThread.Start();
+						break;
+					}
+					else
+					{
+						Console.WriteLine($"Connection count: {count}");
+					}
+
+					count--;
 				}
-			}
+
+				//if (MessageBox.Show("Can't connect to the lobby server!") == MessageBoxResult.OK)
+				//{
+				//	Close();
+				//}
+			});
+
+			connectionTask.Start();
+			connectionTask.Wait();
 		}
 
 		private void Disconnect()
 		{
 			_lobbyHandler.Stop();
-			_messagePumpThread.Abort();
+			if (_messagePumpThread.IsAlive)
+			{
+				_messagePumpThread.Abort();
+			}
 		}
 
 		private void NotifyNewMessageComing(string message)

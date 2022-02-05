@@ -11,7 +11,7 @@
         Width="300"
         WindowStyle="None"
         Background="#15171E"
-        WindowStartupLocation="CenterOwner"
+        WindowStartupLocation="CenterScreen"
         AllowsTransparency="True" 
         KeyDown="Window_KeyDown">
   <Window.Resources>
